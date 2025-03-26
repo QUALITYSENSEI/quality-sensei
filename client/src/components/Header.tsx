@@ -74,6 +74,15 @@ export default function Header() {
               >
                 Courses
               </a>
+              <Link 
+                href="/blog" 
+                className={cn(
+                  "font-medium transition-colors",
+                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]"
+                )}
+              >
+                Blog
+              </Link>
               <a 
                 href="#testimonials" 
                 className={cn(
@@ -147,6 +156,16 @@ export default function Header() {
             >
               Courses
             </a>
+            <Link
+              href="/blog"
+              className={cn(
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
+                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+              )}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Blog
+            </Link>
             <a 
               href="#testimonials" 
               className={cn(
