@@ -167,19 +167,17 @@ export default function Header() {
               >
                 Testimonials
               </a>
-              <a 
-                href="#about" 
+              <Link
+                href="/about" 
                 className={cn(
                   "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
                   theme === "dark" 
                     ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
-                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70",
-                  activeSection === "about" && (theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]")
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70"
                 )}
-                aria-current={activeSection === "about" ? "page" : undefined}
               >
                 About
-              </a>
+              </Link>
               <a 
                 href="#contact" 
                 className={cn(
