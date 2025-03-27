@@ -252,7 +252,6 @@ export default function HeroSection() {
                     width={600}
                     height={450}
                     decoding="async"
-                    fetchPriority="high"
                     sizes="(max-width: 768px) 100vw, 600px"
                   />
                 </motion.div>
