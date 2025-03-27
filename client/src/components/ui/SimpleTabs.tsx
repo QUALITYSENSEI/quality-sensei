@@ -32,16 +32,13 @@ export const SimpleTabs: React.FC<SimpleTabsProps> = ({
   
   const handleClick = (tabId: string) => {
     console.log(`SimpleTabs - Clicked tab: ${tabId}`);
-    // Add direct console log for debugging
-    console.log('Current props:', { tabs, activeTab, className });
     
-    // Use a direct state setter function to bypass any potential event issues
-    // This will be a more reliable way to update the state
+    // Always use the onChange prop directly for reliability
+    onChange(tabId);
+    
+    // Also call window.setTab for debugging purposes if it exists
     if (typeof window !== 'undefined' && window.setTab) {
       window.setTab(tabId);
-    } else {
-      // Fallback to the original onChange prop
-      onChange(tabId);
     }
   };
   
