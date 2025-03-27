@@ -102,6 +102,12 @@ export default function SeleniumLab() {
     console.log(`Tab changed to: ${activeTab}`);
   }, [activeTab]);
   
+  // Tab change handler to debug tab clicks
+  const handleTabChange = (value: string) => {
+    console.log(`Tab clicked: ${value}`);
+    setActiveTab(value);
+  };
+  
   // Save scroll position when module changes
   useEffect(() => {
     if (saveScrollPosition && scrollPosition !== null) {
@@ -254,7 +260,7 @@ export default function SeleniumLab() {
               </div>
             
               {/* Content Tabs */}
-              <Tabs value={activeTab} className="w-full" onValueChange={setActiveTab}>
+              <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
                 {activeModule === 'intro' ? (
                   <TabsList className="grid grid-cols-3 mb-6">
                     <TabsTrigger value="install" className="flex items-center gap-2">
@@ -430,12 +436,22 @@ testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
                           Start the session
                         </h5>
                         <p className="text-sm ml-8">For more details on starting a session read our documentation on driver sessions</p>
-                        <CodeExample 
-                          examples={[
+                        <TerminalCodeTabs 
+                          tabs={[
                             {
-                              language: "java",
-                              code: `WebDriver driver = new ChromeDriver();`,
-                              label: "Java"
+                              id: "java-driver",
+                              label: "Java",
+                              code: `WebDriver driver = new ChromeDriver();`
+                            },
+                            {
+                              id: "python-driver",
+                              label: "Python",
+                              code: `driver = webdriver.Chrome()`
+                            },
+                            {
+                              id: "javascript-driver",
+                              label: "JavaScript",
+                              code: `const driver = await new Builder().forBrowser('chrome').build();`
                             }
                           ]}
                           className="ml-8"
@@ -448,12 +464,22 @@ testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
                           Take action on browser
                         </h5>
                         <p className="text-sm ml-8">In this example we are navigating to a web page.</p>
-                        <CodeExample 
-                          examples={[
+                        <TerminalCodeTabs 
+                          tabs={[
                             {
-                              language: "java",
-                              code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html");`,
-                              label: "Java"
+                              id: "java-action",
+                              label: "Java",
+                              code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
+                            },
+                            {
+                              id: "python-action",
+                              label: "Python",
+                              code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html")`
+                            },
+                            {
+                              id: "javascript-action",
+                              label: "JavaScript",
+                              code: `await driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
                             }
                           ]}
                           className="ml-8"
