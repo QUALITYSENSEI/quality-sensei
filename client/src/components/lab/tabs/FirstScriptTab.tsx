@@ -141,7 +141,7 @@ public class FirstSeleniumTest {
         Let's start with a basic example that opens a browser, navigates to a website, and interacts with elements.
       </p>
 
-      <Alert className="my-4" variant={theme === "dark" ? "default" : "outline"}>
+      <Alert className="my-4">
         <Info className="h-4 w-4" />
         <AlertTitle>Key Concepts</AlertTitle>
         <AlertDescription>

@@ -92,7 +92,7 @@ actions.move_to_element(element).click().send_keys("Hello").perform()`;
         Selenium features to create robust and reliable automation scripts.
       </p>
 
-      <Alert className="my-4" variant={theme === "dark" ? "default" : "outline"}>
+      <Alert className="my-4">
         <Clock className="h-4 w-4" />
         <AlertTitle>Handling Timing Issues</AlertTitle>
         <AlertDescription>

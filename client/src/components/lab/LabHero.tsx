@@ -17,8 +17,6 @@ interface LabHeroProps {
   breadcrumbs: BreadcrumbItem[];
   studentCount?: number;
   certificateAvailable?: boolean;
-  actionButtonText?: string;
-  onActionButtonClick?: () => void;
 }
 
 export default function LabHero({
@@ -26,9 +24,7 @@ export default function LabHero({
   icon,
   breadcrumbs,
   studentCount = 0,
-  certificateAvailable = false,
-  actionButtonText = "Track Progress",
-  onActionButtonClick
+  certificateAvailable = false
 }: LabHeroProps) {
   const { theme } = useTheme();
 
@@ -65,12 +61,6 @@ export default function LabHero({
             )}
           </div>
         </div>
-        
-        {actionButtonText && (
-          <Button onClick={onActionButtonClick}>
-            {actionButtonText}
-          </Button>
-        )}
       </div>
     </div>
   );

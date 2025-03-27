@@ -203,13 +203,6 @@ export default function SeleniumLabRefactored() {
             ]}
             studentCount={15432}
             certificateAvailable={true}
-            actionButtonText="Track Progress"
-            onActionButtonClick={() => 
-              toast({
-                title: "Progress tracking",
-                description: "Tracking feature will be available soon!",
-              })
-            }
           />
           
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
