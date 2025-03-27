@@ -122,8 +122,11 @@ export default function SeleniumLab() {
   
   // Tab change handler 
   const handleTabChange = (value: string) => {
-    console.log(`SeleniumLab - Tab clicked: ${value}`);
-    setActiveTab(value);
+    console.log(`SeleniumLab - Tab changed to: ${value}`);
+    // Force immediate state update
+    setTimeout(() => {
+      setActiveTab(value);
+    }, 0);
   };
   
   // Define the intro tab configurations
