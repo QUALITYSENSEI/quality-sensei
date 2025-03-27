@@ -67,70 +67,70 @@ const AutomationSection = () => {
   const duplicatedTools = [...marqueeTools, ...marqueeTools];
 
   return (
-      <section id="tools" className="py-20 relative overflow-hidden bg-gradient-to-b from-gray-100 to-white dark:from-gray-950 dark:to-gray-900">
-        <div className="absolute inset-0 opacity-10 dark:opacity-20 -z-10 bg-gradient-to-b from-[#00BCD4] to-[#40E0D0]" />
+    <section id="tools" className="py-20 relative overflow-hidden bg-gradient-to-b from-gray-100 to-white dark:from-gray-950 dark:to-gray-900">
+      <div className="absolute inset-0 opacity-10 dark:opacity-20 -z-10 bg-gradient-to-b from-[#00BCD4] to-[#40E0D0]" />
 
-        <div className="container mx-auto px-4">
-          {/* Header */}
-          <motion.div
-              className="text-center mb-16"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{ duration: 0.6 }}
-          >
+      <div className="container mx-auto px-4">
+        {/* Header */}
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.6 }}
+        >
           <span className="text-[#00BCD4] dark:text-[#40E0D0] uppercase tracking-wider font-medium relative inline-block">
             Technology Stack
             <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-transparent via-[#00BCD4] dark:via-[#40E0D0] to-transparent"></span>
           </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-800 dark:text-white">
-              Automation Tools
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
-              Glide through the industry's leading automation tools in motion.
-            </p>
-          </motion.div>
+          <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-800 dark:text-white">
+            Automation Tools
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
+            Glide through the industry's leading automation tools in motion.
+          </p>
+        </motion.div>
 
-          {/* Marquee */}
-          <div
-              className="overflow-hidden relative my-12"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+        {/* Marquee */}
+        <div
+          className="overflow-hidden relative my-12 w-full"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <motion.div
+            className="flex items-center justify-start gap-4 sm:gap-6 md:gap-8"
+            animate={{ x: ['0%', '-50%'] }}
+            transition={{
+              x: {
+                repeat: Infinity,
+                repeatType: 'loop',
+                duration: 80,
+                ease: 'linear',
+              },
+            }}
+            style={{
+              width: 'max-content',
+              animationPlayState: isHovered ? 'paused' : 'running',
+            }}
           >
-            <motion.div
-                className="inline-flex items-center gap-8 md:gap-10"
-                animate={{ x: ['0%', '-50%'] }}
-                transition={{
-                  x: {
-                    repeat: Infinity,
-                    repeatType: 'loop',
-                    duration: 80,
-                    ease: 'linear',
-                  },
-                }}
-                style={{
-                  width: 'max-content',
-                  animationPlayState: isHovered ? 'paused' : 'running',
-                }}
-            >
-              {duplicatedTools.map((tool, index) => {
-                const Icon = tool.icon;
-                return (
-                    <div
-                        key={`${tool.name}-${index}`}
-                        className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all hover:border-[#00BCD4] dark:hover:border-[#40E0D0]"
-                    >
-                      <Icon className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[#00BCD4] dark:text-[#40E0D0]" />
-                      <span className="mt-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-center px-1">
+            {duplicatedTools.map((tool, index) => {
+              const Icon = tool.icon;
+              return (
+                <div
+                  key={`${tool.name}-${index}`}
+                  className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex-shrink-0 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all hover:border-[#00BCD4] dark:hover:border-[#40E0D0]"
+                >
+                  <Icon className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-[#00BCD4] dark:text-[#40E0D0]" />
+                  <span className="mt-2 text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300 text-center px-1">
                     {tool.name}
                   </span>
-                    </div>
-                );
-              })}
-            </motion.div>
-          </div>
+                </div>
+              );
+            })}
+          </motion.div>
         </div>
-      </section>
+      </div>
+    </section>
   );
 };
 

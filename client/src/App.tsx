@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
@@ -12,16 +12,24 @@ import AutomationTestingLab from "@/pages/labs/automation-testing";
 import ComponentShowcase from "@/pages/ComponentShowcase";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { useEffect } from "react";
 
 function Router() {
+  const [location] = useLocation();
+  
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
+  
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/about" component={About} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:id" component={BlogPost} />
-      <Route path="/practical-labs" component={PracticalLabs} />
-      <Route path="/practical-labs/automation-testing" component={AutomationTestingLab} />
+      <Route path="/labs" component={PracticalLabs} />
+      <Route path="/labs/automation-testing" component={AutomationTestingLab} />
       <Route path="/components" component={ComponentShowcase} />
       <Route component={NotFound} />
     </Switch>

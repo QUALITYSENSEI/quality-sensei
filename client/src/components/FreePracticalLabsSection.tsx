@@ -107,7 +107,7 @@ export default function FreePracticalLabsSection() {
           transition={{ duration: 0.5, delay: 0.5 }}
           className="text-center"
         >
-          <Link href="/practical-labs">
+          <Link href="/labs">
             <Button 
               size="lg" 
               className={`font-semibold ${theme === 'dark' ? 'bg-[#40E0D0] hover:bg-[#3BCDC0] text-gray-900' : 'bg-[#00BCD4] hover:bg-[#00ACC1] text-white'}`}
