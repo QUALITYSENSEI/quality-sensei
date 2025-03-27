@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import { Link } from "wouter";
-import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import {
   Bot,
@@ -16,17 +14,55 @@ import {
 import { SiSelenium, SiPlaywright, SiCypress, SiAppium } from "@/components/IconImports";
 
 // Components
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import LabLayout from "@/layouts/LabLayout";
+import LabCard from "@/components/lab/LabCard";
 
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 
+/**
+ * Data model for automation pathways
+ */
+interface PathwayData {
+  id: string;
+  title: string;
+  technologies: string[];
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  difficulty: string;
+  popular: boolean;
+  modules: number;
+  completionTime: string;
+  skills: string[];
+}
+
+/**
+ * Data model for featured labs
+ */
+interface FeaturedLab {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  color: string;
+  languages: string[];
+  modules: number;
+  students: number;
+  level: string;
+  route: string;
+  comingSoon: boolean;
+}
+
+/**
+ * Automation Labs Page Component
+ */
 const AutomationLabs = () => {
   const { theme } = useTheme();
   const [activeFilter, setActiveFilter] = useState<string>("all");
 
-  const labPathways = [
+  // Data for learning pathways
+  const labPathways: PathwayData[] = [
     {
       id: "web-ui",
       title: "Web UI Automation",
@@ -107,7 +143,8 @@ const AutomationLabs = () => {
     },
   ];
 
-  const featuredLabs = [
+  // Data for featured labs
+  const featuredLabs: FeaturedLab[] = [
     {
       id: "selenium",
       title: "Selenium WebDriver Masterclass",
@@ -173,65 +210,67 @@ const AutomationLabs = () => {
         return true;
       });
 
+  /**
+   * Navigate to a lab route
+   */
+  const navigateToLab = (route: string) => {
+    window.location.href = route;
+  };
+
   return (
-    <>
-      <Helmet>
-        <title>Test Automation Labs | Quality Sensei</title>
-        <meta name="description" content="Interactive test automation labs covering Selenium, Playwright, Cypress, Appium and more. Hands-on learning for all skill levels." />
-      </Helmet>
-
-      <Header />
-
-      <main className="min-h-screen relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
-
-        {/* Hero Section */}
-        <section className="relative py-20 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.6 }}
-                >
-                  <div className="inline-block mb-4 px-4 py-1 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-full font-medium">
-                    <Bot className="inline-block h-4 w-4 mr-1" />
-                    Test Automation
+    <LabLayout
+      title="Test Automation Labs"
+      description="Interactive test automation labs covering Selenium, Playwright, Cypress, Appium and more. Hands-on learning for all skill levels."
+      keywords="automation testing, selenium, playwright, cypress, appium, test automation, qa automation"
+    >
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6 }}
+              >
+                <div className="inline-block mb-4 px-4 py-1 bg-cyan-100 dark:bg-cyan-900 text-cyan-800 dark:text-cyan-200 rounded-full font-medium">
+                  <Bot className="inline-block h-4 w-4 mr-1" />
+                  Test Automation
+                </div>
+                <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-500">
+                  Automation Testing Labs
+                </h1>
+                <p className="text-lg mb-8 text-gray-600 dark:text-gray-300">
+                  Master test automation with hands-on interactive labs. Build real automation frameworks, solve challenges, and gain practical skills that employers demand.
+                </p>
+                <div className="flex flex-wrap gap-4">
+                  <div 
+                    className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    onClick={() => navigateToLab('/labs/automation/selenium')}
+                  >
+                    <PlayCircle className="h-5 w-5 mr-2" />
+                    Start Learning
                   </div>
-                  <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-cyan-500">
-                    Automation Testing Labs
-                  </h1>
-                  <p className="text-lg mb-8 text-gray-600 dark:text-gray-300">
-                    Master test automation with hands-on interactive labs. Build real automation frameworks, solve challenges, and gain practical skills that employers demand.
-                  </p>
-                  <div className="flex flex-wrap gap-4">
-                    <div 
-                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
-                      onClick={() => window.location.href = '/labs/automation/selenium'}
-                    >
-                      <PlayCircle className="h-5 w-5 mr-2" />
-                      Start Learning
-                    </div>
-                    <a 
-                      href="#pathways" 
-                      className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
-                    >
-                      <Search className="h-5 w-5 mr-2" />
-                      Explore Labs
-                    </a>
-                  </div>
-                </motion.div>
-              </div>
-              
-              <div className="relative">
-                <div className="relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
-                  <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
-                    MOST POPULAR
-                  </div>
-                  
-                  {/* Code snippet */}
-                  <div className="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-sm overflow-x-auto mb-6">
-                    <pre>{`import { Builder, By, Key, until } from 'selenium-webdriver';
+                  <a 
+                    href="#pathways" 
+                    className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
+                  >
+                    <Search className="h-5 w-5 mr-2" />
+                    Explore Labs
+                  </a>
+                </div>
+              </motion.div>
+            </div>
+            
+            <div className="relative">
+              <div className="relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
+                <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
+                  MOST POPULAR
+                </div>
+                
+                {/* Code snippet */}
+                <div className="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-sm overflow-x-auto mb-6">
+                  <pre>{`import { Builder, By, Key, until } from 'selenium-webdriver';
 
 async function runTest() {
   // Launch browser
@@ -258,339 +297,280 @@ async function runTest() {
 }
 
 runTest();`}</pre>
-                  </div>
-                  
-                  {/* Feature bullets */}
-                  <div className="space-y-4">
-                    <div className="flex items-start">
-                      <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
-                        <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
-                      </div>
-                      <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Run real tests in simulated browser environments</p>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
-                        <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
-                      </div>
-                      <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Learn multiple languages with side-by-side examples</p>
-                    </div>
-                    <div className="flex items-start">
-                      <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
-                        <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
-                      </div>
-                      <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Tackle real-world testing scenarios and challenges</p>
-                    </div>
-                  </div>
                 </div>
                 
-                {/* Abstract decorative elements */}
-                <div className="absolute -z-10 -bottom-6 -right-6 w-64 h-64 bg-gradient-to-r from-purple-200 to-cyan-200 dark:from-purple-900 dark:to-cyan-900 rounded-2xl opacity-50"></div>
-                <div className="absolute -z-10 -top-6 -left-6 w-32 h-32 bg-gradient-to-r from-amber-200 to-rose-200 dark:from-amber-900 dark:to-rose-900 rounded-2xl opacity-50"></div>
+                {/* Feature bullets */}
+                <div className="space-y-4">
+                  <div className="flex items-start">
+                    <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
+                      <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Run real tests in simulated browser environments</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
+                      <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Learn multiple languages with side-by-side examples</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="bg-green-100 dark:bg-green-900 p-1 rounded-full">
+                      <FileCheck className="h-4 w-4 text-green-600 dark:text-green-400" />
+                    </div>
+                    <p className="ml-3 text-sm text-gray-600 dark:text-gray-300">Tackle real-world testing scenarios and challenges</p>
+                  </div>
+                </div>
               </div>
+              
+              {/* Abstract decorative elements */}
+              <div className="absolute -z-10 -bottom-6 -right-6 w-64 h-64 bg-gradient-to-r from-purple-200 to-cyan-200 dark:from-purple-900 dark:to-cyan-900 rounded-2xl opacity-50"></div>
+              <div className="absolute -z-10 -top-6 -left-6 w-32 h-32 bg-gradient-to-r from-amber-200 to-rose-200 dark:from-amber-900 dark:to-rose-900 rounded-2xl opacity-50"></div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Top Labs Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Featured Automation Labs</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Start your automation journey with our most popular interactive labs
-              </p>
-            </div>
+      {/* Featured Labs Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Featured Automation Labs</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Start your automation journey with our most popular interactive labs
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {featuredLabs.map((lab) => (
-                <div 
-                  key={lab.id}
-                  className={cn(
-                    "rounded-xl shadow-lg overflow-hidden hover:-translate-y-1 transition-all duration-200",
-                    theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                  )}
-                >
-                  {/* Coming Soon overlay */}
-                  {lab.comingSoon && (
-                    <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center z-10">
-                      <div className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white px-4 py-2 rounded-full font-bold transform -rotate-12 shadow-lg">
-                        Coming Soon
-                      </div>
-                    </div>
-                  )}
-                
-                  <div 
-                    className="block relative cursor-pointer" 
-                    onClick={() => {
-                      if (!lab.comingSoon) {
-                        window.location.href = lab.route;
-                      }
-                    }}
-                  >
-                    {/* Header with icon */}
-                    <div className={cn(
-                      "h-24 flex items-center justify-center bg-gradient-to-r",
-                      lab.color
-                    )}>
-                      <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
-                        {lab.icon}
-                      </div>
-                    </div>
-                    
-                    {/* Content */}
-                    <div className="p-5">
-                      <h3 className="font-bold text-lg mb-2">{lab.title}</h3>
-                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{lab.description}</p>
-                      
-                      {/* Stats */}
-                      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                        <div>
-                          <p className="text-gray-500 dark:text-gray-400">Modules</p>
-                          <p className="font-bold">{lab.modules}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500 dark:text-gray-400">Students</p>
-                          <p className="font-bold">{lab.students.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500 dark:text-gray-400">Languages</p>
-                          <p className="font-bold">{lab.languages.length}</p>
-                        </div>
-                        <div>
-                          <p className="text-gray-500 dark:text-gray-400">Level</p>
-                          <p className="font-bold">{lab.level}</p>
-                        </div>
-                      </div>
-                      
-                      {/* Languages */}
-                      <div className="flex flex-wrap gap-2">
-                        {lab.languages.map((lang, i) => (
-                          <span 
-                            key={i}
-                            className="inline-block px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded-full"
-                          >
-                            {lang}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {featuredLabs.map((lab) => (
+              <LabCard
+                key={lab.id}
+                id={lab.id}
+                title={lab.title}
+                description={lab.description}
+                icon={lab.icon}
+                color={lab.color}
+                languages={lab.languages}
+                modules={lab.modules}
+                students={lab.students}
+                level={lab.level}
+                route={lab.route}
+                comingSoon={lab.comingSoon}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Learning Pathways */}
+      <section id="pathways" className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Automation Learning Pathways</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
+              Choose your learning path based on your interests and career goals
+            </p>
+          </div>
+
+          {/* Filters */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            <button 
+              onClick={() => setActiveFilter("all")}
+              className={cn(
+                "px-4 py-2 rounded-full font-medium transition-all",
+                activeFilter === "all" 
+                  ? "bg-purple-600 text-white shadow-md" 
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              All Pathways
+            </button>
+            <button 
+              onClick={() => setActiveFilter("beginner")}
+              className={cn(
+                "px-4 py-2 rounded-full font-medium transition-all",
+                activeFilter === "beginner" 
+                  ? "bg-green-600 text-white shadow-md" 
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              Beginner Friendly
+            </button>
+            <button 
+              onClick={() => setActiveFilter("intermediate")}
+              className={cn(
+                "px-4 py-2 rounded-full font-medium transition-all",
+                activeFilter === "intermediate" 
+                  ? "bg-blue-600 text-white shadow-md" 
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              Intermediate
+            </button>
+            <button 
+              onClick={() => setActiveFilter("advanced")}
+              className={cn(
+                "px-4 py-2 rounded-full font-medium transition-all",
+                activeFilter === "advanced" 
+                  ? "bg-red-600 text-white shadow-md" 
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              Advanced
+            </button>
+            <button 
+              onClick={() => setActiveFilter("popular")}
+              className={cn(
+                "px-4 py-2 rounded-full font-medium transition-all",
+                activeFilter === "popular" 
+                  ? "bg-amber-600 text-white shadow-md" 
+                  : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              Most Popular
+            </button>
+          </div>
+
+          {/* Pathways Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredPathways.map((pathway) => (
+              <div
+                key={pathway.id}
+                className={cn(
+                  "rounded-xl overflow-hidden shadow-md transition-all hover:-translate-y-1 duration-200",
+                  theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+                )}
+              >
+                {/* Card header */}
+                <div className={cn(
+                  "h-20 flex items-center px-6 bg-gradient-to-r",
+                  pathway.color
+                )}>
+                  <div className="bg-white/20 p-2 rounded-lg mr-4">
+                    {pathway.icon}
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-lg">{pathway.title}</h3>
+                    {pathway.popular && (
+                      <span className="inline-block px-2 py-0.5 bg-white/30 text-white text-xs rounded-full">
+                        Popular Choice
+                      </span>
+                    )}
                   </div>
                 </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Learning Pathways */}
-        <section id="pathways" className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-transparent to-gray-50 dark:to-gray-900">
-          <div className="max-w-7xl mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4">Automation Learning Pathways</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 max-w-3xl mx-auto">
-                Choose your learning path based on your interests and career goals
-              </p>
-            </div>
-
-            {/* Filters */}
-            <div className="flex flex-wrap justify-center gap-4 mb-12">
-              <button 
-                onClick={() => setActiveFilter("all")}
-                className={cn(
-                  "px-4 py-2 rounded-full font-medium transition-all",
-                  activeFilter === "all" 
-                    ? "bg-purple-600 text-white shadow-md" 
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                )}
-              >
-                All Pathways
-              </button>
-              <button 
-                onClick={() => setActiveFilter("beginner")}
-                className={cn(
-                  "px-4 py-2 rounded-full font-medium transition-all",
-                  activeFilter === "beginner" 
-                    ? "bg-green-600 text-white shadow-md" 
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                )}
-              >
-                Beginner Friendly
-              </button>
-              <button 
-                onClick={() => setActiveFilter("intermediate")}
-                className={cn(
-                  "px-4 py-2 rounded-full font-medium transition-all",
-                  activeFilter === "intermediate" 
-                    ? "bg-blue-600 text-white shadow-md" 
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                )}
-              >
-                Intermediate
-              </button>
-              <button 
-                onClick={() => setActiveFilter("advanced")}
-                className={cn(
-                  "px-4 py-2 rounded-full font-medium transition-all",
-                  activeFilter === "advanced" 
-                    ? "bg-red-600 text-white shadow-md" 
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                )}
-              >
-                Advanced
-              </button>
-              <button 
-                onClick={() => setActiveFilter("popular")}
-                className={cn(
-                  "px-4 py-2 rounded-full font-medium transition-all",
-                  activeFilter === "popular" 
-                    ? "bg-amber-600 text-white shadow-md" 
-                    : "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
-                )}
-              >
-                Most Popular
-              </button>
-            </div>
-
-            {/* Pathways Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredPathways.map((pathway) => (
-                <div
-                  key={pathway.id}
-                  className={cn(
-                    "rounded-xl overflow-hidden shadow-md transition-all hover:-translate-y-1 duration-200",
-                    theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-                  )}
-                >
-                  {/* Card header */}
-                  <div className={cn(
-                    "h-20 flex items-center px-6 bg-gradient-to-r",
-                    pathway.color
-                  )}>
-                    <div className="bg-white/20 p-2 rounded-lg mr-4">
-                      {pathway.icon}
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-white text-lg">{pathway.title}</h3>
-                      {pathway.popular && (
-                        <span className="inline-block px-2 py-0.5 bg-white/30 text-white text-xs rounded-full">
-                          Popular Choice
-                        </span>
-                      )}
-                    </div>
-                  </div>
+                
+                {/* Card content */}
+                <div className="p-6">
+                  <p className="text-gray-600 dark:text-gray-400 mb-6">
+                    {pathway.description}
+                  </p>
                   
-                  {/* Card content */}
-                  <div className="p-6">
-                    <p className="text-gray-600 dark:text-gray-400 mb-6">
-                      {pathway.description}
-                    </p>
-                    
-                    {/* Technology badges */}
-                    <div className="mb-6">
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Technologies:</p>
-                      <div className="flex flex-wrap gap-2">
-                        {pathway.technologies.map((tech, i) => (
-                          <span 
-                            key={i}
-                            className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs rounded-full capitalize"
-                          >
-                            {tech.replace('-', ' ')}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* Stats grid */}
-                    <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                      <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        <p className="text-gray-500 dark:text-gray-400">Difficulty</p>
-                        <p className="font-bold capitalize">{pathway.difficulty.replace('-to-', ' to ')}</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        <p className="text-gray-500 dark:text-gray-400">Modules</p>
-                        <p className="font-bold">{pathway.modules} modules</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        <p className="text-gray-500 dark:text-gray-400">Completion Time</p>
-                        <p className="font-bold">{pathway.completionTime}</p>
-                      </div>
-                      <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
-                        <p className="text-gray-500 dark:text-gray-400">Skills</p>
-                        <p className="font-bold">{pathway.skills.length}+ skills</p>
-                      </div>
-                    </div>
-                    
-                    {/* Skills preview */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {pathway.skills.slice(0, 3).map((skill, i) => (
-                        <span key={i} className="text-xs text-gray-600 dark:text-gray-400">
-                          • {skill}
+                  {/* Technology badges */}
+                  <div className="mb-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Technologies:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {pathway.technologies.map((tech, i) => (
+                        <span 
+                          key={i}
+                          className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 text-xs rounded-full capitalize"
+                        >
+                          {tech.replace('-', ' ')}
                         </span>
                       ))}
-                      {pathway.skills.length > 3 && (
-                        <span className="text-xs text-gray-600 dark:text-gray-400">
-                          • +{pathway.skills.length - 3} more
-                        </span>
+                    </div>
+                  </div>
+                  
+                  {/* Stats grid */}
+                  <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
+                    <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                      <p className="text-gray-500 dark:text-gray-400">Difficulty</p>
+                      <p className="font-bold capitalize">{pathway.difficulty.replace('-to-', ' to ')}</p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                      <p className="text-gray-500 dark:text-gray-400">Modules</p>
+                      <p className="font-bold">{pathway.modules} modules</p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                      <p className="text-gray-500 dark:text-gray-400">Completion Time</p>
+                      <p className="font-bold">{pathway.completionTime}</p>
+                    </div>
+                    <div className="bg-gray-50 dark:bg-gray-700/50 p-3 rounded-lg">
+                      <p className="text-gray-500 dark:text-gray-400">Skills</p>
+                      <p className="font-bold">{pathway.skills.length}+ skills</p>
+                    </div>
+                  </div>
+                  
+                  {/* Skills preview */}
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {pathway.skills.slice(0, 3).map((skill, i) => (
+                      <span key={i} className="text-xs text-gray-600 dark:text-gray-400">
+                        • {skill}
+                      </span>
+                    ))}
+                    {pathway.skills.length > 3 && (
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
+                        • +{pathway.skills.length - 3} more
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className="mt-auto">
+                    <div
+                      className={cn(
+                        "inline-block w-full text-center py-2 rounded-lg font-medium transition-all cursor-pointer",
+                        "bg-gradient-to-r from-gray-800 to-gray-700 text-white hover:shadow-md",
+                        "dark:from-gray-700 dark:to-gray-600"
                       )}
-                    </div>
-                    
-                    <div className="mt-auto">
-                      <div
-                        className={cn(
-                          "inline-block w-full text-center py-2 rounded-lg font-medium transition-all cursor-pointer",
-                          "bg-gradient-to-r from-gray-800 to-gray-700 text-white hover:shadow-md",
-                          "dark:from-gray-700 dark:to-gray-600"
-                        )}
-                        onClick={() => window.location.href = `/labs/automation/${pathway.id}`}
-                      >
-                        Explore Pathway
-                      </div>
+                      onClick={() => navigateToLab(`/labs/automation/${pathway.id}`)}
+                    >
+                      Explore Pathway
                     </div>
                   </div>
                 </div>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* CTA Section */}
-        <section className="py-16 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <div className={cn(
-              "rounded-3xl shadow-xl overflow-hidden",
-              theme === 'dark' ? 'bg-gray-800' : 'bg-white'
-            )}>
-              <div className="relative">
-                {/* Background gradient */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-cyan-500/10"></div>
-                
-                <div className="relative p-8 md:p-12">
-                  <div className="md:max-w-lg">
-                    <h2 className="text-3xl font-bold mb-4">Ready to become an automation expert?</h2>
-                    <p className="text-gray-600 dark:text-gray-400 mb-8">
-                      Start your journey with our comprehensive Selenium WebDriver lab - the perfect first step for aspiring automation engineers.
-                    </p>
-                    
-                    <div className="flex flex-wrap gap-4">
-                      <div 
-                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
-                        onClick={() => window.location.href = '/labs/automation/selenium'}
-                      >
-                        Start Selenium Lab
-                      </div>
-                      <div 
-                        className="px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer"
-                        onClick={() => {}}
-                      >
-                        View Prerequisites
-                      </div>
+      {/* CTA Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className={cn(
+            "rounded-3xl shadow-xl overflow-hidden",
+            theme === 'dark' ? 'bg-gray-800' : 'bg-white'
+          )}>
+            <div className="relative">
+              {/* Background gradient */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-cyan-500/10"></div>
+              
+              <div className="relative p-8 md:p-12">
+                <div className="md:max-w-lg">
+                  <h2 className="text-3xl font-bold mb-4">Ready to become an automation expert?</h2>
+                  <p className="text-gray-600 dark:text-gray-400 mb-8">
+                    Start your journey with our comprehensive Selenium WebDriver lab - the perfect first step for aspiring automation engineers.
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-4">
+                    <div 
+                      className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                      onClick={() => navigateToLab('/labs/automation/selenium')}
+                    >
+                      Start Selenium Lab
+                    </div>
+                    <div 
+                      className="px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer"
+                      onClick={() => {}}
+                    >
+                      View Prerequisites
                     </div>
                   </div>
                 </div>
-                
-                {/* Decorative code element */}
-                <div className="hidden md:block absolute top-8 right-8 max-w-xs">
-                  <div className="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-xs transform rotate-2 shadow-xl">
-                    <pre>{`driver.findElement(By.id("success"))
+              </div>
+              
+              {/* Decorative code element */}
+              <div className="hidden md:block absolute top-8 right-8 max-w-xs">
+                <div className="bg-gray-900 rounded-lg p-4 text-gray-300 font-mono text-xs transform rotate-2 shadow-xl">
+                  <pre>{`driver.findElement(By.id("success"))
   .getText()
   .then(text => {
     expect(text).toEqual(
@@ -598,16 +578,13 @@ runTest();`}</pre>
        becoming an expert!"
     );
   });`}</pre>
-                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-      </main>
-
-      <Footer />
-    </>
+        </div>
+      </section>
+    </LabLayout>
   );
 };
 

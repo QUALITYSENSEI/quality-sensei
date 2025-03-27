@@ -1,121 +1,55 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
-import { Send, User, Trash2 } from "lucide-react";
+import { Send, User, Trash2, FileWarning } from "lucide-react";
+import { useWebSocket, type WebSocketMessage } from '@/hooks/useWebSocket';
 
-interface ChatMessage {
-  id: string;
-  type: 'connection' | 'broadcast' | 'error';
-  message: string;
-  sender?: string;
-  timestamp: string;
-}
-
+/**
+ * Live chat component using WebSockets
+ */
 export default function LiveChat() {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [localMessages, setLocalMessages] = useState<WebSocketMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [username, setUsername] = useState('');
-  const [isConnected, setIsConnected] = useState(false);
   const [hasSetUsername, setHasSetUsername] = useState(false);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Initialize WebSocket connection
-  useEffect(() => {
-    if (!socket && isOpen) {
-      connectWebSocket();
+  // Initialize WebSocket with custom hook
+  const {
+    isConnected,
+    messages: wsMessages,
+    sendMessage,
+    connect,
+    connectionError
+  } = useWebSocket({
+    onOpen: () => {
+      // No need to handle this separately as messages are tracked in the hook
+    },
+    onMessage: (message) => {
+      // Messages are tracked in the hook state
     }
+  });
 
-    return () => {
-      if (socket) {
-        socket.close();
-      }
-    };
-  }, [isOpen]);
+  // Connect only when the chat is open
+  useEffect(() => {
+    if (isOpen) {
+      connect();
+    }
+  }, [isOpen, connect]);
+
+  // Update local messages from the WebSocket hook
+  useEffect(() => {
+    setLocalMessages(wsMessages);
+  }, [wsMessages]);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
-
-  const connectWebSocket = () => {
-    try {
-      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `${protocol}//${window.location.host}/ws`;
-      console.log('Connecting to WebSocket at:', wsUrl);
-      
-      const newSocket = new WebSocket(wsUrl);
-      
-      newSocket.onopen = () => {
-        console.log('WebSocket connection established');
-        setIsConnected(true);
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            type: 'connection',
-            message: 'Connected to chat server',
-            timestamp: new Date().toISOString()
-          }
-        ]);
-      };
-      
-      newSocket.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          console.log('Received WebSocket message:', data);
-          
-          setMessages(prev => [
-            ...prev,
-            {
-              id: Date.now().toString(),
-              type: data.type,
-              message: data.message,
-              sender: data.sender,
-              timestamp: data.timestamp
-            }
-          ]);
-        } catch (err) {
-          console.error('Error parsing WebSocket message:', err);
-        }
-      };
-      
-      newSocket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            type: 'error',
-            message: 'Error connecting to chat server',
-            timestamp: new Date().toISOString()
-          }
-        ]);
-      };
-      
-      newSocket.onclose = () => {
-        console.log('WebSocket connection closed');
-        setIsConnected(false);
-        setMessages(prev => [
-          ...prev,
-          {
-            id: Date.now().toString(),
-            type: 'connection',
-            message: 'Disconnected from chat server',
-            timestamp: new Date().toISOString()
-          }
-        ]);
-      };
-      
-      setSocket(newSocket);
-    } catch (err) {
-      console.error('Error setting up WebSocket:', err);
-    }
-  };
+  }, [localMessages]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,20 +61,17 @@ export default function LiveChat() {
       return;
     }
     
-    if (inputMessage.trim() && socket && socket.readyState === WebSocket.OPEN) {
-      const message = {
-        type: 'broadcast',
+    if (inputMessage.trim() && isConnected) {
+      sendMessage({
         message: inputMessage,
         sender: username || 'Anonymous'
-      };
-      
-      socket.send(JSON.stringify(message));
+      });
       setInputMessage('');
     }
   };
 
   const clearMessages = () => {
-    setMessages([]);
+    setLocalMessages([]);
   };
 
   const toggleChat = () => {
@@ -160,6 +91,7 @@ export default function LiveChat() {
           isOpen ? "w-12 h-12 ml-auto" : "w-12 h-12"
         )}
         onClick={toggleChat}
+        aria-label={isOpen ? "Close chat" : "Open chat"}
       >
         {isOpen ? "×" : "💬"}
       </button>
@@ -179,6 +111,10 @@ export default function LiveChat() {
           )}>
             <h3 className="font-medium">Live Chat</h3>
             <div className="flex items-center gap-2">
+              <span className={cn(
+                "w-2 h-2 rounded-full",
+                isConnected ? "bg-green-500" : "bg-red-500"
+              )} title={isConnected ? "Connected" : "Disconnected"} />
               <button
                 onClick={clearMessages}
                 className="p-1 rounded hover:bg-opacity-20 hover:bg-gray-700"
@@ -189,20 +125,31 @@ export default function LiveChat() {
             </div>
           </div>
           
+          {/* Connection Error */}
+          {connectionError && (
+            <div className={cn(
+              "p-2 flex items-center gap-2 text-sm",
+              theme === "dark" ? "bg-red-900/30 text-red-200" : "bg-red-100 text-red-800"
+            )}>
+              <FileWarning size={16} />
+              <span>{connectionError}</span>
+            </div>
+          )}
+          
           {/* Messages Area */}
           <div className={cn(
             "flex-1 p-3 overflow-y-auto",
             theme === "dark" ? "text-gray-200" : "text-gray-800"
           )}>
-            {messages.length === 0 ? (
+            {localMessages.length === 0 ? (
               <div className="h-full flex items-center justify-center text-gray-500 italic">
                 No messages yet
               </div>
             ) : (
               <>
-                {messages.map((msg) => (
+                {localMessages.map((msg, index) => (
                   <div 
-                    key={msg.id}
+                    key={index}
                     className={cn(
                       "mb-2 p-2 rounded",
                       msg.type === 'connection' 
