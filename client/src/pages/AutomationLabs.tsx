@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { motion } from 'framer-motion';
 import { ChevronLeft, Code } from 'lucide-react';
@@ -120,12 +120,66 @@ const itemVariants = {
   }
 };
 
-export default function AutomationLabs() {
+// Loading skeleton component for lab cards
+function LabCardSkeleton() {
   const { theme } = useTheme();
   
-  // Scroll to top on load
+  return (
+    <div 
+      className={cn(
+        "overflow-hidden transition-all duration-300 border-2 rounded-xl relative",
+        theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-white border-gray-200 shadow-md"
+      )}
+      aria-hidden="true"
+    >
+      <div className="h-28 sm:h-32 bg-gradient-to-r animate-pulse">
+        <div className={cn(
+          "h-full w-full",
+          theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+        )}></div>
+      </div>
+      <div className="p-4 sm:p-6 space-y-3">
+        <div className={cn(
+          "h-6 w-24 rounded animate-pulse",
+          theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+        )}></div>
+        <div className={cn(
+          "h-8 w-3/4 rounded animate-pulse",
+          theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+        )}></div>
+        <div className={cn(
+          "h-16 w-full rounded animate-pulse",
+          theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+        )}></div>
+        <div className="flex justify-between">
+          <div className={cn(
+            "h-5 w-20 rounded animate-pulse",
+            theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+          )}></div>
+          <div className={cn(
+            "h-5 w-16 rounded animate-pulse",
+            theme === "dark" ? "bg-gray-700" : "bg-gray-200"
+          )}></div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default function AutomationLabs() {
+  const { theme } = useTheme();
+  const [isLoading, setIsLoading] = useState(true);
+  
+  // Scroll to top on load and simulate loading state
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Simulate loading for better user experience
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 800);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   // Badge color based on level
@@ -216,96 +270,138 @@ export default function AutomationLabs() {
           </motion.div>
           
           {/* Lab Cards Grid */}
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {automationLabs.map((lab) => (
-              <motion.div
-                key={lab.id}
-                className={cn(
-                  "overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg border-2 rounded-xl relative",
-                  theme === "dark" 
-                    ? "bg-gray-800 border-gray-700 hover:border-[#40E0D0]/30" 
-                    : "bg-white border-gray-200 hover:border-[#00BCD4]/30 shadow-md"
-                )}
-                variants={itemVariants}
-              >
-                {lab.comingSoon ? (
-                  <div className="cursor-not-allowed">
-                    <div className={`h-32 bg-gradient-to-r ${lab.color} flex items-center justify-center opacity-70`}>
-                      <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center">
-                        {lab.icon}
-                      </div>
-                    </div>
-                    <div className="p-6">
-                      <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-4 ${getLevelBadgeColor(lab.level)}`}>
-                        {lab.level}
-                      </span>
-                      <h3 className={cn(
-                        "text-xl font-bold mb-2",
-                        theme === "dark" ? "text-white" : "text-gray-900"
-                      )}>
-                        {lab.title}
-                      </h3>
-                      <p className={cn(
-                        "text-sm mb-4",
-                        theme === "dark" ? "text-gray-300" : "text-gray-600"
-                      )}>
-                        {lab.description}
-                      </p>
-                      <div className={cn(
-                        "flex justify-between text-sm",
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
-                      )}>
-                        <span>{lab.modules} Modules</span>
-                        <span>{lab.duration}</span>
-                      </div>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-                      <span className="bg-black/70 text-white px-4 py-2 rounded-full font-bold">Coming Soon</span>
-                    </div>
-                  </div>
-                ) : (
-                  <Link href={lab.route}>
-                    <div className="cursor-pointer">
-                      <div className={`h-32 bg-gradient-to-r ${lab.color} flex items-center justify-center`}>
-                        <div className="bg-white/20 w-20 h-20 rounded-full flex items-center justify-center">
-                          {lab.icon}
+          {isLoading ? (
+            // Loading Skeleton
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 max-w-7xl mx-auto">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <LabCardSkeleton key={index} />
+              ))}
+            </div>
+          ) : (
+            // Actual Content
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8 max-w-7xl mx-auto"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {automationLabs.map(lab => {
+                return (
+                  <motion.div
+                    key={lab.id}
+                    className={cn(
+                      "overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-lg border-2 rounded-xl relative",
+                      "touch-manipulation active:scale-[0.98]", // Better touch handling
+                      theme === "dark" 
+                        ? "bg-gray-800 border-gray-700 hover:border-[#40E0D0]/30 focus-within:border-[#40E0D0]/50" 
+                        : "bg-white border-gray-200 hover:border-[#00BCD4]/30 focus-within:border-[#00BCD4]/50 shadow-md"
+                    )}
+                    variants={itemVariants}
+                    tabIndex={0} // Enable keyboard focus
+                    role="article"
+                    aria-labelledby={`lab-title-${lab.id}`}
+                  >
+                    {lab.comingSoon ? (
+                      <div className="cursor-not-allowed">
+                        <div className={`h-28 sm:h-32 bg-gradient-to-r ${lab.color} flex items-center justify-center opacity-70`}>
+                          <div className="bg-white/20 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center">
+                            {lab.icon}
+                          </div>
+                        </div>
+                        <div className="p-4 sm:p-6">
+                          <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-3 ${getLevelBadgeColor(lab.level)}`}>
+                            {lab.level}
+                          </span>
+                          <h3 
+                            id={`lab-title-${lab.id}`}
+                            className={cn(
+                              "text-lg sm:text-xl font-bold mb-2",
+                              theme === "dark" ? "text-white" : "text-gray-900"
+                            )}
+                          >
+                            {lab.title}
+                          </h3>
+                          <p className={cn(
+                            "text-sm mb-3 sm:mb-4",
+                            theme === "dark" ? "text-gray-300" : "text-gray-600"
+                          )}>
+                            {lab.description}
+                          </p>
+                          <div className={cn(
+                            "flex flex-wrap gap-2 sm:justify-between text-sm",
+                            theme === "dark" ? "text-gray-400" : "text-gray-500"
+                          )}>
+                            <span className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                              </svg>
+                              {lab.modules} Modules
+                            </span>
+                            <span className="flex items-center">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              {lab.duration}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                          <span className="bg-black/70 text-white px-4 py-2 rounded-full font-bold">Coming Soon</span>
                         </div>
                       </div>
-                      <div className="p-6">
-                        <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-4 ${getLevelBadgeColor(lab.level)}`}>
-                          {lab.level}
-                        </span>
-                        <h3 className={cn(
-                          "text-xl font-bold mb-2",
-                          theme === "dark" ? "text-white" : "text-gray-900"
-                        )}>
-                          {lab.title}
-                        </h3>
-                        <p className={cn(
-                          "text-sm mb-4",
-                          theme === "dark" ? "text-gray-300" : "text-gray-600"
-                        )}>
-                          {lab.description}
-                        </p>
-                        <div className={cn(
-                          "flex justify-between text-sm",
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
-                        )}>
-                          <span>{lab.modules} Modules</span>
-                          <span>{lab.duration}</span>
+                    ) : (
+                      <Link href={lab.route} className="focus:outline-none" aria-labelledby={`lab-title-${lab.id}`}>
+                        <div className="cursor-pointer">
+                          <div className={`h-28 sm:h-32 bg-gradient-to-r ${lab.color} flex items-center justify-center`}>
+                            <div className="bg-white/20 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center">
+                              {lab.icon}
+                            </div>
+                          </div>
+                          <div className="p-4 sm:p-6">
+                            <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium mb-3 ${getLevelBadgeColor(lab.level)}`}>
+                              {lab.level}
+                            </span>
+                            <h3 
+                              id={`lab-title-${lab.id}`}
+                              className={cn(
+                                "text-lg sm:text-xl font-bold mb-2",
+                                theme === "dark" ? "text-white" : "text-gray-900"
+                              )}
+                            >
+                              {lab.title}
+                            </h3>
+                            <p className={cn(
+                              "text-sm mb-3 sm:mb-4",
+                              theme === "dark" ? "text-gray-300" : "text-gray-600"
+                            )}>
+                              {lab.description}
+                            </p>
+                            <div className={cn(
+                              "flex flex-wrap gap-2 sm:justify-between text-sm",
+                              theme === "dark" ? "text-gray-400" : "text-gray-500"
+                            )}>
+                              <span className="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                {lab.modules} Modules
+                              </span>
+                              <span className="flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                {lab.duration}
+                              </span>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                  </Link>
-                )}
-              </motion.div>
-            ))}
-          </motion.div>
+                      </Link>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </motion.div>
+          )}
         </div>
       </main>
       

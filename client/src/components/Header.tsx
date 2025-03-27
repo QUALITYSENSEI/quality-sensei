@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Link } from "wouter";
 import { MenuIcon, SunIcon, MoonIcon, X } from "lucide-react";
@@ -9,6 +9,8 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const [isScrolled, setIsScrolled] = useState(false);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -23,8 +25,8 @@ export default function Header() {
       const sections = document.querySelectorAll('section[id]');
       
       sections.forEach(section => {
-        const sectionTop = section.offsetTop - 100;
-        const sectionHeight = section.offsetHeight;
+        const sectionTop = (section as HTMLElement).offsetTop - 100;
+        const sectionHeight = (section as HTMLElement).offsetHeight;
         if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
           setActiveSection(section.getAttribute('id') || 'home');
         }
@@ -36,6 +38,59 @@ export default function Header() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  
+  // Close mobile menu with escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileMenuOpen) {
+        setMobileMenuOpen(false);
+        mobileMenuButtonRef.current?.focus();
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileMenuOpen]);
+  
+  // Trap focus within mobile menu when open
+  useEffect(() => {
+    if (!mobileMenuOpen || !mobileMenuRef.current) return;
+    
+    const menuElement = mobileMenuRef.current;
+    const focusableElements = menuElement.querySelectorAll(
+      'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
+    );
+    
+    if (focusableElements.length === 0) return;
+    
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+    
+    // Focus on first element when menu opens
+    firstElement.focus();
+    
+    const handleTabKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      
+      // Shift + Tab on first element goes to last element
+      if (e.shiftKey && document.activeElement === firstElement) {
+        e.preventDefault();
+        lastElement.focus();
+      }
+      // Tab on last element goes to first element
+      else if (!e.shiftKey && document.activeElement === lastElement) {
+        e.preventDefault();
+        firstElement.focus();
+      }
+    };
+    
+    menuElement.addEventListener('keydown', handleTabKey);
+    return () => {
+      menuElement.removeEventListener('keydown', handleTabKey);
+    };
+  }, [mobileMenuOpen]);
 
   return (
     <header 
@@ -63,22 +118,27 @@ export default function Header() {
               </Link>
             </div>
             
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-8" role="navigation" aria-label="Main navigation">
               <a 
                 href="#courses" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]",
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70",
                   activeSection === "courses" && (theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]")
                 )}
+                aria-current={activeSection === "courses" ? "page" : undefined}
               >
                 Courses
               </a>
               <Link 
                 href="/labs" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]"
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70"
                 )}
               >
                 Labs
@@ -86,8 +146,10 @@ export default function Header() {
               <Link 
                 href="/blog" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]"
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70"
                 )}
               >
                 Blog
@@ -95,39 +157,51 @@ export default function Header() {
               <a 
                 href="#testimonials" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]",
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70",
                   activeSection === "testimonials" && (theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]")
                 )}
+                aria-current={activeSection === "testimonials" ? "page" : undefined}
               >
                 Testimonials
               </a>
               <a 
                 href="#about" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]",
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70",
                   activeSection === "about" && (theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]")
                 )}
+                aria-current={activeSection === "about" ? "page" : undefined}
               >
                 About
               </a>
               <a 
                 href="#contact" 
                 className={cn(
-                  "font-medium transition-colors",
-                  theme === "dark" ? "text-gray-300 hover:text-[#40E0D0]" : "text-gray-700 hover:text-[#00BCD4]",
+                  "font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-2 py-1",
+                  theme === "dark" 
+                    ? "text-gray-300 hover:text-[#40E0D0] focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:text-[#00BCD4] focus:ring-[#00BCD4]/70",
                   activeSection === "contact" && (theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]")
                 )}
+                aria-current={activeSection === "contact" ? "page" : undefined}
               >
                 Contact
               </a>
               <button 
                 onClick={toggleTheme}
-                aria-label="Toggle dark mode" 
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                aria-pressed={theme === "dark"}
                 className={cn(
-                  "p-2 rounded-full transition-colors",
-                  theme === "dark" ? "text-gray-200 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-100"
+                  "p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                  theme === "dark" 
+                    ? "text-gray-200 hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:bg-gray-100 focus:ring-[#00BCD4]/70"
                 )}
               >
                 {theme === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
@@ -136,11 +210,16 @@ export default function Header() {
             
             <div className="md:hidden flex items-center">
               <button 
+                ref={mobileMenuButtonRef}
                 onClick={toggleMobileMenu}
                 aria-label={mobileMenuOpen ? "Close mobile menu" : "Open mobile menu"} 
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-menu"
                 className={cn(
-                  "transition-colors",
-                  theme === "dark" ? "text-gray-200" : "text-gray-700"
+                  "transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                  theme === "dark" 
+                    ? "text-gray-200 focus:ring-[#40E0D0]" 
+                    : "text-gray-700 focus:ring-[#00BCD4]"
                 )}
               >
                 {mobileMenuOpen ? <X className="h-6 w-6" /> : <MenuIcon className="h-6 w-6" />}
@@ -150,7 +229,13 @@ export default function Header() {
         </div>
         
         {/* Mobile menu */}
-        <div className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}>
+        <div 
+          id="mobile-menu"
+          className={`md:hidden ${mobileMenuOpen ? 'block' : 'hidden'}`}
+          ref={mobileMenuRef}
+          role="navigation"
+          aria-label="Mobile navigation"
+        >
           <div className={cn(
             "px-2 pt-2 pb-3 space-y-1 sm:px-3 transition-colors",
             theme === "dark" ? "bg-gray-900" : "bg-white"
@@ -158,18 +243,23 @@ export default function Header() {
             <a 
               href="#courses" 
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
+              aria-current={activeSection === "courses" ? "page" : undefined}
             >
               Courses
             </a>
             <Link
               href="/labs"
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -178,8 +268,10 @@ export default function Header() {
             <Link
               href="/blog"
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
             >
@@ -188,30 +280,39 @@ export default function Header() {
             <a 
               href="#testimonials" 
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
+              aria-current={activeSection === "testimonials" ? "page" : undefined}
             >
               Testimonials
             </a>
             <a 
               href="#about" 
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
+              aria-current={activeSection === "about" ? "page" : undefined}
             >
               About
             </a>
             <a 
               href="#contact" 
               className={cn(
-                "block px-3 py-2 rounded-md text-base font-medium transition-colors",
-                theme === "dark" ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800" : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100"
+                "block px-3 py-2 rounded-md text-base font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                theme === "dark" 
+                  ? "text-gray-300 hover:text-[#40E0D0] hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                  : "text-gray-700 hover:text-[#00BCD4] hover:bg-gray-100 focus:ring-[#00BCD4]/70"
               )}
               onClick={() => setMobileMenuOpen(false)}
+              aria-current={activeSection === "contact" ? "page" : undefined}
             >
               Contact
             </a>
@@ -219,15 +320,21 @@ export default function Header() {
               <span className={cn(
                 "mr-2 text-sm transition-colors",
                 theme === "dark" ? "text-gray-300" : "text-gray-700"
-              )}>
+              )}
+                id="toggle-theme-label"
+              >
                 Toggle Theme
               </span>
               <button 
                 onClick={toggleTheme}
-                aria-label="Toggle dark mode" 
+                aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+                aria-pressed={theme === "dark"}
+                aria-labelledby="toggle-theme-label"
                 className={cn(
-                  "p-2 rounded-full transition-colors",
-                  theme === "dark" ? "text-gray-200 hover:bg-gray-800" : "text-gray-700 hover:bg-gray-100"
+                  "p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2",
+                  theme === "dark" 
+                    ? "text-gray-200 hover:bg-gray-800 focus:ring-[#40E0D0]/70" 
+                    : "text-gray-700 hover:bg-gray-100 focus:ring-[#00BCD4]/70"
                 )}
               >
                 {theme === "dark" ? <SunIcon className="h-5 w-5" /> : <MoonIcon className="h-5 w-5" />}
@@ -242,30 +349,47 @@ export default function Header() {
         "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 text-sm transition-colors",
         theme === "dark" ? "text-gray-400 bg-gray-800" : "text-gray-500 bg-gray-50"
       )}>
-        <nav className="flex" aria-label="Breadcrumb">
-          <ol className="flex items-center space-x-1 md:space-x-3">
+        <nav aria-label="Breadcrumb" className="flex">
+          <ol 
+            className="flex items-center space-x-1 md:space-x-3"
+            role="list"
+          >
             <li className="inline-flex items-center">
               <a 
                 href="#" 
                 className={cn(
-                  "hover:underline transition-colors",
-                  theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
+                  "hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-1",
+                  theme === "dark" 
+                    ? "text-gray-400 hover:text-gray-300 focus:ring-[#40E0D0]/70" 
+                    : "text-gray-500 hover:text-gray-700 focus:ring-[#00BCD4]/70"
                 )}
+                aria-label="Home page"
+                aria-current={activeSection === "home" ? "page" : undefined}
               >
                 Home
               </a>
             </li>
             {activeSection !== "home" && (
               <li className="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  className="h-4 w-4 mx-1" 
+                  fill="none" 
+                  viewBox="0 0 24 24" 
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
                 <a 
                   href={`#${activeSection}`} 
                   className={cn(
-                    "hover:underline transition-colors",
-                    theme === "dark" ? "text-gray-400 hover:text-gray-300" : "text-gray-500 hover:text-gray-700"
+                    "hover:underline transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 rounded px-1",
+                    theme === "dark" 
+                      ? "text-gray-400 hover:text-gray-300 focus:ring-[#40E0D0]/70" 
+                      : "text-gray-500 hover:text-gray-700 focus:ring-[#00BCD4]/70"
                   )}
+                  aria-current="page"
                 >
                   {activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
                 </a>
