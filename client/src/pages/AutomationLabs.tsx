@@ -22,27 +22,6 @@ import Footer from "@/components/Footer";
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 
-// Base animations
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
-    },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { type: "spring", stiffness: 100 }
-  },
-};
-
 const AutomationLabs = () => {
   const { theme } = useTheme();
   const [activeFilter, setActiveFilter] = useState<string>("all");
@@ -244,12 +223,7 @@ const AutomationLabs = () => {
                 </motion.div>
               </div>
               
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative"
-              >
+              <div className="relative">
                 <div className="relative bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-xl">
                   <div className="absolute top-0 right-0 -mt-4 -mr-4 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-full shadow-sm">
                     MOST POPULAR
@@ -312,7 +286,7 @@ runTest();`}</pre>
                 {/* Abstract decorative elements */}
                 <div className="absolute -z-10 -bottom-6 -right-6 w-64 h-64 bg-gradient-to-r from-purple-200 to-cyan-200 dark:from-purple-900 dark:to-cyan-900 rounded-2xl opacity-50"></div>
                 <div className="absolute -z-10 -top-6 -left-6 w-32 h-32 bg-gradient-to-r from-amber-200 to-rose-200 dark:from-amber-900 dark:to-rose-900 rounded-2xl opacity-50"></div>
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
@@ -329,11 +303,10 @@ runTest();`}</pre>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {featuredLabs.map((lab) => (
-                <motion.div 
+                <div 
                   key={lab.id}
-                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   className={cn(
-                    "rounded-xl shadow-lg overflow-hidden",
+                    "rounded-xl shadow-lg overflow-hidden hover:-translate-y-1 transition-all duration-200",
                     theme === 'dark' ? 'bg-gray-800' : 'bg-white'
                   )}
                 >
@@ -402,7 +375,7 @@ runTest();`}</pre>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </div>
           </div>
@@ -478,19 +451,12 @@ runTest();`}</pre>
             </div>
 
             {/* Pathways Grid */}
-            <motion.div 
-              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-              key={activeFilter} // Re-run animation when filter changes
-            >
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPathways.map((pathway) => (
-                <motion.div
+                <div
                   key={pathway.id}
-                  variants={itemVariants}
                   className={cn(
-                    "rounded-xl overflow-hidden shadow-md transition-all",
+                    "rounded-xl overflow-hidden shadow-md transition-all hover:-translate-y-1 duration-200",
                     theme === 'dark' ? 'bg-gray-800' : 'bg-white'
                   )}
                 >
@@ -580,9 +546,9 @@ runTest();`}</pre>
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               ))}
-            </motion.div>
+            </div>
           </div>
         </section>
 
