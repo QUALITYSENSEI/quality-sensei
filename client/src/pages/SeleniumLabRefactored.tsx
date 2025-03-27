@@ -18,7 +18,7 @@ import { useToast } from "@/hooks/use-toast";
 // Import our reusable lab components
 import LabHero from "@/components/lab/LabHero";
 import LabModulesSidebar from "@/components/lab/LabModulesSidebar";
-import LabContentTabs from "@/components/lab/LabContentTabs";
+import UnifiedTabs from "@/components/ui/UnifiedTabs";
 
 // Import tab content components
 import InstallLibraryTab from "@/components/lab/tabs/InstallLibraryTab";
@@ -227,13 +227,18 @@ export default function SeleniumLabRefactored() {
                 </p>
                 
                 {/* Content Tabs */}
-                <LabContentTabs 
-                  introTabs={introTabs}
-                  otherTabs={otherTabs}
-                  activeModule={activeModule}
+                <UnifiedTabs
+                  variant="labContent"
+                  tabs={activeModule === 'intro' ? introTabs.map(tab => ({
+                    ...tab,
+                    content: renderTabContent(tab.id)
+                  })) : otherTabs.map(tab => ({
+                    ...tab,
+                    content: renderTabContent(tab.id)
+                  }))}
                   activeTab={activeTab}
-                  onTabChange={handleTabChange}
-                  renderTabContent={renderTabContent}
+                  onChange={handleTabChange}
+                  fullWidth={true}
                 />
               </div>
             </div>
