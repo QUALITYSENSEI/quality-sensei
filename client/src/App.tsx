@@ -9,6 +9,8 @@ import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
 import PracticalLabs from "@/pages/PracticalLabs";
 import AutomationTestingLab from "@/pages/labs/automation-testing";
+import SeleniumWebDriverLab from "@/pages/labs/selenium-webdriver";
+import SeleniumGridLab from "@/pages/labs/selenium-grid";
 import ComponentShowcase from "@/pages/ComponentShowcase";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
@@ -30,6 +32,8 @@ function Router() {
       <Route path="/blog/:id" component={BlogPost} />
       <Route path="/labs" component={PracticalLabs} />
       <Route path="/labs/automation-testing" component={AutomationTestingLab} />
+      <Route path="/labs/selenium-webdriver" component={SeleniumWebDriverLab} />
+      <Route path="/labs/selenium-grid" component={SeleniumGridLab} />
       <Route path="/components" component={ComponentShowcase} />
       <Route component={NotFound} />
     </Switch>

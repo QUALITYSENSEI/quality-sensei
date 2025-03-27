@@ -153,17 +153,21 @@ export default function PracticalLabs() {
               Selenium Labs
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
-              {seleniumLabs.map((lab, index) => (
-                <LabCard
-                  key={lab.title}
-                  title={lab.title}
-                  description={lab.description}
-                  icon={lab.icon}
-                  delay={index + 1}
-                  color={lab.color}
-                  status={lab.status}
-                />
-              ))}
+              {seleniumLabs.map((lab, index) => {
+                // Create the correct URL path based on the lab title
+                const labPath = lab.title.toLowerCase().replace(/\s+/g, '-');
+                return (
+                  <LabCard
+                    key={lab.title}
+                    title={lab.title}
+                    description={lab.description}
+                    icon={lab.icon}
+                    delay={index + 1}
+                    color={lab.color}
+                    status={lab.status}
+                  />
+                );
+              })}
             </div>
           </div>
           

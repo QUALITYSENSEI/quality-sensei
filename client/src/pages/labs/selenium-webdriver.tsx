@@ -186,10 +186,10 @@ async function runSeleniumTest() {
     await driver.wait(until.titleContains('Selenium WebDriver'), 5000);
     
     // Print title and URL
-    const title = await driver.getTitle();
-    const url = await driver.getCurrentUrl();
-    console.log(`Page title: ${title}`);
-    console.log(`Current URL: ${url}`);
+    const pageTitle = await driver.getTitle();
+    const currentUrl = await driver.getCurrentUrl();
+    console.log("Page title: " + pageTitle);
+    console.log("Current URL: " + currentUrl);
     
     // Click on the first result
     const firstResult = await driver.wait(
@@ -204,7 +204,7 @@ async function runSeleniumTest() {
       5000
     );
     const newTitle = await driver.getTitle();
-    console.log(`New page title: ${newTitle}`);
+    console.log("New page title: " + newTitle);
     
   } finally {
     // Close the browser
