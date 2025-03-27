@@ -1,212 +1,328 @@
-import { Check } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { Lightbulb, PlayCircle, AlertCircle, FileCheck } from 'lucide-react';
 import CodeExample from '@/components/ui/CodeExample';
+import Terminal from '@/components/ui/Terminal';
+import { cn } from '@/lib/utils';
+import { useTheme } from '@/contexts/ThemeContext';
+import { TerminalLine } from '@/lib/types';
 
-export default function FirstScriptTab() {
-  const jsExample = `const { Builder, By, Key, until } = require('selenium-webdriver');
+export default function FirstScriptContent() {
+  const { theme } = useTheme();
+  const [selectedLanguage, setSelectedLanguage] = useState('java');
 
-async function example() {
-  // Initialize the WebDriver
-  let driver = await new Builder().forBrowser('chrome').build();
-  
-  try {
-    // Navigate to a website
-    await driver.get('https://www.google.com');
-    
-    // Find the search input element and type a query
-    await driver.findElement(By.name('q')).sendKeys('Selenium WebDriver', Key.RETURN);
-    
-    // Wait for the search results to load
-    await driver.wait(until.titleContains('Selenium WebDriver'), 5000);
-    
-    // Get and print the page title
-    console.log('Page title:', await driver.getTitle());
-    
-  } finally {
-    // Always close the browser
-    await driver.quit();
-  }
-}
+  const languageOptions = [
+    { name: 'Java', value: 'java' },
+    { name: 'Python', value: 'python' },
+    { name: 'JavaScript', value: 'javascript' },
+    { name: 'C#', value: 'csharp' }
+  ];
 
-example();`;
-
-  const pythonExample = `from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
-# Initialize the WebDriver with automatic driver management
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-
-try:
-    # Navigate to a website
-    driver.get('https://www.google.com')
-    
-    # Find the search input element and type a query
-    search_box = driver.find_element(By.NAME, 'q')
-    search_box.send_keys('Selenium WebDriver')
-    search_box.send_keys(Keys.RETURN)
-    
-    # Wait for the page title to change
-    from selenium.webdriver.support.ui import WebDriverWait
-    from selenium.webdriver.support import expected_conditions as EC
-    WebDriverWait(driver, 10).until(EC.title_contains('Selenium WebDriver'))
-    
-    # Print the page title
-    print('Page title:', driver.title)
-    
-finally:
-    # Always close the browser
-    driver.quit()`;
-
-  const javaExample = `import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+  // Example first scripts for each language
+  const firstScripts = {
+    java: `import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-import io.github.bonigarcia.wdm.WebDriverManager;
-
-import java.time.Duration;
 
 public class FirstSeleniumTest {
     public static void main(String[] args) {
-        // Setup ChromeDriver using WebDriverManager
-        WebDriverManager.chromedriver().setup();
-        
-        // Initialize the WebDriver
+        // Initialize ChromeDriver
         WebDriver driver = new ChromeDriver();
         
         try {
-            // Navigate to a website
+            // Navigate to website
             driver.get("https://www.google.com");
             
-            // Find the search input element and type a query
-            WebElement searchBox = driver.findElement(By.name("q"));
-            searchBox.sendKeys("Selenium WebDriver");
-            searchBox.sendKeys(Keys.RETURN);
+            // Get and print the title
+            String title = driver.getTitle();
+            System.out.println("Page title is: " + title);
             
-            // Wait for the page title to change
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-            wait.until(ExpectedConditions.titleContains("Selenium WebDriver"));
-            
-            // Print the page title
-            System.out.println("Page title: " + driver.getTitle());
-            
+            // Verify the title contains expected text
+            if (title.contains("Google")) {
+                System.out.println("Test passed: Title contains 'Google'");
+            } else {
+                System.out.println("Test failed: Title doesn't contain 'Google'");
+            }
         } finally {
             // Always close the browser
             driver.quit();
         }
     }
-}`;
+}`,
+    python: `from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+
+# Initialize ChromeDriver
+driver = webdriver.Chrome()
+
+try:
+    # Navigate to website
+    driver.get("https://www.google.com")
+    
+    # Get and print the title
+    title = driver.title
+    print(f"Page title is: {title}")
+    
+    # Verify the title contains expected text
+    if "Google" in title:
+        print("Test passed: Title contains 'Google'")
+    else:
+        print("Test failed: Title doesn't contain 'Google'")
+finally:
+    # Always close the browser
+    driver.quit()`,
+    javascript: `const { Builder } = require('selenium-webdriver');
+
+(async function firstSeleniumTest() {
+    // Initialize ChromeDriver
+    let driver = await new Builder().forBrowser('chrome').build();
+    
+    try {
+        // Navigate to website
+        await driver.get('https://www.google.com');
+        
+        // Get and print the title
+        const title = await driver.getTitle();
+        console.log('Page title is:', title);
+        
+        // Verify the title contains expected text
+        if (title.includes('Google')) {
+            console.log("Test passed: Title contains 'Google'");
+        } else {
+            console.log("Test failed: Title doesn't contain 'Google'");
+        }
+    } finally {
+        // Always close the browser
+        await driver.quit();
+    }
+})();`,
+    csharp: `using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+
+class FirstSeleniumTest {
+    static void Main() {
+        // Initialize ChromeDriver
+        IWebDriver driver = new ChromeDriver();
+        
+        try {
+            // Navigate to website
+            driver.Navigate().GoToUrl("https://www.google.com");
+            
+            // Get and print the title
+            string title = driver.Title;
+            Console.WriteLine("Page title is: " + title);
+            
+            // Verify the title contains expected text
+            if (title.Contains("Google")) {
+                Console.WriteLine("Test passed: Title contains 'Google'");
+            } else {
+                Console.WriteLine("Test failed: Title doesn't contain 'Google'");
+            }
+        } 
+        finally {
+            // Always close the browser
+            driver.Quit();
+        }
+    }
+}`
+  };
+
+  // Terminal output simulation
+  const terminalOutput: TerminalLine[] = [
+    { type: 'command', content: '# Running first Selenium test' },
+    { type: 'command', content: 'java FirstSeleniumTest.java', delay: 500 },
+    { type: 'output', content: 'Starting ChromeDriver 118.0.5993.70...', delay: 700 },
+    { type: 'output', content: 'ChromeDriver started successfully.', delay: 500 },
+    { type: 'output', content: 'Page title is: Google', delay: 1000 },
+    { type: 'success', content: 'Test passed: Title contains \'Google\'', delay: 500 },
+    { type: 'output', content: 'Chrome browser closed.', delay: 300 },
+    { type: 'success', content: 'Test completed successfully!', delay: 200 }
+  ];
 
   return (
-    <div className="space-y-6">
+    <div>
       <div className="prose prose-lg max-w-none dark:prose-invert">
-        <h3>Your First Selenium Script</h3>
+        <h3>Writing Your First Selenium Script</h3>
         <p>
-          Now that you have Selenium WebDriver installed, let's write a simple script to automate 
-          a web browser. This example will:
+          Now that you've set up Selenium WebDriver, let's write a simple script to open a web browser, navigate to a website, and verify its title.
+        </p>
+      </div>
+
+      {/* Language selector */}
+      <div className="mt-6 mb-8">
+        <h4 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-3">Choose your programming language:</h4>
+        <div className="flex flex-wrap gap-3">
+          {languageOptions.map((language) => (
+            <button
+              key={language.value}
+              onClick={() => setSelectedLanguage(language.value)}
+              className={cn(
+                "px-4 py-2 rounded-lg text-sm font-medium transition-all",
+                selectedLanguage === language.value
+                  ? "bg-gradient-to-r from-cyan-500 to-[#40E0D0] text-white shadow-sm"
+                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              )}
+            >
+              {language.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* First Script Example */}
+      <div className="mb-8">
+        <h4 className="text-lg font-medium mb-3">Basic Selenium Test</h4>
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          This script demonstrates the fundamental structure of a Selenium test. It opens Google, retrieves the page title, and verifies it contains the expected text.
         </p>
         
-        <ul>
-          <li>Open a browser</li>
-          <li>Navigate to Google</li>
-          <li>Search for "Selenium WebDriver"</li>
-          <li>Wait for the results page to load</li>
-          <li>Print the page title</li>
-          <li>Close the browser</li>
-        </ul>
+        <CodeExample
+          examples={[
+            {
+              language: selectedLanguage,
+              code: firstScripts[selectedLanguage as keyof typeof firstScripts],
+              label: `${languageOptions.find(l => l.value === selectedLanguage)?.name || 'Java'} Example`
+            }
+          ]}
+        />
       </div>
 
-      <CodeExample
-        examples={[
-          {
-            language: 'javascript',
-            code: jsExample,
-            label: 'JavaScript'
-          },
-          {
-            language: 'python',
-            code: pythonExample,
-            label: 'Python'
-          },
-          {
-            language: 'java',
-            code: javaExample,
-            label: 'Java'
-          }
-        ]}
-        title="Basic Selenium WebDriver Example"
-        description="Choose your preferred language"
-      />
-
-      <div className="prose prose-lg max-w-none dark:prose-invert mt-8">
-        <h3>Understanding the Script</h3>
+      {/* Key Components Explanation */}
+      <div className={cn(
+        "rounded-xl p-6 mb-8",
+        theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+      )}>
+        <h4 className="text-lg font-medium mb-3 flex items-center">
+          <Lightbulb className="h-5 w-5 mr-2 text-yellow-500" />
+          Key Components Explained
+        </h4>
         
-        <div className="border-l-4 border-blue-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Initialization</h4>
-          <p>
-            The script begins by initializing a new WebDriver instance. This launches a 
-            browser window that Selenium will control.
-          </p>
-        </div>
-        
-        <div className="border-l-4 border-green-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Navigation</h4>
-          <p>
-            We navigate to a URL using the <code>get()</code> method, which is similar to 
-            typing a URL into the browser's address bar.
-          </p>
-        </div>
-        
-        <div className="border-l-4 border-yellow-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Element Location</h4>
-          <p>
-            Selenium offers several strategies to find elements on a webpage. In this example, 
-            we use the <code>By.name</code> locator to find the search input field.
-          </p>
-        </div>
-        
-        <div className="border-l-4 border-purple-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Interaction</h4>
-          <p>
-            We interact with the element by typing text using <code>sendKeys()</code> and 
-            simulating a press of the Enter/Return key.
-          </p>
-        </div>
-        
-        <div className="border-l-4 border-red-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Waiting</h4>
-          <p>
-            Explicit waits tell WebDriver to wait for certain conditions before proceeding. 
-            This helps handle dynamic content and asynchronous operations.
-          </p>
-        </div>
-        
-        <div className="border-l-4 border-gray-500 pl-5 py-1 my-6">
-          <h4 className="text-lg font-semibold">Cleanup</h4>
-          <p>
-            Always close the browser using <code>quit()</code> when finished to release 
-            system resources.
-          </p>
+        <div className="space-y-4">
+          <div>
+            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">WebDriver Initialization</h5>
+            <p className="text-gray-600 dark:text-gray-400">
+              <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">WebDriver driver = new ChromeDriver()</code> - Creates a new instance of ChromeDriver that controls Chrome browser.
+            </p>
+          </div>
+          
+          <div>
+            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">Navigation</h5>
+            <p className="text-gray-600 dark:text-gray-400">
+              <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">driver.get("https://www.google.com")</code> - Tells WebDriver to navigate to the specified URL.
+            </p>
+          </div>
+          
+          <div>
+            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">Page Interaction</h5>
+            <p className="text-gray-600 dark:text-gray-400">
+              <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">driver.getTitle()</code> - Retrieves the title of the current page.
+            </p>
+          </div>
+          
+          <div>
+            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">Browser Cleanup</h5>
+            <p className="text-gray-600 dark:text-gray-400">
+              <code className="px-1 py-0.5 bg-gray-100 dark:bg-gray-700 rounded">driver.quit()</code> - Closes the browser and ends the WebDriver session. Always include this to prevent orphaned browser processes.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="bg-green-50 dark:bg-green-900 p-6 rounded-md mt-6">
-        <h3 className="text-xl font-bold flex items-center text-green-800 dark:text-green-200">
-          <Check className="mr-2 h-6 w-6" />
-          Key Takeaways
-        </h3>
-        <ul className="list-disc pl-6 mt-3 space-y-2 text-green-800 dark:text-green-200">
-          <li>Selenium provides a programmatic interface to control web browsers</li>
-          <li>Element location is a fundamental skill for automation</li>
-          <li>Proper waiting strategies are essential for reliable tests</li>
-          <li>Always clean up resources when tests are complete</li>
-          <li>The same core concepts apply across all supported languages</li>
+      {/* Running the script */}
+      <div className="mb-8">
+        <h4 className="text-lg font-medium mb-3 flex items-center">
+          <PlayCircle className="h-5 w-5 mr-2 text-green-500" />
+          Running Your First Script
+        </h4>
+        
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          When you run your first Selenium script, you'll see Chrome launch automatically, navigate to Google, and then close after the test completes.
+        </p>
+        
+        <div className="mb-6">
+          <Terminal 
+            lines={terminalOutput}
+            showCopyButton={false}
+          />
+        </div>
+      </div>
+
+      {/* Common Issues */}
+      <div className={cn(
+        "rounded-xl p-6 border-l-4 border-amber-500 mb-8",
+        theme === 'dark' ? 'bg-amber-900/20' : 'bg-amber-50'
+      )}>
+        <h4 className="text-lg font-medium mb-3 flex items-center text-amber-800 dark:text-amber-300">
+          <AlertCircle className="h-5 w-5 mr-2" />
+          Common Issues and Solutions
+        </h4>
+        
+        <ul className="space-y-3 text-amber-700 dark:text-amber-300">
+          <li>
+            <strong>Driver Not Found:</strong> Make sure the WebDriver executable is in your PATH or specify its location explicitly.
+          </li>
+          <li>
+            <strong>Browser Version Mismatch:</strong> Ensure your ChromeDriver version matches your Chrome browser version.
+          </li>
+          <li>
+            <strong>Connection Refused:</strong> Check if another instance of ChromeDriver is already running or if a firewall is blocking it.
+          </li>
+          <li>
+            <strong>Element Not Found:</strong> Use explicit waits to ensure elements are present before interacting with them (covered in later modules).
+          </li>
         </ul>
+      </div>
+
+      {/* Next Steps */}
+      <div className={cn(
+        "rounded-xl p-6 border",
+        theme === 'dark' ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'
+      )}>
+        <h4 className="text-lg font-medium mb-3 flex items-center">
+          <FileCheck className="h-5 w-5 mr-2 text-cyan-500" />
+          What You've Learned
+        </h4>
+        
+        <ul className="space-y-2">
+          <li className="flex items-start">
+            <div className="h-5 w-5 rounded-full bg-green-500 flex items-center justify-center mr-2 mt-0.5">
+              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span>Creating a WebDriver instance</span>
+          </li>
+          <li className="flex items-start">
+            <div className="h-5 w-5 rounded-full bg-green-500 flex items-center justify-center mr-2 mt-0.5">
+              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span>Navigating to a web page</span>
+          </li>
+          <li className="flex items-start">
+            <div className="h-5 w-5 rounded-full bg-green-500 flex items-center justify-center mr-2 mt-0.5">
+              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span>Getting page information (title)</span>
+          </li>
+          <li className="flex items-start">
+            <div className="h-5 w-5 rounded-full bg-green-500 flex items-center justify-center mr-2 mt-0.5">
+              <svg className="h-3 w-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <span>Proper cleanup with driver.quit()</span>
+          </li>
+        </ul>
+        
+        <div className="mt-6">
+          <p className="font-medium">In the next section, you'll learn how to:</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-2">
+            Find elements on web pages, interact with them, and structure more complex tests.
+          </p>
+        </div>
       </div>
     </div>
   );

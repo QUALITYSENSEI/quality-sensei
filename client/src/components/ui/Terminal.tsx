@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { TerminalLine } from '@/lib/types';
+import React, { useState, useEffect } from 'react';
+import { Check, Copy } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
-import { Copy, Check } from 'lucide-react';
+import { TerminalLine } from '@/lib/types';
 
 interface TerminalProps {
   lines: TerminalLine[];
@@ -15,33 +14,45 @@ interface TerminalProps {
 const Terminal = ({ lines, language = 'bash', className, showCopyButton = true }: TerminalProps) => {
   const { theme } = useTheme();
   const [visibleLines, setVisibleLines] = useState<TerminalLine[]>([]);
-  const [cursorBlinking, setCursorBlinking] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isTyping, setIsTyping] = useState(true);
 
   useEffect(() => {
+    if (lines.length === 0) {
+      setIsTyping(false);
+      return;
+    }
+
+    let currentIndex = 0;
     setVisibleLines([]);
-    setCursorBlinking(false);
+    setIsTyping(true);
 
-    const timeouts: NodeJS.Timeout[] = [];
+    const showNextLine = () => {
+      if (currentIndex < lines.length) {
+        const line = lines[currentIndex];
+        const delay = line.delay || 200;
 
-    lines.forEach((line, index) => {
-      const timeout = setTimeout(() => {
         setVisibleLines(prev => [...prev, line]);
-        if (line.type === 'cursor') setCursorBlinking(true);
-      }, line.delay ?? index * 500);
-      timeouts.push(timeout);
-    });
+        currentIndex++;
 
-    return () => timeouts.forEach(clearTimeout);
+        if (currentIndex < lines.length) {
+          setTimeout(showNextLine, delay);
+        } else {
+          setIsTyping(false);
+        }
+      }
+    };
+
+    showNextLine();
+
+    return () => {
+      setVisibleLines([]);
+    };
   }, [lines]);
 
-  const copyToClipboard = () => {
-    const commandsOnly = lines
-      .filter(line => line.type === 'command')
-      .map(line => line.content)
-      .join('\n');
-    
-    navigator.clipboard.writeText(commandsOnly);
+  const handleCopy = () => {
+    const text = lines.map(line => line.content).join('\n');
+    navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -50,93 +61,66 @@ const Terminal = ({ lines, language = 'bash', className, showCopyButton = true }
     switch (line.type) {
       case 'command':
         return (
-          <motion.div 
-            key={index} 
-            className="flex"
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <span className={theme === 'dark' ? "text-cyan-400 mr-2" : "text-cyan-600 mr-2"}>$</span>
-            <span>{line.content}</span>
-          </motion.div>
+          <div key={index} className="flex">
+            <span className="text-green-500 mr-2">$</span>
+            <span className="text-gray-200">{line.content}</span>
+          </div>
         );
       case 'output':
         return (
-          <motion.div 
-            key={index} 
-            className={theme === 'dark' ? "text-gray-300 mt-1" : "text-gray-700 mt-1"}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            {line.content}
-          </motion.div>
+          <div key={index} className="text-gray-400">{line.content}</div>
         );
       case 'success':
         return (
-          <motion.div 
-            key={index} 
-            className="text-green-500 mt-1"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            {line.content}
-          </motion.div>
+          <div key={index} className="text-green-400">{line.content}</div>
+        );
+      case 'error':
+        return (
+          <div key={index} className="text-red-400">{line.content}</div>
         );
       case 'comment':
         return (
-          <motion.div 
-            key={index} 
-            className={theme === 'dark' ? "text-gray-400 mt-1 italic" : "text-gray-500 mt-1 italic"}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            {line.content}
-          </motion.div>
+          <div key={index} className="text-blue-400">{line.content}</div>
         );
       case 'cursor':
         return (
-          <motion.div 
-            key={index} 
-            className="flex mt-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <span className={theme === 'dark' ? "text-cyan-400 mr-2" : "text-cyan-600 mr-2"}>$</span>
-            <span className={`${cursorBlinking ? 'cursor-blink' : ''}`}>{line.content}</span>
-          </motion.div>
+          <div key={index} className="flex">
+            <span className="text-gray-400">{line.content}</span>
+            <span className="w-2 h-4 bg-gray-400 ml-1 animate-blink"></span>
+          </div>
         );
       default:
-        return null;
+        return (
+          <div key={index} className="text-gray-400">{line.content}</div>
+        );
     }
   };
 
   return (
-    <div className={cn(
-      "terminal p-5 rounded-lg shadow-lg w-full overflow-x-auto relative",
-      theme === 'dark' ? "bg-gray-900 text-gray-100" : "bg-gray-800 text-gray-200",
-      className
-    )}>
-      <div className="flex items-center justify-between gap-2 mb-4">
-        <div className="flex items-center">
+    <div 
+      className={cn(
+        "rounded-lg overflow-hidden",
+        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-800',
+        className
+      )}
+    >
+      {/* Terminal Header */}
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 dark:bg-gray-950 border-b border-gray-700">
+        <div className="flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full bg-red-500"></div>
-          <div className="w-3 h-3 rounded-full bg-yellow-500 ml-2"></div>
-          <div className="w-3 h-3 rounded-full bg-green-500 ml-2"></div>
-          <div className="ml-4 text-xs uppercase tracking-wide opacity-70">{language}</div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
+        <div className="text-xs text-gray-400">terminal</div>
         {showCopyButton && (
-          <button
-            onClick={copyToClipboard}
+          <button 
+            onClick={handleCopy}
+            disabled={isTyping}
             className={cn(
-              "p-1.5 rounded-md transition-colors",
-              theme === 'dark' 
-                ? "text-gray-400 hover:text-white hover:bg-gray-700" 
-                : "text-gray-300 hover:text-white hover:bg-gray-700"
+              "text-gray-400 hover:text-gray-200 transition-colors focus:outline-none", 
+              isTyping && "opacity-50 cursor-not-allowed"
             )}
-            title="Copy to clipboard"
+            aria-label="Copy code"
           >
             {copied ? (
               <Check className="h-4 w-4 text-green-500" />
@@ -146,11 +130,13 @@ const Terminal = ({ lines, language = 'bash', className, showCopyButton = true }
           </button>
         )}
       </div>
-      
-      <div className="terminal-text space-y-1 font-mono text-sm">
-        <AnimatePresence>
-          {visibleLines.map((line, index) => renderLine(line, index))}
-        </AnimatePresence>
+
+      {/* Terminal Content */}
+      <div className="p-4 font-mono text-sm overflow-x-auto">
+        {visibleLines.map((line, index) => renderLine(line, index))}
+        {isTyping && (
+          <div className="inline-block w-2 h-4 bg-gray-400 animate-blink"></div>
+        )}
       </div>
     </div>
   );
