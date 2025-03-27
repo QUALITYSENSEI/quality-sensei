@@ -1225,7 +1225,7 @@ class Program {
     )
   },
   {
-    id: "locators",
+    id: "element-locators",
     label: "Element Locators",
     icon: <BsCodeSlash className="mr-2 h-4 w-4" />,
     content: (
@@ -1779,41 +1779,24 @@ export default function SeleniumWebDriverLab() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-8">
-              <div className="md:col-span-5 lg:col-span-1">
-                <UnifiedTabs
-                  tabs={labSections}
-                  activeTab={activeTab}
-                  onChange={setActiveTab}
-                  variant="underlined"
-                  fullWidth
-                  contentClassName="hidden"
-                  className="md:flex-col"
-                />
-                
-                <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-lg">
-                  <h3 className="font-semibold mb-2">Lab Progress</h3>
-                  <div className="space-y-3">
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Completion</span>
-                        <span>0%</span>
-                      </div>
-                      <div className="h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-green-500" style={{ width: '0%' }}></div>
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Exercises Completed</span>
-                        <span>0/4</span>
-                      </div>
-                    </div>
-                  </div>
+            <div className="flex flex-col md:flex-row">
+              {/* Left sidebar with module tabs */}
+              <div className="w-full md:w-64 flex-shrink-0 mb-6 md:mb-0 md:mr-8 border-b md:border-b-0 border-gray-200 dark:border-gray-800">
+                <div className="sticky top-24">
+                  <UnifiedTabs
+                    tabs={labSections}
+                    activeTab={activeTab}
+                    onChange={setActiveTab}
+                    variant="labContent"
+                    fullWidth
+                    contentClassName="hidden"
+                    className="flex-col"
+                  />
                 </div>
               </div>
               
-              <div className="md:col-span-5 lg:col-span-4">
+              {/* Right content area */}
+              <div className="flex-1">
                 <Card className={cn("bg-white dark:bg-gray-900", theme === 'dark' ? 'border-gray-800' : 'border-gray-200')}>
                   <CardContent className="p-6">
                     {labSections.find(tab => tab.id === activeTab)?.content}
