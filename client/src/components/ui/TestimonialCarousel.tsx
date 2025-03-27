@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, memo } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,15 +19,60 @@ interface TestimonialCarouselProps {
   autoPlayInterval?: number;
 }
 
-export default function TestimonialCarousel({ 
+// Optimization: Memoize Stars component to prevent re-renders
+const TestimonialStars = memo(({ rating }: { rating: number }) => {
+  return (
+    <div className="flex mb-3">
+      {Array.from({ length: 5 }).map((_, i) => (
+        <Star
+          key={i}
+          className={cn(
+            "w-5 h-5",
+            i < rating
+              ? "text-yellow-400 fill-yellow-400"
+              : "text-gray-300"
+          )}
+        />
+      ))}
+    </div>
+  );
+});
+
+// Optimization: Memoize image component
+const TestimonialImage = memo(({ image, name }: { image?: string; name: string }) => {
+  if (!image) return null;
+  
+  return (
+    <div className="flex-shrink-0">
+      <img
+        src={`${image}?w=80&h=80&q=70&fit=crop&auto=format&fm=webp`}
+        alt={name}
+        className="w-20 h-20 rounded-full object-cover border-2 border-cyan-300"
+        width={80}
+        height={80}
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+  );
+});
+
+function TestimonialCarousel({ 
   testimonials, 
   autoPlayInterval = 5000 
 }: TestimonialCarouselProps) {
   const { theme } = useTheme();
   const [current, setCurrent] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [reducedMotion, setReducedMotion] = useState(false);
   
-  // Auto-advance testimonials
+  // Check for reduced motion preference
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setReducedMotion(prefersReducedMotion);
+  }, []);
+  
+  // Auto-advance testimonials with useCallback for better performance
   useEffect(() => {
     if (!isPlaying) return;
     
@@ -38,16 +83,31 @@ export default function TestimonialCarousel({
     return () => clearTimeout(timer);
   }, [current, isPlaying, testimonials.length, autoPlayInterval]);
   
-  // Pause auto-play on hover
-  const handleMouseEnter = () => setIsPlaying(false);
-  const handleMouseLeave = () => setIsPlaying(true);
+  // Pause auto-play on hover - memoized for performance
+  const handleMouseEnter = useCallback(() => setIsPlaying(false), []);
+  const handleMouseLeave = useCallback(() => setIsPlaying(true), []);
   
-  const goToPrevious = () => {
+  // Navigation functions - memoized for performance
+  const goToPrevious = useCallback(() => {
     setCurrent((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+  }, [testimonials.length]);
   
-  const goToNext = () => {
+  const goToNext = useCallback(() => {
     setCurrent((prev) => (prev + 1) % testimonials.length);
+  }, [testimonials.length]);
+
+  // Get current testimonial
+  const currentTestimonial = testimonials[current];
+
+  // Simplified animation variants based on reduced motion preference
+  const slideVariants = reducedMotion ? {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 }
+  } : {
+    initial: { opacity: 0, x: 100 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -100 }
   };
 
   return (
@@ -60,10 +120,10 @@ export default function TestimonialCarousel({
         <AnimatePresence mode="wait">
           <motion.div
             key={current}
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -100 }}
-            transition={{ duration: 0.5 }}
+            initial={slideVariants.initial}
+            animate={slideVariants.animate}
+            exit={slideVariants.exit}
+            transition={{ duration: reducedMotion ? 0.3 : 0.5 }}
             className={cn(
               "rounded-xl shadow-lg p-6 md:p-8",
               theme === "dark" ? "bg-gray-800" : "bg-white"
@@ -75,36 +135,19 @@ export default function TestimonialCarousel({
             </div>
             
             <div className="flex flex-col md:flex-row gap-6 items-center">
-              {testimonials[current].image && (
-                <div className="flex-shrink-0">
-                  <img
-                    src={testimonials[current].image}
-                    alt={testimonials[current].name}
-                    className="w-20 h-20 rounded-full object-cover border-2 border-cyan-300"
-                  />
-                </div>
-              )}
+              <TestimonialImage 
+                image={currentTestimonial.image} 
+                name={currentTestimonial.name} 
+              />
               
               <div className="flex-1">
-                <div className="flex mb-3">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className={cn(
-                        "w-5 h-5",
-                        i < testimonials[current].rating
-                          ? "text-yellow-400 fill-yellow-400"
-                          : "text-gray-300"
-                      )}
-                    />
-                  ))}
-                </div>
+                <TestimonialStars rating={currentTestimonial.rating} />
                 
                 <p className={cn(
                   "text-lg mb-4 italic",
                   theme === "dark" ? "text-gray-200" : "text-gray-700"
                 )}>
-                  "{testimonials[current].content}"
+                  "{currentTestimonial.content}"
                 </p>
                 
                 <div>
@@ -112,13 +155,13 @@ export default function TestimonialCarousel({
                     "font-bold",
                     theme === "dark" ? "text-white" : "text-gray-900"
                   )}>
-                    {testimonials[current].name}
+                    {currentTestimonial.name}
                   </p>
                   <p className={cn(
                     "text-sm",
                     theme === "dark" ? "text-gray-400" : "text-gray-600"
                   )}>
-                    {testimonials[current].role}, {testimonials[current].company}
+                    {currentTestimonial.role}, {currentTestimonial.company}
                   </p>
                 </div>
               </div>
@@ -173,3 +216,6 @@ export default function TestimonialCarousel({
     </div>
   );
 }
+
+// Memoize the entire component
+export default memo(TestimonialCarousel);

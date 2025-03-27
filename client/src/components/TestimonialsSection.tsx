@@ -128,15 +128,17 @@ export default function TestimonialsSection() {
           <TestimonialCarousel testimonials={testimonials} />
         </motion.div>
         
-        {/* Stats with parallax effect */}
+        {/* Stats with optimized background */}
         <Parallax
           bgImage={theme === "dark" 
-            ? "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000&h=600&sat=-100"
-            : "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=2000&h=600"
+            ? "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=60&w=1200&h=400&sat=-100"
+            : "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=60&w=1200&h=400"
           }
-          strength={200}
+          strength={100}
           bgImageStyle={{ opacity: theme === "dark" ? 0.2 : 0.1 }}
           className="rounded-xl overflow-hidden shadow-lg"
+          bgImageSizes="(max-width: 768px) 100vw, 1200px"
+          lazy
         >
           <div className={cn(
             "py-16 px-8",

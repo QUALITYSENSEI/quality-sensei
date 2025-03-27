@@ -262,10 +262,13 @@ export default function CoursesSection() {
                         >
                           <div className="relative h-48 overflow-hidden group">
                             <img 
-                              src={course.image} 
+                              src={`${course.image}&w=400&h=225&q=75&fit=crop&auto=format&fm=webp`}
                               alt={course.title} 
                               className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               loading="lazy"
+                              width={400}
+                              height={225}
+                              decoding="async"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">

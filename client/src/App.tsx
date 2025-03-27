@@ -2,28 +2,40 @@ import { Switch, Route } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
-import NotFound from "@/pages/not-found";
-import Home from "@/pages/Home";
-import Blog from "@/pages/Blog";
-import BlogPost from "@/pages/BlogPost";
-import Labs from "@/pages/Labs";
-import AutomationLabs from "@/pages/AutomationLabs";
-import SeleniumLab from "@/pages/SeleniumLab";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
+import { lazy, Suspense } from "react";
+
+// Lazy-loaded pages for better performance
+const NotFound = lazy(() => import("@/pages/not-found"));
+const Home = lazy(() => import("@/pages/Home"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const Labs = lazy(() => import("@/pages/Labs"));
+const AutomationLabs = lazy(() => import("@/pages/AutomationLabs"));
+const SeleniumLab = lazy(() => import("@/pages/SeleniumLab"));
+
+// Loading component for page transitions
+const PageLoading = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 function Router() {
   return (
-    <Switch>
-      <Route path="/" component={Home} />
-      <Route path="/blog" component={Blog} />
-      <Route path="/blog/:id" component={BlogPost} />
-      <Route path="/labs" component={Labs} />
-      <Route path="/labs/automation" component={AutomationLabs} />
-      <Route path="/labs/automation/selenium" component={SeleniumLab} />
-      <Route path="/labs/automation/selenium/:moduleId" component={SeleniumLab} />
-      <Route component={NotFound} />
-    </Switch>
+    <Suspense fallback={<PageLoading />}>
+      <Switch>
+        <Route path="/" component={Home} />
+        <Route path="/blog" component={Blog} />
+        <Route path="/blog/:id" component={BlogPost} />
+        <Route path="/labs" component={Labs} />
+        <Route path="/labs/automation" component={AutomationLabs} />
+        <Route path="/labs/automation/selenium" component={SeleniumLab} />
+        <Route path="/labs/automation/selenium/:moduleId" component={SeleniumLab} />
+        <Route component={NotFound} />
+      </Switch>
+    </Suspense>
   );
 }
 
