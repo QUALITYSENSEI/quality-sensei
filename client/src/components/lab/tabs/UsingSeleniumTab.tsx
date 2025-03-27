@@ -1,282 +1,197 @@
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Info, Clock, ArrowRight, Lightbulb } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import TerminalCodeTabs from "@/components/ui/TerminalCodeTabs";
+import { Lightbulb, ZapIcon } from 'lucide-react';
 
 export default function UsingSeleniumTab() {
-  const { theme } = useTheme();
-
-  const waitExamples = `# Implicit Wait (applies to all find_element calls)
-driver.implicitly_wait(10)  # Wait up to 10 seconds
-
-# Explicit Wait for a specific condition
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-# Wait for an element to be clickable
-element = WebDriverWait(driver, 10).until(
-    EC.element_to_be_clickable((By.ID, "myButton"))
-)
-
-# Wait for an element to be visible
-element = WebDriverWait(driver, 20).until(
-    EC.visibility_of_element_located((By.CSS_SELECTOR, ".notification"))
-)
-
-# Wait for page title to change
-WebDriverWait(driver, 10).until(EC.title_contains("Success"))`;
-
-  const advancedLocatorsCode = `# Using XPath
-element = driver.find_element(By.XPATH, "//button[@class='submit']")
-
-# Using CSS Selector
-element = driver.find_element(By.CSS_SELECTOR, "div.content > p.message")
-
-# Finding multiple elements
-elements = driver.find_elements(By.TAG_NAME, "a")
-for element in elements:
-    print(element.text)
-
-# Using relative XPath
-element = driver.find_element(By.XPATH, "//div[contains(@class, 'user-info')]//button")
-
-# Parent-child relationships
-element = driver.find_element(By.CSS_SELECTOR, ".parent > .child")
-
-# Finding by element attributes
-element = driver.find_element(By.CSS_SELECTOR, "input[name='username'][required]")`;
-
-  const actionChainsCode = `# Import ActionChains
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-
-# Create an ActionChains instance
-actions = ActionChains(driver)
-
-# Hover over an element
-menu = driver.find_element(By.ID, "menu")
-actions.move_to_element(menu).perform()
-
-# Drag and drop
-source = driver.find_element(By.ID, "draggable")
-target = driver.find_element(By.ID, "droppable")
-actions.drag_and_drop(source, target).perform()
-
-# Right-click (context click)
-element = driver.find_element(By.ID, "context-menu-trigger")
-actions.context_click(element).perform()
-
-# Double-click
-element = driver.find_element(By.ID, "double-click-element")
-actions.double_click(element).perform()
-
-# Key combinations (e.g., Ctrl+A to select all)
-actions.key_down(Keys.CONTROL).send_keys("a").key_up(Keys.CONTROL).perform()
-
-# Multiple actions in sequence
-actions.move_to_element(element).click().send_keys("Hello").perform()`;
-
   return (
-    <div className={cn(
-      "prose prose-lg max-w-none",
-      theme === "dark" 
-        ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-        : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-    )}>
-      <h3>Using Selenium Effectively</h3>
-      <p>
-        Once you've learned the basics, it's time to explore more advanced 
-        Selenium features to create robust and reliable automation scripts.
-      </p>
-
-      <Alert className="my-4">
-        <Clock className="h-4 w-4" />
-        <AlertTitle>Handling Timing Issues</AlertTitle>
-        <AlertDescription>
-          One of the most common challenges in Selenium automation is dealing with 
-          timing and synchronization. The solution is to use waits effectively.
-        </AlertDescription>
-      </Alert>
-
-      <div className="my-8">
-        <h4>Working with Waits</h4>
+    <div className="space-y-8">
+      <div className="prose prose-lg max-w-none dark:prose-invert">
+        <h3>Using Selenium WebDriver Effectively</h3>
         <p>
-          The web is asynchronous, and elements might not be immediately available. 
-          Selenium offers several ways to wait for elements:
+          Selenium WebDriver is a powerful tool for automating web browsers, but using it effectively 
+          requires understanding some key concepts and best practices. This guide will help you 
+          get the most out of Selenium in your testing and automation projects.
         </p>
-        
-        <TerminalCodeTabs 
-          title="Waiting Techniques" 
-          description="Python examples for different wait strategies:"
-          tabs={[
-            {
-              id: "waits",
-              label: "Wait Examples",
-              code: waitExamples
-            }
-          ]}
-          className="my-6"
-        />
-      </div>
-      
-      <div className="my-8">
-        <h4>Advanced Element Location</h4>
-        <p>
-          Finding elements reliably is crucial for stable tests. Learn these advanced locator 
-          strategies:
-        </p>
-        
-        <TerminalCodeTabs 
-          title="Locator Strategies" 
-          description="More powerful ways to find elements:"
-          tabs={[
-            {
-              id: "locators",
-              label: "Advanced Locators",
-              code: advancedLocatorsCode
-            }
-          ]}
-          className="my-6"
-        />
       </div>
 
-      <Separator className="my-8" />
-      
-      <div className="my-8">
-        <h4>Advanced Interactions</h4>
-        <p>
-          For complex user interactions like hover, drag-and-drop, and keyboard shortcuts, 
-          use the ActionChains API:
-        </p>
+      {/* Best Practices Section */}
+      <div className="bg-blue-50 dark:bg-blue-900/30 rounded-lg p-6">
+        <h3 className="text-xl font-bold mb-4 text-blue-800 dark:text-blue-200">Best Practices</h3>
         
-        <TerminalCodeTabs 
-          title="ActionChains API" 
-          description="Complex user interactions:"
-          tabs={[
-            {
-              id: "actions",
-              label: "Action Chains",
-              code: actionChainsCode
-            }
-          ]}
-          className="my-6"
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-lg mb-2 flex items-center">
+              <ZapIcon className="w-5 h-5 mr-2 text-yellow-500" />
+              Use Explicit Waits
+            </h4>
+            <p className="text-gray-700 dark:text-gray-300">
+              Avoid using fixed sleep timeouts. Instead, wait for specific conditions 
+              to be met, such as element visibility or presence.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-lg mb-2 flex items-center">
+              <ZapIcon className="w-5 h-5 mr-2 text-yellow-500" />
+              Use Proper Locators
+            </h4>
+            <p className="text-gray-700 dark:text-gray-300">
+              Prefer stable locators like IDs and names. CSS selectors and XPath 
+              should be used carefully to avoid brittle tests.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-lg mb-2 flex items-center">
+              <ZapIcon className="w-5 h-5 mr-2 text-yellow-500" />
+              Handle Exceptions
+            </h4>
+            <p className="text-gray-700 dark:text-gray-300">
+              Implement proper exception handling to deal with elements that 
+              may not be present or interactive.
+            </p>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 p-5 rounded-lg shadow-sm">
+            <h4 className="font-semibold text-lg mb-2 flex items-center">
+              <ZapIcon className="w-5 h-5 mr-2 text-yellow-500" />
+              Clean Up Resources
+            </h4>
+            <p className="text-gray-700 dark:text-gray-300">
+              Always quit your WebDriver instances to release system resources 
+              and avoid browser processes accumulating.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <span className={cn(
-                "p-2 mr-2 rounded-full",
-                theme === "dark" ? "bg-purple-900/30" : "bg-purple-100"
-              )}>
-                <Lightbulb className={cn(
-                  "h-4 w-4",
-                  theme === "dark" ? "text-purple-400" : "text-purple-600"
-                )} />
-              </span>
-              Page Objects
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm mb-3">
-              Organize your test code by representing each page as a class. 
-              This improves maintainability and readability.
-            </p>
-            <a href="https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={cn(
-                 "text-xs flex items-center",
-                 theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]"
-               )}>
-              Learn more <ArrowRight className="h-3 w-3 ml-1" />
-            </a>
-          </CardContent>
-        </Card>
+      {/* Common Patterns Section */}
+      <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-6">
+        <h3 className="text-xl font-bold mb-4">Common Patterns</h3>
         
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <span className={cn(
-                "p-2 mr-2 rounded-full",
-                theme === "dark" ? "bg-blue-900/30" : "bg-blue-100"
-              )}>
-                <Lightbulb className={cn(
-                  "h-4 w-4",
-                  theme === "dark" ? "text-blue-400" : "text-blue-600"
-                )} />
-              </span>
-              Frameworks
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm mb-3">
-              Use test frameworks like pytest, TestNG, or Mocha to organize, run,
-              and report on your Selenium tests.
+        <div className="space-y-6">
+          <div>
+            <h4 className="font-semibold text-lg mb-2">Page Object Model</h4>
+            <p className="text-gray-700 dark:text-gray-300 mb-3">
+              The Page Object Model is a design pattern that creates an object repository 
+              for web UI elements. Each page in the application has a corresponding Page class.
             </p>
-            <a href="https://www.selenium.dev/documentation/test_practices/encouraged/use_a_test_framework/" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={cn(
-                 "text-xs flex items-center",
-                 theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]"
-               )}>
-              Learn more <ArrowRight className="h-3 w-3 ml-1" />
-            </a>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg flex items-center">
-              <span className={cn(
-                "p-2 mr-2 rounded-full",
-                theme === "dark" ? "bg-green-900/30" : "bg-green-100"
-              )}>
-                <Lightbulb className={cn(
-                  "h-4 w-4",
-                  theme === "dark" ? "text-green-400" : "text-green-600"
-                )} />
-              </span>
-              Execution
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm mb-3">
-              Run Selenium tests in parallel, in different browsers, and in CI/CD pipelines
-              to maximize efficiency.
+            <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-md">
+              <pre className="text-sm overflow-x-auto">
+                <code className="language-javascript">{`// LoginPage.js
+class LoginPage {
+  constructor(driver) {
+    this.driver = driver;
+    this.usernameInput = By.id('username');
+    this.passwordInput = By.id('password');
+    this.loginButton = By.id('loginBtn');
+  }
+
+  async login(username, password) {
+    await this.driver.findElement(this.usernameInput).sendKeys(username);
+    await this.driver.findElement(this.passwordInput).sendKeys(password);
+    await this.driver.findElement(this.loginButton).click();
+  }
+}
+
+// Usage
+const loginPage = new LoginPage(driver);
+await loginPage.login('user', 'pass');`}</code>
+              </pre>
+            </div>
+          </div>
+          
+          <div>
+            <h4 className="font-semibold text-lg mb-2">Fluent Interface</h4>
+            <p className="text-gray-700 dark:text-gray-300 mb-3">
+              A fluent interface allows method chaining and provides a more readable API. 
+              This pattern is especially useful for complex interactions.
             </p>
-            <a href="https://www.selenium.dev/documentation/grid/" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               className={cn(
-                 "text-xs flex items-center",
-                 theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]"
-               )}>
-              Learn more <ArrowRight className="h-3 w-3 ml-1" />
-            </a>
-          </CardContent>
-        </Card>
+            <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-md">
+              <pre className="text-sm overflow-x-auto">
+                <code className="language-javascript">{`// HomePage.js
+class HomePage {
+  constructor(driver) {
+    this.driver = driver;
+  }
+
+  async navigate() {
+    await this.driver.get('https://example.com');
+    return this;
+  }
+
+  async search(term) {
+    await this.driver.findElement(By.id('searchBox')).sendKeys(term, Key.RETURN);
+    return this;
+  }
+
+  async clickFirstResult() {
+    await this.driver.findElement(By.css('.result:first-child')).click();
+    return this;
+  }
+}
+
+// Usage - fluent chaining
+await new HomePage(driver)
+  .navigate()
+  .search('selenium automation')
+  .clickFirstResult();`}</code>
+              </pre>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div className={cn(
-        "p-4 rounded-lg mt-6",
-        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-      )}>
-        <h4 className="flex items-center mt-0">
-          <Info className="w-5 h-5 mr-2" />
-          Pro Tip
-        </h4>
-        <p className="text-sm mb-0">
-          Invest time in creating a robust framework with good logging, reporting, and error handling.
-          This will save you countless hours of debugging in the long run and make your tests more
-          maintainable.
+
+      {/* Tips Section */}
+      <div className="mt-8">
+        <h3 className="text-xl font-bold mb-4 flex items-center">
+          <Lightbulb className="w-6 h-6 mr-2 text-amber-500" />
+          Pro Tips
+        </h3>
+        
+        <div className="grid grid-cols-1 gap-4">
+          <div className="border-l-4 border-amber-500 pl-4 py-2">
+            <p className="text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Take screenshots on failure:</span> Configure your tests to 
+              capture screenshots when assertions fail to help with debugging.
+            </p>
+          </div>
+          
+          <div className="border-l-4 border-amber-500 pl-4 py-2">
+            <p className="text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Use headless mode for CI:</span> Run browsers in headless 
+              mode for continuous integration environments to improve performance.
+            </p>
+          </div>
+          
+          <div className="border-l-4 border-amber-500 pl-4 py-2">
+            <p className="text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Implement retry logic:</span> Web applications can be 
+              flaky. Add retry mechanisms for operations that might occasionally fail.
+            </p>
+          </div>
+          
+          <div className="border-l-4 border-amber-500 pl-4 py-2">
+            <p className="text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Use JavaScript execution:</span> Sometimes the WebDriver 
+              API isn't enough. You can execute JavaScript directly in the browser context for 
+              complex operations.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Next Steps */}
+      <div className="bg-gray-50 dark:bg-gray-800 p-6 rounded-lg mt-8">
+        <h3 className="text-xl font-bold mb-3">Next Steps</h3>
+        <p className="text-gray-700 dark:text-gray-300 mb-4">
+          Now that you understand the basics of using Selenium WebDriver, you're ready to:
         </p>
+        <ul className="list-disc pl-6 space-y-2 text-gray-700 dark:text-gray-300">
+          <li>Learn more about advanced locator strategies</li>
+          <li>Set up a test framework with Selenium</li>
+          <li>Implement reporting for your test results</li>
+          <li>Try automating complex user interactions</li>
+          <li>Explore Selenium Grid for parallel test execution</li>
+        </ul>
       </div>
     </div>
   );

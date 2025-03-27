@@ -1,126 +1,100 @@
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Info, CheckCircle, AlertCircle } from "lucide-react";
-import CodeExample from "@/components/ui/CodeExample";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Card } from "@/components/ui/card";
-import { SiPython, SiJavascript } from "@/components/IconImports";
+import { Check } from 'lucide-react';
+import CodeExample from '@/components/ui/CodeExample';
 
 export default function FirstScriptTab() {
-  const { theme } = useTheme();
+  const jsExample = `const { Builder, By, Key, until } = require('selenium-webdriver');
 
-  const pythonScript = `from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
-
-# Set up the driver with automatic ChromeDriver installation
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
-
-# Navigate to the website
-driver.get("https://www.example.com")
-
-# Find an element by ID and interact with it
-element = driver.find_element(By.ID, "element-id")
-element.click()
-
-# Find an element by CSS selector
-css_element = driver.find_element(By.CSS_SELECTOR, "button.submit-button")
-css_element.click()
-
-# Type into an input field
-input_field = driver.find_element(By.NAME, "username")
-input_field.send_keys("testuser")
-
-# Get text from an element
-text_element = driver.find_element(By.CLASS_NAME, "welcome-message")
-message = text_element.text
-print(f"Message: {message}")
-
-# Close the browser
-driver.quit()`;
-
-  const javascriptScript = `const { Builder, By, Key, until } = require('selenium-webdriver');
-const chrome = require('selenium-webdriver/chrome');
-
-async function runTest() {
-  // Set up Chrome options
-  const options = new chrome.Options();
+async function example() {
+  // Initialize the WebDriver
+  let driver = await new Builder().forBrowser('chrome').build();
   
-  // Create a new WebDriver instance
-  const driver = await new Builder()
-    .forBrowser('chrome')
-    .setChromeOptions(options)
-    .build();
-    
   try {
     // Navigate to a website
-    await driver.get('https://www.example.com');
+    await driver.get('https://www.google.com');
     
-    // Find an element by ID and click it
-    const button = await driver.findElement(By.id('submit-button'));
-    await button.click();
+    // Find the search input element and type a query
+    await driver.findElement(By.name('q')).sendKeys('Selenium WebDriver', Key.RETURN);
     
-    // Type into an input field
-    const searchBox = await driver.findElement(By.name('search'));
-    await searchBox.sendKeys('Selenium testing', Key.RETURN);
+    // Wait for the search results to load
+    await driver.wait(until.titleContains('Selenium WebDriver'), 5000);
     
-    // Wait for results to load
-    await driver.wait(until.elementLocated(By.css('.results')), 5000);
-    
-    // Get text from an element
-    const resultStats = await driver.findElement(By.css('.result-count'));
-    console.log(await resultStats.getText());
+    // Get and print the page title
+    console.log('Page title:', await driver.getTitle());
     
   } finally {
-    // Always quit the driver
+    // Always close the browser
     await driver.quit();
   }
 }
 
-runTest().catch(err => console.error('Test failed:', err));`;
+example();`;
 
-  const javaScript = `import org.openqa.selenium.By;
+  const pythonExample = `from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+# Initialize the WebDriver with automatic driver management
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
+
+try:
+    # Navigate to a website
+    driver.get('https://www.google.com')
+    
+    # Find the search input element and type a query
+    search_box = driver.find_element(By.NAME, 'q')
+    search_box.send_keys('Selenium WebDriver')
+    search_box.send_keys(Keys.RETURN)
+    
+    # Wait for the page title to change
+    from selenium.webdriver.support.ui import WebDriverWait
+    from selenium.webdriver.support import expected_conditions as EC
+    WebDriverWait(driver, 10).until(EC.title_contains('Selenium WebDriver'))
+    
+    # Print the page title
+    print('Page title:', driver.title)
+    
+finally:
+    # Always close the browser
+    driver.quit()`;
+
+  const javaExample = `import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import io.github.bonigarcia.wdm.WebDriverManager;
+
+import java.time.Duration;
 
 public class FirstSeleniumTest {
     public static void main(String[] args) {
         // Setup ChromeDriver using WebDriverManager
         WebDriverManager.chromedriver().setup();
         
-        // Configure Chrome options
-        ChromeOptions options = new ChromeOptions();
-        
         // Initialize the WebDriver
-        WebDriver driver = new ChromeDriver(options);
+        WebDriver driver = new ChromeDriver();
         
         try {
-            // Navigate to website
-            driver.get("https://www.example.com");
+            // Navigate to a website
+            driver.get("https://www.google.com");
             
-            // Find element by ID and click
-            WebElement button = driver.findElement(By.id("submit-button"));
-            button.click();
+            // Find the search input element and type a query
+            WebElement searchBox = driver.findElement(By.name("q"));
+            searchBox.sendKeys("Selenium WebDriver");
+            searchBox.sendKeys(Keys.RETURN);
             
-            // Find element by name and enter text
-            WebElement searchBox = driver.findElement(By.name("search"));
-            searchBox.sendKeys("Selenium testing");
-            searchBox.submit();
+            // Wait for the page title to change
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.titleContains("Selenium WebDriver"));
             
-            // Get text from element
-            WebElement resultElement = driver.findElement(By.className("result-count"));
-            System.out.println(resultElement.getText());
+            // Print the page title
+            System.out.println("Page title: " + driver.getTitle());
             
-            // Take a screenshot
-            // File screenshot = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
-            // Files.copy(screenshot.toPath(), Paths.get("./screenshot.png"));
-            
-        } catch (Exception e) {
-            e.printStackTrace();
         } finally {
             // Always close the browser
             driver.quit();
@@ -129,117 +103,110 @@ public class FirstSeleniumTest {
 }`;
 
   return (
-    <div className={cn(
-      "prose prose-lg max-w-none",
-      theme === "dark" 
-        ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-        : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-    )}>
-      <h3>Write Your First Selenium Script</h3>
-      <p>
-        Now that you have Selenium installed, it's time to write your first automation script.
-        Let's start with a basic example that opens a browser, navigates to a website, and interacts with elements.
-      </p>
-
-      <Alert className="my-4">
-        <Info className="h-4 w-4" />
-        <AlertTitle>Key Concepts</AlertTitle>
-        <AlertDescription>
-          <ul className="list-disc ml-6 mt-2 mb-0">
-            <li>WebDriver - The main interface for browser automation</li>
-            <li>Elements - Web components you interact with (buttons, inputs, etc.)</li>
-            <li>Locators - Methods to find elements (ID, CSS, XPath, etc.)</li>
-            <li>Actions - Interactions like click, type, submit</li>
-          </ul>
-        </AlertDescription>
-      </Alert>
-
-      <div className="my-8">
-        <h4>Sample Scripts by Language</h4>
-        <p>Choose your preferred programming language:</p>
-        
-        <CodeExample 
-          examples={[
-            {
-              language: "python",
-              code: pythonScript,
-              label: "Python"
-            },
-            {
-              language: "javascript",
-              code: javascriptScript,
-              label: "JavaScript"
-            },
-            {
-              language: "java",
-              code: javaScript,
-              label: "Java"
-            }
-          ]}
-          title="Basic Selenium Example"
-          description="A simple script to navigate to a website and interact with elements"
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-        <Card className={cn(
-          "p-4",
-          theme === "dark" ? "bg-green-900/20" : "bg-green-50"
-        )}>
-          <h4 className="flex items-center mt-0 text-green-600">
-            <CheckCircle className="w-5 h-5 mr-2" />
-            Best Practices
-          </h4>
-          <ul className="list-disc ml-6 mb-0">
-            <li>Always quit the driver when done</li>
-            <li>Use waits instead of fixed sleeps</li>
-            <li>Create reusable helper methods</li>
-            <li>Handle exceptions properly</li>
-          </ul>
-        </Card>
-        
-        <Card className={cn(
-          "p-4",
-          theme === "dark" ? "bg-red-900/20" : "bg-red-50"
-        )}>
-          <h4 className="flex items-center mt-0 text-red-600">
-            <AlertCircle className="w-5 h-5 mr-2" />
-            Common Pitfalls
-          </h4>
-          <ul className="list-disc ml-6 mb-0">
-            <li>Not handling timing issues</li>
-            <li>Using unreliable locators</li>
-            <li>Missing error handling</li>
-            <li>Forgetting to close browser sessions</li>
-          </ul>
-        </Card>
-      </div>
-      
-      <div className="mt-8">
-        <h4>Step-by-Step Explanation</h4>
-        <ol>
-          <li>Import the necessary Selenium modules</li>
-          <li>Initialize a WebDriver for your chosen browser</li>
-          <li>Navigate to a website using driver.get()</li>
-          <li>Locate elements using various strategies (ID, CSS, XPath, etc.)</li>
-          <li>Perform actions on the elements (click, type, etc.)</li>
-          <li>Extract information if needed</li>
-          <li>Close the browser when finished</li>
-        </ol>
-      </div>
-      
-      <div className={cn(
-        "p-4 rounded-lg mt-6",
-        theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-      )}>
-        <h4 className="flex items-center mt-0">
-          <Info className="w-5 h-5 mr-2" />
-          Pro Tip
-        </h4>
-        <p className="text-sm mb-0">
-          Start with simple scripts that focus on a single task before building more complex test suites.
-          This helps you understand the Selenium API better and troubleshoot issues more easily.
+    <div className="space-y-6">
+      <div className="prose prose-lg max-w-none dark:prose-invert">
+        <h3>Your First Selenium Script</h3>
+        <p>
+          Now that you have Selenium WebDriver installed, let's write a simple script to automate 
+          a web browser. This example will:
         </p>
+        
+        <ul>
+          <li>Open a browser</li>
+          <li>Navigate to Google</li>
+          <li>Search for "Selenium WebDriver"</li>
+          <li>Wait for the results page to load</li>
+          <li>Print the page title</li>
+          <li>Close the browser</li>
+        </ul>
+      </div>
+
+      <CodeExample
+        examples={[
+          {
+            language: 'javascript',
+            code: jsExample,
+            label: 'JavaScript'
+          },
+          {
+            language: 'python',
+            code: pythonExample,
+            label: 'Python'
+          },
+          {
+            language: 'java',
+            code: javaExample,
+            label: 'Java'
+          }
+        ]}
+        title="Basic Selenium WebDriver Example"
+        description="Choose your preferred language"
+      />
+
+      <div className="prose prose-lg max-w-none dark:prose-invert mt-8">
+        <h3>Understanding the Script</h3>
+        
+        <div className="border-l-4 border-blue-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Initialization</h4>
+          <p>
+            The script begins by initializing a new WebDriver instance. This launches a 
+            browser window that Selenium will control.
+          </p>
+        </div>
+        
+        <div className="border-l-4 border-green-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Navigation</h4>
+          <p>
+            We navigate to a URL using the <code>get()</code> method, which is similar to 
+            typing a URL into the browser's address bar.
+          </p>
+        </div>
+        
+        <div className="border-l-4 border-yellow-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Element Location</h4>
+          <p>
+            Selenium offers several strategies to find elements on a webpage. In this example, 
+            we use the <code>By.name</code> locator to find the search input field.
+          </p>
+        </div>
+        
+        <div className="border-l-4 border-purple-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Interaction</h4>
+          <p>
+            We interact with the element by typing text using <code>sendKeys()</code> and 
+            simulating a press of the Enter/Return key.
+          </p>
+        </div>
+        
+        <div className="border-l-4 border-red-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Waiting</h4>
+          <p>
+            Explicit waits tell WebDriver to wait for certain conditions before proceeding. 
+            This helps handle dynamic content and asynchronous operations.
+          </p>
+        </div>
+        
+        <div className="border-l-4 border-gray-500 pl-5 py-1 my-6">
+          <h4 className="text-lg font-semibold">Cleanup</h4>
+          <p>
+            Always close the browser using <code>quit()</code> when finished to release 
+            system resources.
+          </p>
+        </div>
+      </div>
+
+      <div className="bg-green-50 dark:bg-green-900 p-6 rounded-md mt-6">
+        <h3 className="text-xl font-bold flex items-center text-green-800 dark:text-green-200">
+          <Check className="mr-2 h-6 w-6" />
+          Key Takeaways
+        </h3>
+        <ul className="list-disc pl-6 mt-3 space-y-2 text-green-800 dark:text-green-200">
+          <li>Selenium provides a programmatic interface to control web browsers</li>
+          <li>Element location is a fundamental skill for automation</li>
+          <li>Proper waiting strategies are essential for reliable tests</li>
+          <li>Always clean up resources when tests are complete</li>
+          <li>The same core concepts apply across all supported languages</li>
+        </ul>
       </div>
     </div>
   );

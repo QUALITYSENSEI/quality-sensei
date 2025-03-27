@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { SiSelenium } from "@/components/IconImports";
 import { Helmet } from "react-helmet-async";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ParticleBackground from "@/components/ui/ParticleBackground";
@@ -80,71 +80,60 @@ const modules: Module[] = [
   }
 ];
 
-// Add type definition for window object
-declare global {
-  interface Window {
-    setTab: (tab: string) => void;
-  }
-}
-
-// Expose this function to the window object for testing in console
-let setActiveTabForTesting: (tab: string) => void;
-
 export default function SeleniumLab() {
   const { theme } = useTheme();
   const { toast } = useToast();
+  
+  // Start with default values
   const [activeModule, setActiveModule] = useState('intro');
-  const [activeTab, setActiveTab] = useState(activeModule === 'intro' ? 'install' : 'learn');
+  const [activeTab, setActiveTab] = useState('install');
   
-  // Reset tab when module changes
-  useEffect(() => {
-    // Set default tab based on module
-    if (activeModule === 'intro') {
-      setActiveTab('install');
-    } else {
-      setActiveTab('learn');
-    }
-  }, [activeModule]);
-  
-  // Debug tab changes
-  useEffect(() => {
-    console.log(`Tab changed to: ${activeTab}`);
-    
-    // Expose the setter to window for testing
-    setActiveTabForTesting = (tab: string) => {
-      console.log(`Setting tab via global function to: ${tab}`);
-      setActiveTab(tab);
-    };
-    
-    // @ts-ignore - for testing purposes
-    window.setTab = setActiveTabForTesting;
-  }, [activeTab]);
-  
-  // Tab change handler 
-  const handleTabChange = (value: string) => {
-    console.log(`SeleniumLab - Tab changed to: ${value}`);
-    // Force immediate state update
-    setTimeout(() => {
-      setActiveTab(value);
-    }, 0);
-  };
-  
-  // Define the intro tab configurations
+  // Define tab configurations
   const introTabs = [
     { id: 'install', label: 'Install Library', icon: <FileTerminal className="w-4 h-4" /> },
     { id: 'first-script', label: 'First Script', icon: <Code className="w-4 h-4" /> },
     { id: 'using-selenium', label: 'Using Selenium', icon: <PlayCircle className="w-4 h-4" /> }
   ];
   
-  // Define the other tab configurations
   const otherTabs = [
     { id: 'learn', label: 'Learn', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'practice', label: 'Practice', icon: <Code className="w-4 h-4" /> },
     { id: 'challenge', label: 'Challenge', icon: <PlayCircle className="w-4 h-4" /> }
   ];
   
+  // Tab change handler with useCallback to ensure stability
+  const handleTabChange = useCallback((tabId: string) => {
+    console.log(`Tab changed to: ${tabId}`);
+    setActiveTab(tabId);
+  }, []);
+  
+  // Module change handler with useCallback
+  const handleModuleChange = useCallback((moduleId: string) => {
+    console.log(`Module changed to: ${moduleId}`);
+    setActiveModule(moduleId);
+    
+    // Reset tab when module changes
+    if (moduleId === 'intro') {
+      setActiveTab('install');
+    } else {
+      setActiveTab('learn');
+    }
+  }, []);
+  
+  // Listen to escape key for debugging
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        console.log('Current state:', { activeModule, activeTab });
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeModule, activeTab]);
+  
   // Render the appropriate tab content
-  const renderTabContent = (tabId: string) => {
+  const renderTabContent = useCallback((tabId: string) => {
     switch (tabId) {
       case 'install':
         return <InstallLibraryTab />;
@@ -179,8 +168,14 @@ export default function SeleniumLab() {
       default:
         return <div>Content not found for tab: {tabId}</div>;
     }
-  };
+  }, [activeModule]);
 
+  // For debugging - log tab changes to console
+  useEffect(() => {
+    console.log(`Active tab is now: ${activeTab}`);
+  }, [activeTab]);
+
+  // Main component render
   return (
     <>
       <Helmet>
@@ -214,7 +209,7 @@ export default function SeleniumLab() {
               <LabModulesSidebar 
                 modules={modules}
                 activeModule={activeModule}
-                onModuleChange={setActiveModule}
+                onModuleChange={handleModuleChange}
               />
             </div>
             
