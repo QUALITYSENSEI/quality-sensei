@@ -151,14 +151,22 @@ export default function SeleniumLab() {
   // Find current module
   const currentModule = modules.find(m => m.id === activeModule) || modules[0];
 
-  // Scroll to top and update module when URL changes
+  // Update URL when active module changes (without page reload)
   useEffect(() => {
-    window.scrollTo(0, 0);
     // If we have a valid module in URL, update the active module
     if (isValidModule) {
       setActiveModule(moduleId);
     }
   }, [moduleId, isValidModule]);
+  
+  // Update browser URL when active module changes (without page reload)
+  const setLocation = useLocation()[1];
+  useEffect(() => {
+    // Update URL to match the selected module (without causing navigation)
+    if (activeModule !== moduleId) {
+      setLocation(`/labs/automation/selenium/${activeModule}`, { replace: true });
+    }
+  }, [activeModule, moduleId, setLocation]);
 
   // Get SEO title and description based on active module
   const pageTitle = `${currentModule.title} | Selenium WebDriver Lab | Quality Sensei`;
@@ -409,9 +417,10 @@ export default function SeleniumLab() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3, delay: idx * 0.05 }}
                   >
-                    <Link
-                      href={`/labs/automation/selenium/${module.id}`}
+                    <div
+                      onClick={() => setActiveModule(module.id)}
                       className={cn(
+                        "cursor-pointer",
                         "block w-full text-left p-3 rounded-lg transition-all duration-200 border",
                         activeModule === module.id 
                           ? (theme === "dark" 
@@ -495,39 +504,60 @@ export default function SeleniumLab() {
                           </div>
                         </div>
                       )}
-                    </Link>
+                    </div>
                   </motion.div>
                 ))}
               </div>
             </motion.div>
             
             {/* Main Content Area */}
-            <motion.div
+            <div
               className={cn(
                 "p-6 lg:col-span-3 rounded-xl",
                 theme === "dark" ? "bg-gray-800" : "bg-white shadow-md"
               )}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
             >
-              {/* Module Header */}
-              <div className={cn(
-                "border-b pb-4 mb-6",
-                theme === "dark" ? "border-gray-700" : "border-gray-200"
-              )}>
-                <h2 className={cn(
-                  "text-2xl font-bold",
-                  theme === "dark" ? "text-white" : "text-gray-900"
-                )}>
-                  {modules.find(m => m.id === activeModule)?.title}
-                </h2>
-                <p className={cn(
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                )}>
-                  {modules.find(m => m.id === activeModule)?.description}
-                </p>
-              </div>
+              {/* Module Header with animation on module change */}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeModule} // This forces re-render when module changes
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className={cn(
+                    "border-b pb-4 mb-6",
+                    theme === "dark" ? "border-gray-700" : "border-gray-200"
+                  )}
+                >
+                  <h2 className={cn(
+                    "text-2xl font-bold",
+                    theme === "dark" ? "text-white" : "text-gray-900"
+                  )}>
+                    {modules.find(m => m.id === activeModule)?.title}
+                  </h2>
+                  <p className={cn(
+                    theme === "dark" ? "text-gray-300" : "text-gray-600"
+                  )}>
+                    {modules.find(m => m.id === activeModule)?.description}
+                  </p>
+                  
+                  <div className="flex flex-wrap gap-2 mt-3">
+                    {modules.find(m => m.id === activeModule)?.skills.map((skill, index) => (
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className={cn(
+                          "text-xs",
+                          theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                        )}
+                      >
+                        {skill}
+                      </Badge>
+                    ))}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
               
               {/* Content Tabs */}
               <Tabs defaultValue="learn" className="w-full" onValueChange={setActiveTab}>
@@ -737,7 +767,7 @@ public class Main {
                   </motion.div>
                 </AnimatePresence>
               </Tabs>
-            </motion.div>
+            </div>
           </div>
         </div>
       </main>
