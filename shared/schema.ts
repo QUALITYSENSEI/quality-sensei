@@ -19,13 +19,3 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
-
-// WebSocket message types
-export const wsMessageSchema = z.object({
-  type: z.enum(['connection', 'echo', 'notification', 'error']),
-  message: z.string(),
-  timestamp: z.number().optional(),
-  data: z.any().optional(),
-});
-
-export type WSMessage = z.infer<typeof wsMessageSchema>;
