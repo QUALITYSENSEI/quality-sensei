@@ -1,142 +1,181 @@
-import React, { useState, useEffect } from 'react';
-import { Check, Copy } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TerminalLine } from '@/lib/types';
+import UnifiedTabs from './UnifiedTabs';
 
-interface TerminalProps {
-  lines: TerminalLine[];
-  language?: string;
-  className?: string;
-  showCopyButton?: boolean;
+interface TerminalLineProps {
+  line: TerminalLine;
+  index: number;
+  isVisible: boolean;
 }
 
-const Terminal = ({ lines, language = 'bash', className, showCopyButton = true }: TerminalProps) => {
-  const { theme } = useTheme();
-  const [visibleLines, setVisibleLines] = useState<TerminalLine[]>([]);
-  const [copied, setCopied] = useState(false);
-  const [isTyping, setIsTyping] = useState(true);
-
-  useEffect(() => {
-    if (lines.length === 0) {
-      setIsTyping(false);
-      return;
-    }
-
-    let currentIndex = 0;
-    setVisibleLines([]);
-    setIsTyping(true);
-
-    const showNextLine = () => {
-      if (currentIndex < lines.length) {
-        const line = lines[currentIndex];
-        const delay = line.delay || 200;
-
-        setVisibleLines(prev => [...prev, line]);
-        currentIndex++;
-
-        if (currentIndex < lines.length) {
-          setTimeout(showNextLine, delay);
-        } else {
-          setIsTyping(false);
-        }
-      }
-    };
-
-    showNextLine();
-
-    return () => {
-      setVisibleLines([]);
-    };
-  }, [lines]);
-
-  const handleCopy = () => {
-    const text = lines.map(line => line.content).join('\n');
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const renderLine = (line: TerminalLine, index: number) => {
+const TerminalLineComponent: React.FC<TerminalLineProps> = ({ line, index, isVisible }) => {
+  const getLineStyle = () => {
     switch (line.type) {
       case 'command':
-        return (
-          <div key={index} className="flex">
-            <span className="text-green-500 mr-2">$</span>
-            <span className="text-gray-200">{line.content}</span>
-          </div>
-        );
+        return 'text-cyan-400';
       case 'output':
-        return (
-          <div key={index} className="text-gray-400">{line.content}</div>
-        );
+        return 'text-gray-300';
       case 'success':
-        return (
-          <div key={index} className="text-green-400">{line.content}</div>
-        );
+        return 'text-green-400';
       case 'error':
-        return (
-          <div key={index} className="text-red-400">{line.content}</div>
-        );
+        return 'text-red-400';
       case 'comment':
-        return (
-          <div key={index} className="text-blue-400">{line.content}</div>
-        );
+        return 'text-gray-500 italic';
       case 'cursor':
-        return (
-          <div key={index} className="flex">
-            <span className="text-gray-400">{line.content}</span>
-            <span className="w-2 h-4 bg-gray-400 ml-1 animate-blink"></span>
-          </div>
-        );
+        return 'text-gray-300 animate-pulse';
       default:
-        return (
-          <div key={index} className="text-gray-400">{line.content}</div>
-        );
+        return 'text-gray-300';
     }
   };
+
+  const linePrefix = line.type === 'command' ? '$ ' : line.type === 'comment' ? '# ' : '';
 
   return (
     <div 
       className={cn(
-        "rounded-lg overflow-hidden",
-        theme === 'dark' ? 'bg-gray-900' : 'bg-gray-800',
+        'font-mono text-sm transition-opacity duration-300',
+        getLineStyle(),
+        isVisible ? 'opacity-100' : 'opacity-0'
+      )}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      {linePrefix}{line.content}
+    </div>
+  );
+};
+
+interface TerminalProps {
+  lines: TerminalLine[];
+  title?: string;
+  className?: string;
+  autoType?: boolean;
+  typingSpeed?: number;
+  initialDelay?: number;
+  tabs?: Array<{id: string; label: string; lines: TerminalLine[]}>;
+}
+
+const Terminal: React.FC<TerminalProps> = ({
+  lines: propLines,
+  title = 'Terminal',
+  className,
+  autoType = true,
+  typingSpeed = 50,
+  initialDelay = 500,
+  tabs
+}) => {
+  const { theme } = useTheme();
+  const [visibleLines, setVisibleLines] = useState<number[]>([]);
+  const [activeTab, setActiveTab] = useState(tabs && tabs.length > 0 ? tabs[0].id : '');
+  const [currentLines, setCurrentLines] = useState<TerminalLine[]>(tabs ? tabs[0].lines : propLines);
+  const terminalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!autoType) {
+      // Make all lines visible immediately
+      setVisibleLines(currentLines.map((_, index) => index));
+      return;
+    }
+
+    // Reset visible lines when content changes
+    setVisibleLines([]);
+    
+    // Animate lines with typing effect
+    let timeout: NodeJS.Timeout;
+    let currentIndex = 0;
+    
+    const showNextLine = () => {
+      if (currentIndex < currentLines.length) {
+        setVisibleLines(prev => [...prev, currentIndex]);
+        const nextDelay = currentLines[currentIndex].delay || typingSpeed;
+        currentIndex++;
+        timeout = setTimeout(showNextLine, nextDelay);
+      }
+    };
+    
+    // Start with initial delay
+    timeout = setTimeout(showNextLine, initialDelay);
+    
+    return () => clearTimeout(timeout);
+  }, [currentLines, autoType, typingSpeed, initialDelay]);
+
+  // Update current lines when tab changes
+  useEffect(() => {
+    if (tabs) {
+      const selectedTab = tabs.find(tab => tab.id === activeTab);
+      if (selectedTab) {
+        setCurrentLines(selectedTab.lines);
+      }
+    }
+  }, [activeTab, tabs]);
+
+  // Scroll to bottom when new lines appear
+  useEffect(() => {
+    if (terminalRef.current) {
+      terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
+    }
+  }, [visibleLines]);
+
+  // Handle tab change
+  const handleTabChange = (tabId: string) => {
+    setActiveTab(tabId);
+  };
+
+  if (tabs && tabs.length > 0) {
+    // Convert to the format expected by UnifiedTabs
+    const tabItems = tabs.map(tab => ({
+      id: tab.id,
+      label: tab.label,
+      code: tab.lines.map(line => {
+        const prefix = line.type === 'command' ? '$ ' : line.type === 'comment' ? '# ' : '';
+        return `${prefix}${line.content}`;
+      }).join('\n')
+    }));
+
+    return (
+      <UnifiedTabs
+        tabs={tabItems}
+        variant="terminal"
+        title={title}
+        activeTab={activeTab}
+        onChange={handleTabChange}
+        showCopyButton={true}
+        className={className}
+      />
+    );
+  }
+
+  return (
+    <div 
+      className={cn(
+        'terminal bg-gray-900 rounded-lg p-4 text-white shadow-lg overflow-hidden',
         className
       )}
     >
-      {/* Terminal Header */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-800 dark:bg-gray-950 border-b border-gray-700">
-        <div className="flex items-center space-x-2">
+      {/* Terminal header */}
+      <div className="flex items-center border-b border-gray-700 pb-2 mb-3">
+        <div className="flex space-x-2 mr-4">
           <div className="w-3 h-3 rounded-full bg-red-500"></div>
           <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
         </div>
-        <div className="text-xs text-gray-400">terminal</div>
-        {showCopyButton && (
-          <button 
-            onClick={handleCopy}
-            disabled={isTyping}
-            className={cn(
-              "text-gray-400 hover:text-gray-200 transition-colors focus:outline-none", 
-              isTyping && "opacity-50 cursor-not-allowed"
-            )}
-            aria-label="Copy code"
-          >
-            {copied ? (
-              <Check className="h-4 w-4 text-green-500" />
-            ) : (
-              <Copy className="h-4 w-4" />
-            )}
-          </button>
-        )}
+        <div className="text-gray-400 text-xs font-semibold">{title}</div>
       </div>
-
-      {/* Terminal Content */}
-      <div className="p-4 font-mono text-sm overflow-x-auto">
-        {visibleLines.map((line, index) => renderLine(line, index))}
-        {isTyping && (
-          <div className="inline-block w-2 h-4 bg-gray-400 animate-blink"></div>
-        )}
+      
+      {/* Terminal content */}
+      <div 
+        ref={terminalRef}
+        className="terminal-content space-y-1 max-h-96 overflow-y-auto py-2 font-mono text-sm"
+      >
+        {currentLines.map((line, index) => (
+          <TerminalLineComponent
+            key={index}
+            line={line}
+            index={index}
+            isVisible={visibleLines.includes(index)}
+          />
+        ))}
       </div>
     </div>
   );

@@ -1,245 +1,302 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { cn } from "@/lib/utils";
-import { useTheme } from "@/contexts/ThemeContext";
-import { Send, User, Trash2, FileWarning } from "lucide-react";
-import { useWebSocket, type WebSocketMessage } from '@/hooks/useWebSocket';
+import React, { useState, useEffect, useRef } from 'react';
+import { useWebSocket, WebSocketMessage } from '@/hooks/useWebSocket';
+import { useTheme } from '@/contexts/ThemeContext';
+import { cn, debounce } from '@/lib/utils';
+import { MessageCircle, X, Send, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { nanoid } from 'nanoid';
 
-/**
- * Live chat component using WebSockets
- */
-export default function LiveChat() {
+// Chat message interface
+interface Message {
+  id: string;
+  text: string;
+  sender: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
+interface LiveChatProps {
+  defaultOpen?: boolean;
+  position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
+  className?: string;
+  title?: string;
+  welcomeMessage?: string;
+  userDisplayName?: string;
+}
+
+export default function LiveChat({
+  defaultOpen = false,
+  position = 'bottom-right',
+  className,
+  title = 'Live Support',
+  welcomeMessage = 'Welcome to Quality Sensei! How can we help you today?',
+  userDisplayName = 'You'
+}: LiveChatProps) {
   const { theme } = useTheme();
-  const [isOpen, setIsOpen] = useState(false);
-  const [localMessages, setLocalMessages] = useState<WebSocketMessage[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [username, setUsername] = useState('');
-  const [hasSetUsername, setHasSetUsername] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Initialize WebSocket with custom hook
+  const [isOpen, setIsOpen] = useState(defaultOpen);
+  const [messageText, setMessageText] = useState('');
+  const [messages, setMessages] = useState<Message[]>([]);
+  const messageEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  
+  // Connect to WebSocket server
   const {
     isConnected,
     messages: wsMessages,
     sendMessage,
-    connect,
     connectionError
   } = useWebSocket({
-    onOpen: () => {
-      // No need to handle this separately as messages are tracked in the hook
-    },
-    onMessage: (message) => {
-      // Messages are tracked in the hook state
+    onMessage: (wsMessage) => {
+      handleIncomingMessage(wsMessage);
     }
   });
-
-  // Connect only when the chat is open
+  
+  // Add welcome message on first connection
   useEffect(() => {
-    if (isOpen) {
-      connect();
+    if (isConnected && messages.length === 0) {
+      setMessages([
+        {
+          id: nanoid(),
+          text: welcomeMessage,
+          sender: 'Quality Sensei Assistant',
+          isUser: false,
+          timestamp: new Date()
+        }
+      ]);
     }
-  }, [isOpen, connect]);
-
-  // Update local messages from the WebSocket hook
-  useEffect(() => {
-    setLocalMessages(wsMessages);
-  }, [wsMessages]);
-
-  // Auto-scroll to bottom of messages
-  useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [localMessages]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  }, [isConnected, welcomeMessage]);
+  
+  // Handle incoming WebSocket messages
+  const handleIncomingMessage = (wsMessage: WebSocketMessage) => {
+    const newMessage: Message = {
+      id: nanoid(),
+      text: wsMessage.message,
+      sender: wsMessage.sender || 'Quality Sensei Assistant',
+      isUser: false,
+      timestamp: new Date(wsMessage.timestamp)
+    };
     
-    if (!hasSetUsername) {
-      if (username.trim()) {
-        setHasSetUsername(true);
-      }
-      return;
+    setMessages((prev) => [...prev, newMessage]);
+  };
+  
+  // Scroll to bottom when messages change
+  useEffect(() => {
+    if (messageEndRef.current) {
+      messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
+  }, [messages]);
+  
+  // Focus input when chat opens
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 300);
+    }
+  }, [isOpen]);
+  
+  // Handle sending a message
+  const handleSendMessage = () => {
+    if (!messageText.trim()) return;
     
-    if (inputMessage.trim() && isConnected) {
+    // Create a new message
+    const newMessage: Message = {
+      id: nanoid(),
+      text: messageText,
+      sender: userDisplayName,
+      isUser: true,
+      timestamp: new Date()
+    };
+    
+    // Add message to local state
+    setMessages((prev) => [...prev, newMessage]);
+    
+    // Send message through WebSocket if connected
+    if (isConnected) {
       sendMessage({
-        message: inputMessage,
-        sender: username || 'Anonymous'
+        message: messageText,
+        sender: userDisplayName
       });
-      setInputMessage('');
+    }
+    
+    // Clear input
+    setMessageText('');
+  };
+  
+  // Handle keypress (Enter to send)
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
     }
   };
-
-  const clearMessages = () => {
-    setLocalMessages([]);
+  
+  // Format time from date
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
-
+  
+  // Position classes
+  const positionClasses = {
+    'bottom-right': 'bottom-4 right-4',
+    'bottom-left': 'bottom-4 left-4',
+    'top-right': 'top-4 right-4',
+    'top-left': 'top-4 left-4'
+  }[position];
+  
+  // Toggle chat window
   const toggleChat = () => {
-    setIsOpen(!isOpen);
+    setIsOpen((prev) => !prev);
   };
-
+  
   return (
-    <div className={cn(
-      "fixed bottom-4 right-4 z-50 flex flex-col",
-      isOpen ? "h-96 w-80" : "h-12 w-12"
-    )}>
-      {/* Chat Button */}
-      <button
-        className={cn(
-          "rounded-full p-3 flex items-center justify-center shadow-lg transition-all",
-          theme === "dark" ? "bg-[#40E0D0] text-gray-900" : "bg-[#00BCD4] text-white",
-          isOpen ? "w-12 h-12 ml-auto" : "w-12 h-12"
+    <div className={cn('fixed z-50', positionClasses, className)}>
+      {/* Toggle Button */}
+      <AnimatePresence>
+        {!isOpen && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={toggleChat}
+            className={cn(
+              'flex items-center justify-center p-3 rounded-full shadow-lg',
+              theme === 'dark' 
+                ? 'bg-[#40E0D0] text-gray-900 hover:bg-[#30d0c0]' 
+                : 'bg-[#00BCD4] text-white hover:bg-[#00a5bb]'
+            )}
+            aria-label="Open chat"
+          >
+            <MessageCircle size={24} />
+          </motion.button>
         )}
-        onClick={toggleChat}
-        aria-label={isOpen ? "Close chat" : "Open chat"}
-      >
-        {isOpen ? "×" : "💬"}
-      </button>
+      </AnimatePresence>
       
       {/* Chat Window */}
-      {isOpen && (
-        <div className={cn(
-          "flex flex-col mt-2 rounded-lg shadow-lg overflow-hidden transition-all",
-          theme === "dark" ? "bg-gray-800" : "bg-white",
-          "h-96 w-full"
-        )}>
-          {/* Chat Header */}
-          <div className={cn(
-            "px-4 py-3 flex items-center justify-between",
-            theme === "dark" ? "bg-gray-900" : "bg-[#00BCD4]",
-            theme === "dark" ? "text-white" : "text-white"
-          )}>
-            <h3 className="font-medium">Live Chat</h3>
-            <div className="flex items-center gap-2">
-              <span className={cn(
-                "w-2 h-2 rounded-full",
-                isConnected ? "bg-green-500" : "bg-red-500"
-              )} title={isConnected ? "Connected" : "Disconnected"} />
-              <button
-                onClick={clearMessages}
-                className="p-1 rounded hover:bg-opacity-20 hover:bg-gray-700"
-                title="Clear messages"
-              >
-                <Trash2 size={16} />
-              </button>
-            </div>
-          </div>
-          
-          {/* Connection Error */}
-          {connectionError && (
-            <div className={cn(
-              "p-2 flex items-center gap-2 text-sm",
-              theme === "dark" ? "bg-red-900/30 text-red-200" : "bg-red-100 text-red-800"
-            )}>
-              <FileWarning size={16} />
-              <span>{connectionError}</span>
-            </div>
-          )}
-          
-          {/* Messages Area */}
-          <div className={cn(
-            "flex-1 p-3 overflow-y-auto",
-            theme === "dark" ? "text-gray-200" : "text-gray-800"
-          )}>
-            {localMessages.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-gray-500 italic">
-                No messages yet
-              </div>
-            ) : (
-              <>
-                {localMessages.map((msg, index) => (
-                  <div 
-                    key={index}
-                    className={cn(
-                      "mb-2 p-2 rounded",
-                      msg.type === 'connection' 
-                        ? "text-center text-xs text-gray-500 italic" 
-                        : msg.type === 'error'
-                          ? theme === "dark" ? "bg-red-900/30 text-red-200" : "bg-red-100 text-red-800"
-                          : msg.sender === username
-                            ? theme === "dark" ? "bg-[#40E0D0]/10 ml-auto max-w-[75%]" : "bg-[#00BCD4]/10 ml-auto max-w-[75%]"
-                            : theme === "dark" ? "bg-gray-700 max-w-[75%]" : "bg-gray-100 max-w-[75%]"
-                    )}
-                  >
-                    {msg.type !== 'connection' && (
-                      <div className="flex items-center gap-1 text-xs mb-1">
-                        <User size={12} />
-                        <span className="font-medium">{msg.sender || 'System'}</span>
-                      </div>
-                    )}
-                    <div>{msg.message}</div>
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </>
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className={cn(
+              'w-80 sm:w-96 rounded-lg shadow-xl overflow-hidden flex flex-col',
+              theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'
             )}
-          </div>
-          
-          {/* Input Area */}
-          <form onSubmit={handleSubmit} className="p-3 border-t border-gray-200 dark:border-gray-700">
-            {!hasSetUsername ? (
-              <div className="flex flex-col gap-2">
-                <label className={cn("text-sm", theme === "dark" ? "text-gray-300" : "text-gray-600")}>
-                  Enter your name to join the chat:
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    placeholder="Your name"
-                    className={cn(
-                      "flex-1 px-3 py-2 rounded border",
-                      theme === "dark" 
-                        ? "bg-gray-700 border-gray-600 text-white" 
-                        : "bg-white border-gray-300 text-gray-900"
-                    )}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!username.trim()}
-                    className={cn(
-                      "px-4 py-2 rounded font-medium",
-                      username.trim() 
-                        ? theme === "dark" ? "bg-[#40E0D0] text-gray-900" : "bg-[#00BCD4] text-white"
-                        : "bg-gray-300 text-gray-500 cursor-not-allowed",
-                    )}
-                  >
-                    Join
-                  </button>
+            style={{ height: '450px', maxHeight: '80vh' }}
+          >
+            {/* Header */}
+            <div 
+              className={cn(
+                'p-3 flex items-center justify-between',
+                theme === 'dark' ? 'bg-gray-900' : 'bg-[#00BCD4] text-white'
+              )}
+            >
+              <div>
+                <h3 className="font-medium">{title}</h3>
+                <div className="flex items-center text-xs">
+                  {isConnected ? (
+                    <>
+                      <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                      <span>Online</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className="h-2 w-2 rounded-full bg-red-500 mr-2"></span>
+                      <span>Offline</span>
+                    </>
+                  )}
                 </div>
               </div>
-            ) : (
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={inputMessage}
-                  onChange={(e) => setInputMessage(e.target.value)}
-                  placeholder="Type a message..."
+              <button
+                onClick={toggleChat}
+                className="p-1.5 rounded-full hover:bg-black/10 transition-colors"
+                aria-label="Close chat"
+              >
+                <X size={18} />
+              </button>
+            </div>
+            
+            {/* Messages Container */}
+            <div className={cn(
+              'flex-1 overflow-y-auto p-3 space-y-3',
+              theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+            )}>
+              {connectionError && (
+                <div className="p-2 rounded bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 text-xs">
+                  Failed to connect to chat server. Please try again later.
+                </div>
+              )}
+              
+              {messages.map((msg) => (
+                <div
+                  key={msg.id}
                   className={cn(
-                    "flex-1 px-3 py-2 rounded border",
-                    theme === "dark" 
-                      ? "bg-gray-700 border-gray-600 text-white" 
-                      : "bg-white border-gray-300 text-gray-900"
-                  )}
-                />
-                <button
-                  type="submit"
-                  disabled={!inputMessage.trim() || !isConnected}
-                  className={cn(
-                    "p-2 rounded-full",
-                    inputMessage.trim() && isConnected
-                      ? theme === "dark" ? "bg-[#40E0D0] text-gray-900" : "bg-[#00BCD4] text-white"
-                      : "bg-gray-300 text-gray-500 cursor-not-allowed",
+                    'flex flex-col max-w-[85%] rounded-lg p-2.5 break-words',
+                    msg.isUser 
+                      ? 'ml-auto bg-blue-500 text-white' 
+                      : theme === 'dark'
+                        ? 'bg-gray-700'
+                        : 'bg-white shadow-sm'
                   )}
                 >
-                  <Send size={18} />
+                  <span className="text-sm mb-1">{msg.text}</span>
+                  <div className="flex justify-between items-center mt-1 text-xs opacity-80">
+                    <span>{msg.isUser ? '' : msg.sender}</span>
+                    <time>{formatTime(msg.timestamp)}</time>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Scroll to bottom anchor */}
+              <div ref={messageEndRef} />
+            </div>
+            
+            {/* Input Area */}
+            <div className={cn(
+              'p-3 border-t',
+              theme === 'dark' ? 'border-gray-700 bg-gray-900' : 'border-gray-200'
+            )}>
+              <div className="flex items-center">
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={messageText}
+                  onChange={(e) => setMessageText(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                  placeholder="Type your message..."
+                  className={cn(
+                    'flex-1 p-2 rounded-l-md border border-r-0',
+                    theme === 'dark' 
+                      ? 'bg-gray-800 border-gray-700 text-white placeholder:text-gray-400' 
+                      : 'bg-white border-gray-300 text-gray-900 placeholder:text-gray-500'
+                  )}
+                  disabled={!isConnected}
+                />
+                <button
+                  onClick={handleSendMessage}
+                  disabled={!isConnected || !messageText.trim()}
+                  className={cn(
+                    'p-2 rounded-r-md border',
+                    theme === 'dark' 
+                      ? 'bg-[#40E0D0] border-[#40E0D0] text-gray-900 hover:bg-[#30d0c0] disabled:bg-gray-700 disabled:border-gray-700 disabled:text-gray-500' 
+                      : 'bg-[#00BCD4] border-[#00BCD4] text-white hover:bg-[#00a5bb] disabled:bg-gray-200 disabled:border-gray-200 disabled:text-gray-400'
+                  )}
+                >
+                  {isConnected ? <Send size={18} /> : <Loader2 size={18} className="animate-spin" />}
                 </button>
               </div>
-            )}
-          </form>
-        </div>
-      )}
+              
+              {/* Status message */}
+              <div className="mt-1.5 text-xs text-center opacity-70">
+                {!isConnected && 'Connecting to chat server...'}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

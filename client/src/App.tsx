@@ -10,6 +10,8 @@ import BlogPost from "@/pages/BlogPost";
 import Labs from "@/pages/Labs";
 import AutomationLabs from "@/pages/AutomationLabs";
 import SeleniumLab from "@/pages/SeleniumLab";
+import ComponentShowcase from "@/pages/ComponentShowcase";
+import LiveChat from "@/components/ui/LiveChat";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
@@ -24,6 +26,7 @@ function Router() {
       <Route path="/labs/automation" component={AutomationLabs} />
       <Route path="/labs/automation/selenium" component={SeleniumLab} />
       <Route path="/labs/automation/selenium/:moduleId" component={SeleniumLab} />
+      <Route path="/components" component={ComponentShowcase} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -45,6 +48,10 @@ function AppContent() {
         <meta property="og:type" content="website" />
       </Helmet>
       <Router />
+      <LiveChat 
+        position="bottom-right"
+        welcomeMessage="Welcome to Quality Sensei! Our team is here to assist with your software testing and quality assurance questions."
+      />
       <Toaster />
     </>
   );
