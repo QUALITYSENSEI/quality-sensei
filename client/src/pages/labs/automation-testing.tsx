@@ -140,9 +140,9 @@ async function runTest() {
     let welcomeMessage = await driver.findElement(By.className('welcome-message'));
     
     if (await welcomeMessage.isDisplayed()) {
-      console.log('Login successful!');
+      // Login successful
     } else {
-      console.log('Login failed!');
+      // Login failed
     }
     
   } finally {
@@ -525,9 +525,9 @@ async function exercise1() {
     // 2. Verify title
     const title = await driver.getTitle();
     if (title.includes('Quality Sensei')) {
-      console.log('✓ Title verification passed');
+      // Title verification passed
     } else {
-      console.log('× Title verification failed');
+      // Title verification failed
     }
     
     // 3. Click on Courses link
@@ -538,9 +538,9 @@ async function exercise1() {
     const courses = await driver.findElements(By.css('.course-card'));
     
     if (courses.length >= 3) {
-      console.log('✓ Found ' + courses.length + ' courses');
+      // Found sufficient courses
     } else {
-      console.log('× Expected at least 3 courses, but found ' + courses.length);
+      // Not enough courses found
     }
     
   } finally {

@@ -59,7 +59,7 @@ export default function ContactSection() {
     }
     
     // Form submission logic would go here
-    console.log("Form submitted:", formData);
+    // In a real implementation, we would send the form data to a server
     
     // Success message
     toast({

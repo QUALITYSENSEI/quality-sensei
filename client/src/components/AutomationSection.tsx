@@ -64,7 +64,8 @@ const marqueeTools = [
 
 const AutomationSection = () => {
   const [isHovered, setIsHovered] = useState(false);
-  const duplicatedTools = [...marqueeTools, ...marqueeTools];
+  // Reduce the number of duplicated tools for better performance
+  const duplicatedTools = [...marqueeTools];
 
   return (
     <section id="tools" className="py-20 relative overflow-hidden bg-gradient-to-b from-gray-100 to-white dark:from-gray-950 dark:to-gray-900">
@@ -104,7 +105,7 @@ const AutomationSection = () => {
               x: {
                 repeat: Infinity,
                 repeatType: 'loop',
-                duration: 80,
+                duration: 40,
                 ease: 'linear',
               },
             }}

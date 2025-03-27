@@ -34,12 +34,11 @@ export default function ParticleBackground({ className }: ParticleBackgroundProp
               value: "transparent",
             },
           },
-          fpsLimit: 120,
+          fpsLimit: 30, // Reduced FPS limit for better performance
           interactivity: {
             events: {
               onClick: {
-                enable: true,
-                mode: "push",
+                enable: false,
               },
               onHover: {
                 enable: true,
@@ -48,9 +47,6 @@ export default function ParticleBackground({ className }: ParticleBackgroundProp
               resize: true,
             },
             modes: {
-              push: {
-                quantity: 4,
-              },
               repulse: {
                 distance: 100,
                 duration: 0.4,
@@ -75,15 +71,15 @@ export default function ParticleBackground({ className }: ParticleBackgroundProp
                 default: "bounce",
               },
               random: false,
-              speed: 2,
+              speed: 1.5, // Reduced movement speed for better performance
               straight: false,
             },
             number: {
               density: {
                 enable: true,
-                area: 800,
+                area: 1200, // Increased area spacing for particles
               },
-              value: 80,
+              value: 25, // Reduced number of particles for better performance
             },
             opacity: {
               value: 0.5,

@@ -110,14 +110,11 @@ const UnifiedTabs: React.FC<UnifiedTabsProps> = (props) => {
   
   // Handle tab change
   const handleTabChange = (tabId: string) => {
-    console.log(`Tab changed to: ${tabId}`);
     setActiveTab(tabId);
     
     if (onChange) {
       onChange(tabId);
     }
-    
-    // No debugging global tab change function needed anymore
   };
   
   // Copy code to clipboard for code tabs
