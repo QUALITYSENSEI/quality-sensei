@@ -485,6 +485,390 @@ const labSections: TabItem[] = [
     )
   },
   {
+    id: "locators",
+    label: "Locators",
+    icon: <BsCodeSlash className="mr-2 h-4 w-4" />,
+    content: (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Locating Elements</h2>
+        <p className="text-lg">
+          Element locators are strategies to find elements on a webpage. Selenium WebDriver provides multiple
+          ways to locate elements, each with its own strengths and use cases.
+        </p>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">ID</h4>
+            <p className="mb-3 text-sm">
+              The most reliable locator. Always use when available.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+driver.findElement(By.id("username"));
+
+# Python
+driver.find_element(By.ID, "username")
+
+// JavaScript
+driver.findElement(By.id("username"));
+
+// C#
+driver.FindElement(By.Id("username"));`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Name</h4>
+            <p className="mb-3 text-sm">
+              Useful for form inputs with name attributes.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+driver.findElement(By.name("password"));
+
+# Python
+driver.find_element(By.NAME, "password")
+
+// JavaScript
+driver.findElement(By.name("password"));
+
+// C#
+driver.FindElement(By.Name("password"));`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">CSS Selector</h4>
+            <p className="mb-3 text-sm">
+              Powerful and versatile. Preferred over XPath for its better performance and readability.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+driver.findElement(By.cssSelector(".login-form input[type='submit']"));
+
+# Python
+driver.find_element(By.CSS_SELECTOR, ".login-form input[type='submit']")
+
+// JavaScript
+driver.findElement(By.css(".login-form input[type='submit']"));
+
+// C#
+driver.FindElement(By.CssSelector(".login-form input[type='submit']"));`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">XPath</h4>
+            <p className="mb-3 text-sm">
+              Versatile but sometimes complex. Can traverse up and down the DOM tree.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+driver.findElement(By.xpath("//button[contains(text(), 'Submit')]"));
+
+# Python
+driver.find_element(By.XPATH, "//button[contains(text(), 'Submit')]")
+
+// JavaScript
+driver.findElement(By.xpath("//button[contains(text(), 'Submit')]"));
+
+// C#
+driver.FindElement(By.XPath("//button[contains(text(), 'Submit')]"));`}
+            </pre>
+          </Card>
+        </div>
+        
+        <h3 className="text-xl font-semibold mt-8">Best Practices for Locators</h3>
+        <ul className="list-disc pl-6 space-y-2 mt-4">
+          <li>Prefer stable attributes like IDs over changing properties like text or position</li>
+          <li>Avoid complex XPath expressions that rely on the exact DOM structure</li>
+          <li>Consider creating custom data attributes (e.g., data-testid) for testing purposes</li>
+          <li>Use relative locators for elements that have spatial relationships with known elements</li>
+          <li>Keep locators in a central place (e.g., Page Object Model) for easy maintenance</li>
+        </ul>
+        
+        <div className="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-lg mt-6">
+          <h4 className="font-semibold text-yellow-800 dark:text-yellow-300">Exercise: Finding Elements</h4>
+          <p className="text-yellow-800 dark:text-yellow-300 mt-2">
+            Try writing locators for the following scenarios:
+          </p>
+          <ol className="list-decimal pl-6 mt-2 text-yellow-800 dark:text-yellow-300 space-y-2">
+            <li>Find a button with the text "Login"</li>
+            <li>Find all input fields within a form with class "registration-form"</li>
+            <li>Find a checkbox that is currently checked</li>
+            <li>Find a dropdown option with the value "admin"</li>
+          </ol>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "actions",
+    label: "Actions",
+    icon: <BsPlayFill className="mr-2 h-4 w-4" />,
+    content: (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Selenium WebDriver Actions</h2>
+        <p className="text-lg">
+          After locating elements, you'll need to interact with them. Selenium WebDriver provides 
+          a variety of methods to simulate user actions like clicking, typing, selecting, dragging, etc.
+        </p>
+        
+        <h3 className="text-xl font-semibold mt-6">Basic Interactions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Click Operations</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java - Click a button
+WebElement button = driver.findElement(By.id("submitBtn"));
+button.click();
+
+// Java - Right-click (context click)
+Actions actions = new Actions(driver);
+actions.contextClick(element).perform();
+
+// Java - Double-click
+actions.doubleClick(element).perform();`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Text Input Operations</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java - Enter text
+WebElement inputField = driver.findElement(By.id("username"));
+inputField.sendKeys("testuser");
+
+// Java - Clear text before typing
+inputField.clear();
+inputField.sendKeys("newtext");
+
+// Java - Keyboard actions
+inputField.sendKeys(Keys.ENTER);
+inputField.sendKeys(Keys.TAB);`}
+            </pre>
+          </Card>
+        </div>
+        
+        <h3 className="text-xl font-semibold mt-8">Advanced Interactions</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Drag and Drop</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+WebElement source = driver.findElement(By.id("draggable"));
+WebElement target = driver.findElement(By.id("droppable"));
+
+Actions actions = new Actions(driver);
+actions.dragAndDrop(source, target).perform();
+
+// Alternative approach
+actions.clickAndHold(source)
+       .moveToElement(target)
+       .release()
+       .perform();`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Select Dropdown Options</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+WebElement dropdown = driver.findElement(By.id("countrySelect"));
+Select select = new Select(dropdown);
+
+// Select by visible text
+select.selectByVisibleText("United States");
+
+// Select by value
+select.selectByValue("US");
+
+// Select by index
+select.selectByIndex(1);`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Handling Alerts</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+// Switch to alert
+Alert alert = driver.switchTo().alert();
+
+// Get alert text
+String alertText = alert.getText();
+
+// Accept alert (OK)
+alert.accept();
+
+// Dismiss alert (Cancel)
+alert.dismiss();
+
+// Enter text in prompt
+alert.sendKeys("some text");`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Working with Frames</h4>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+// Switch to frame by index
+driver.switchTo().frame(0);
+
+// Switch to frame by name or ID
+driver.switchTo().frame("frameName");
+
+// Switch to frame by WebElement
+WebElement frameElement = driver.findElement(By.id("frameId"));
+driver.switchTo().frame(frameElement);
+
+// Switch back to main content
+driver.switchTo().defaultContent();`}
+            </pre>
+          </Card>
+        </div>
+        
+        <div className="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-lg mt-6">
+          <h4 className="font-semibold text-yellow-800 dark:text-yellow-300">Exercise: Element Interactions</h4>
+          <p className="text-yellow-800 dark:text-yellow-300 mt-2">
+            Practice the following interactions:
+          </p>
+          <ol className="list-decimal pl-6 mt-2 text-yellow-800 dark:text-yellow-300 space-y-2">
+            <li>Fill out a form with multiple input fields and submit it</li>
+            <li>Handle a confirmation dialog that appears after form submission</li>
+            <li>Work with a dropdown menu to select a specific option</li>
+            <li>Perform a drag-and-drop operation</li>
+          </ol>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "waits",
+    label: "Waits",
+    icon: <BsGear className="mr-2 h-4 w-4" />,
+    content: (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">Synchronization and Waits</h2>
+        <p className="text-lg">
+          Modern web applications load content dynamically, which can cause timing issues in automated tests.
+          Selenium provides different types of waits to handle synchronization challenges.
+        </p>
+        
+        <h3 className="text-xl font-semibold mt-6">Types of Waits</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Implicit Wait</h4>
+            <p className="mb-3 text-sm">
+              A global setting that applies to all element location operations. Tells WebDriver to wait
+              for a specified amount of time when trying to find an element if it's not immediately available.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+
+# Python
+driver.implicitly_wait(10)
+
+// JavaScript
+await driver.manage().setTimeouts({ implicit: 10000 });
+
+// C#
+driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Explicit Wait</h4>
+            <p className="mb-3 text-sm">
+              Waits for a specific condition to occur before proceeding. More powerful and precise
+              than implicit waits.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+WebElement element = wait.until(
+    ExpectedConditions.elementToBeClickable(By.id("submitBtn"))
+);
+
+# Python
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+element = WebDriverWait(driver, 10).until(
+    EC.element_to_be_clickable((By.ID, "submitBtn"))
+)`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Fluent Wait</h4>
+            <p className="mb-3 text-sm">
+              A more customizable explicit wait with the ability to define polling frequency and which
+              exceptions to ignore.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java
+Wait<WebDriver> wait = new FluentWait<>(driver)
+    .withTimeout(Duration.ofSeconds(30))
+    .pollingEvery(Duration.ofMillis(500))
+    .ignoring(NoSuchElementException.class);
+
+WebElement element = wait.until(driver -> {
+    return driver.findElement(By.id("dynamicElement"));
+});`}
+            </pre>
+          </Card>
+          
+          <Card className="p-4 h-full">
+            <h4 className="font-semibold text-lg mb-2">Common Expected Conditions</h4>
+            <p className="mb-3 text-sm">
+              Ready-to-use conditions for explicit waits.
+            </p>
+            <pre className="bg-gray-100 dark:bg-gray-800 p-2 rounded-lg overflow-x-auto text-xs">
+              {`// Java - Wait for element to be visible
+wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("element")));
+
+// Wait for element to be clickable
+wait.until(ExpectedConditions.elementToBeClickable(By.id("button")));
+
+// Wait for element to be invisible
+wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("loader")));
+
+// Wait for text to be present in element
+wait.until(ExpectedConditions.textToBePresentInElementLocated(
+    By.id("message"), "Success"
+));`}
+            </pre>
+          </Card>
+        </div>
+        
+        <h3 className="text-xl font-semibold mt-8">Best Practices for Waits</h3>
+        <ul className="list-disc pl-6 space-y-2 mt-4">
+          <li>Prefer explicit waits over implicit waits for more precise control</li>
+          <li>Set reasonable timeout values based on your application's performance</li>
+          <li>Avoid using Thread.sleep() unless absolutely necessary</li>
+          <li>Use different wait conditions for different scenarios</li>
+          <li>Create custom expected conditions for complex scenarios</li>
+        </ul>
+        
+        <div className="bg-yellow-100 dark:bg-yellow-900/30 p-4 rounded-lg mt-6">
+          <h4 className="font-semibold text-yellow-800 dark:text-yellow-300">Exercise: Working with Waits</h4>
+          <p className="text-yellow-800 dark:text-yellow-300 mt-2">
+            Practice the following scenarios:
+          </p>
+          <ol className="list-decimal pl-6 mt-2 text-yellow-800 dark:text-yellow-300 space-y-2">
+            <li>Wait for a dynamically loaded element to appear after clicking a button</li>
+            <li>Wait for a progress spinner to disappear after a form submission</li>
+            <li>Wait for a text message to change after an AJAX request completes</li>
+            <li>Create a custom wait condition for a specific scenario</li>
+          </ol>
+        </div>
+      </div>
+    )
+  },
+  {
     id: "installation",
     label: "Installation",
     icon: <BsDownload className="mr-2 h-4 w-4" />,
