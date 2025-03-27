@@ -117,10 +117,7 @@ const UnifiedTabs: React.FC<UnifiedTabsProps> = (props) => {
       onChange(tabId);
     }
     
-    // Debug global tab change function
-    if (typeof window !== 'undefined' && window.setTab) {
-      window.setTab(tabId);
-    }
+    // No debugging global tab change function needed anymore
   };
   
   // Copy code to clipboard for code tabs
