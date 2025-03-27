@@ -1,0 +1,74 @@
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+The resource <URL> was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.
+Console.js:61 Tab changed to: learn
+Console.js:61 Tab changed to: install
+Console.js:61 Tab changed to: learn
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A21335805&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=cfabe65e-614b-49b9-b7fe-c80801b0f3fe:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Axhr%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A21335805&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=4acc2e0e-ab7c-4d6f-995e-0b59a5f1a6fd:1 
+            
+            
+           Failed to load resource: net::ERR_BLOCKED_BY_CLIENT
+Console.js:61 Tab changed to: install
+
+                
+          
+          
+          
+         Chrome is moving towards a new experience that allows users to choose to browse without third-party cookies.
+window.setTab('first-script')
+VM1203:1 Uncaught TypeError: window.setTab is not a function
+    at <anonymous>:1:8
+(anonymous) @ VM1203:1
+_app-b0c2c8a106c07f39.js:13 
+            
+            
+           POST https://logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Afetch%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A21335805&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=38e5cee1-dd99-42c2-bbd3-add859027402 net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ _app-b0c2c8a106c07f39.js:13
+a @ _app-b0c2c8a106c07f39.js:30
+g @ _app-b0c2c8a106c07f39.js:30
+m @ _app-b0c2c8a106c07f39.js:30
+send @ _app-b0c2c8a106c07f39.js:30
+e.flush @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+e.notify @ _app-b0c2c8a106c07f39.js:15
+f @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+d @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+n @ _app-b0c2c8a106c07f39.js:13
+_app-b0c2c8a106c07f39.js:13 
+            
+            
+           POST https://logs.browser-intake-us5-datadoghq.com/api/v2/logs?ddsource=browser&ddtags=sdk_version%3A4.46.0%2Capi%3Axhr%2Cenv%3Aproduction%2Cservice%3Awebsite%2Cversion%3A21335805&dd-api-key=pub31a5047a3a4692afb84a423db984dc57&dd-evp-origin-version=4.46.0&dd-evp-origin=browser&dd-request-id=d1ded1c7-3040-436b-9dcf-b5a083f63f2d net::ERR_BLOCKED_BY_CLIENT
+(anonymous) @ _app-b0c2c8a106c07f39.js:13
+(anonymous) @ _app-b0c2c8a106c07f39.js:13
+w @ _app-b0c2c8a106c07f39.js:30
+(anonymous) @ _app-b0c2c8a106c07f39.js:30
+d @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+Promise.then
+a @ _app-b0c2c8a106c07f39.js:30
+g @ _app-b0c2c8a106c07f39.js:30
+m @ _app-b0c2c8a106c07f39.js:30
+send @ _app-b0c2c8a106c07f39.js:30
+e.flush @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+e.notify @ _app-b0c2c8a106c07f39.js:15
+f @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+d @ _app-b0c2c8a106c07f39.js:15
+(anonymous) @ _app-b0c2c8a106c07f39.js:15
+n @ _app-b0c2c8a106c07f39.js:13

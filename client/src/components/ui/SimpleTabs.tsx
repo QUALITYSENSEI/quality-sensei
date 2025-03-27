@@ -2,6 +2,13 @@ import React, { useState } from 'react';
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeContext";
 
+// Add type definition for window object
+declare global {
+  interface Window {
+    setTab: (tab: string) => void;
+  }
+}
+
 export interface SimpleTab {
   id: string;
   label: string;
@@ -27,7 +34,15 @@ export const SimpleTabs: React.FC<SimpleTabsProps> = ({
     console.log(`SimpleTabs - Clicked tab: ${tabId}`);
     // Add direct console log for debugging
     console.log('Current props:', { tabs, activeTab, className });
-    onChange(tabId);
+    
+    // Use a direct state setter function to bypass any potential event issues
+    // This will be a more reliable way to update the state
+    if (typeof window !== 'undefined' && window.setTab) {
+      window.setTab(tabId);
+    } else {
+      // Fallback to the original onChange prop
+      onChange(tabId);
+    }
   };
   
   return (

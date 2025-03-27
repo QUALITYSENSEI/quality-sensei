@@ -84,6 +84,13 @@ const modules: Module[] = [
   }
 ];
 
+// Add type definition for window object
+declare global {
+  interface Window {
+    setTab: (tab: string) => void;
+  }
+}
+
 // Expose this function to the window object for testing in console
 let setActiveTabForTesting: (tab: string) => void;
 
