@@ -1,6 +1,5 @@
 import { 
-  users, type User, type InsertUser,
-  chatMessages, type ChatMessage, type InsertMessage
+  users, type User, type InsertUser
 } from "@shared/schema";
 
 // modify the interface with any CRUD methods
@@ -11,23 +10,22 @@ export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
   getUserByUsername(username: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  
-  // Chat message methods
-  getChatMessages(limit?: number): Promise<ChatMessage[]>;
-  createChatMessage(message: InsertMessage): Promise<ChatMessage>;
 }
 
+/**
+ * This is a simple in-memory storage implementation.
+ * It should ONLY be used for development and testing.
+ * 
+ * NOTE: This class is no longer used as the application is fully static.
+ * It remains here for reference and potential future use.
+ */
 export class MemStorage implements IStorage {
   private users: Map<number, User>;
-  private chatMessages: Map<number, ChatMessage>;
   userCurrentId: number;
-  messageCurrentId: number;
 
   constructor() {
     this.users = new Map();
-    this.chatMessages = new Map();
     this.userCurrentId = 1;
-    this.messageCurrentId = 1;
   }
 
   // User methods
@@ -46,35 +44,6 @@ export class MemStorage implements IStorage {
     const user: User = { ...insertUser, id };
     this.users.set(id, user);
     return user;
-  }
-  
-  // Chat message methods
-  async getChatMessages(limit: number = 50): Promise<ChatMessage[]> {
-    const messages = Array.from(this.chatMessages.values());
-    // Sort by timestamp (newest first)
-    messages.sort((a, b) => {
-      const dateA = a.timestamp instanceof Date ? a.timestamp : new Date(a.timestamp);
-      const dateB = b.timestamp instanceof Date ? b.timestamp : new Date(b.timestamp);
-      return dateB.getTime() - dateA.getTime();
-    });
-    
-    // Return limited number of messages
-    return messages.slice(0, limit);
-  }
-  
-  async createChatMessage(insertMessage: InsertMessage): Promise<ChatMessage> {
-    const id = this.messageCurrentId++;
-    const timestamp = new Date();
-    const message: ChatMessage = { 
-      id,
-      messageType: insertMessage.messageType,
-      message: insertMessage.message,
-      sender: insertMessage.sender || 'Anonymous',
-      timestamp
-    };
-    
-    this.chatMessages.set(id, message);
-    return message;
   }
 }
 

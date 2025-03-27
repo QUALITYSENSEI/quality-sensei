@@ -9,7 +9,6 @@ import BlogPost from "@/pages/BlogPost";
 import Labs from "@/pages/Labs";
 import AutomationLabs from "@/pages/AutomationLabs";
 import SeleniumLab from "@/pages/SeleniumLab";
-import LiveChat from "@/components/ui/LiveChat";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
@@ -44,7 +43,6 @@ function AppContent() {
         <meta property="og:type" content="website" />
       </Helmet>
       <Router />
-      <LiveChat />
       <Toaster />
     </>
   );
