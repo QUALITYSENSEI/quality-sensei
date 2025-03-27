@@ -9,9 +9,10 @@ interface TerminalProps {
   lines: TerminalLine[];
   language?: string;
   className?: string;
+  showCopyButton?: boolean;
 }
 
-const Terminal = ({ lines, language = 'bash', className }: TerminalProps) => {
+const Terminal = ({ lines, language = 'bash', className, showCopyButton = true }: TerminalProps) => {
   const { theme } = useTheme();
   const [visibleLines, setVisibleLines] = useState<TerminalLine[]>([]);
   const [cursorBlinking, setCursorBlinking] = useState(false);
@@ -126,22 +127,24 @@ const Terminal = ({ lines, language = 'bash', className }: TerminalProps) => {
           <div className="w-3 h-3 rounded-full bg-green-500 ml-2"></div>
           <div className="ml-4 text-xs uppercase tracking-wide opacity-70">{language}</div>
         </div>
-        <button
-          onClick={copyToClipboard}
-          className={cn(
-            "p-1.5 rounded-md transition-colors",
-            theme === 'dark' 
-              ? "text-gray-400 hover:text-white hover:bg-gray-700" 
-              : "text-gray-300 hover:text-white hover:bg-gray-700"
-          )}
-          title="Copy to clipboard"
-        >
-          {copied ? (
-            <Check className="h-4 w-4 text-green-500" />
-          ) : (
-            <Copy className="h-4 w-4" />
-          )}
-        </button>
+        {showCopyButton && (
+          <button
+            onClick={copyToClipboard}
+            className={cn(
+              "p-1.5 rounded-md transition-colors",
+              theme === 'dark' 
+                ? "text-gray-400 hover:text-white hover:bg-gray-700" 
+                : "text-gray-300 hover:text-white hover:bg-gray-700"
+            )}
+            title="Copy to clipboard"
+          >
+            {copied ? (
+              <Check className="h-4 w-4 text-green-500" />
+            ) : (
+              <Copy className="h-4 w-4" />
+            )}
+          </button>
+        )}
       </div>
       
       <div className="terminal-text space-y-1 font-mono text-sm">
