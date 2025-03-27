@@ -190,14 +190,14 @@ const UnifiedTabs: React.FC<UnifiedTabsProps> = (props) => {
       case 'labContent':
         return cn(
           baseClasses,
-          "py-2 px-4 rounded-md text-center",
+          "py-3 px-4 rounded-md w-full text-left border-l-2",
           isActive
             ? theme === 'dark'
-              ? 'bg-gray-900 text-[#40E0D0] shadow-sm'
-              : 'bg-white text-[#00BCD4] shadow-sm'
+              ? 'bg-gray-800 text-white border-[#40E0D0] font-medium'
+              : 'bg-gray-100 text-gray-900 border-[#00BCD4] font-medium'
             : theme === 'dark'
-              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+              ? 'text-gray-400 hover:bg-gray-800/50 hover:text-gray-200 border-transparent'
+              : 'text-gray-600 hover:bg-gray-100/80 hover:text-gray-900 border-transparent'
         );
         
       case 'default':
@@ -243,8 +243,8 @@ const UnifiedTabs: React.FC<UnifiedTabsProps> = (props) => {
         fullWidth ? "w-full" : "w-fit"
       ),
       labContent: cn(
-        commonTabListClasses,
-        "justify-around mb-6 bg-gray-100 dark:bg-gray-800 rounded-md p-1",
+        "flex-col",
+        "mb-6 space-y-2",
         fullWidth ? "w-full" : "w-fit"
       ),
     }[variant];
