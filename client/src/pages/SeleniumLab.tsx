@@ -84,9 +84,19 @@ export default function SeleniumLab() {
   const { theme } = useTheme();
   const { toast } = useToast();
   
-  // Start with default values
+  // Read any persisted tab state from localStorage
+  const getInitialActiveTab = () => {
+    try {
+      const savedTab = localStorage.getItem('seleniumLabActiveTab');
+      return savedTab || 'install';
+    } catch (e) {
+      return 'install';
+    }
+  };
+  
+  // Start with default values or persisted values
   const [activeModule, setActiveModule] = useState('intro');
-  const [activeTab, setActiveTab] = useState('install');
+  const [activeTab, setActiveTab] = useState(getInitialActiveTab());
   
   // Define tab configurations
   const introTabs = [
@@ -101,24 +111,29 @@ export default function SeleniumLab() {
     { id: 'challenge', label: 'Challenge', icon: <PlayCircle className="w-4 h-4" /> }
   ];
   
-  // Tab change handler with useCallback to ensure stability
-  const handleTabChange = useCallback((tabId: string) => {
+  // Tab change handler
+  const handleTabChange = (tabId: string) => {
     console.log(`Tab changed to: ${tabId}`);
-    setActiveTab(tabId);
-  }, []);
+    // Update our state
+    window.setTimeout(() => {
+      setActiveTab(tabId);
+    }, 0);
+  };
   
-  // Module change handler with useCallback
-  const handleModuleChange = useCallback((moduleId: string) => {
+  // Module change handler
+  const handleModuleChange = (moduleId: string) => {
     console.log(`Module changed to: ${moduleId}`);
     setActiveModule(moduleId);
     
-    // Reset tab when module changes
-    if (moduleId === 'intro') {
-      setActiveTab('install');
-    } else {
-      setActiveTab('learn');
-    }
-  }, []);
+    // Reset tab when module changes with a small timeout to ensure DOM is updated
+    window.setTimeout(() => {
+      if (moduleId === 'intro') {
+        setActiveTab('install');
+      } else {
+        setActiveTab('learn');
+      }
+    }, 10);
+  };
   
   // Listen to escape key for debugging
   useEffect(() => {

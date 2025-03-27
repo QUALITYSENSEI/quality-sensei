@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -27,6 +27,8 @@ export default function LabContentTabs({
 }: LabContentTabsProps) {
   const { theme } = useTheme();
   const [currentTabs, setCurrentTabs] = useState<TabConfig[]>(activeModule === 'intro' ? introTabs : otherTabs);
+  const [displayedTab, setDisplayedTab] = useState(activeTab);
+  const containerRef = useRef<HTMLDivElement>(null);
   
   // Update tabs based on the active module
   useEffect(() => {
@@ -37,32 +39,77 @@ export default function LabContentTabs({
     }
   }, [activeModule, introTabs, otherTabs]);
 
-  function handleDirectTabClick(tabId: string) {
-    // Handle tab change directly without any intermediary
-    console.log(`Direct tab click: ${tabId}`);
-    onTabChange(tabId);
-  }
+  // Sync displayed tab with active tab
+  useEffect(() => {
+    setDisplayedTab(activeTab);
+  }, [activeTab]);
+  
+  // Direct DOM event handling for tab clicks
+  useEffect(() => {
+    const attachTabClickListeners = () => {
+      if (!containerRef.current) return;
+      
+      const buttons = containerRef.current.querySelectorAll('[data-tab-id]');
+      buttons.forEach(button => {
+        button.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const tabId = button.getAttribute('data-tab-id');
+          if (tabId) {
+            console.log(`DOM click on tab: ${tabId}`);
+            onTabChange(tabId);
+            // Force a state update to ensure re-render
+            setDisplayedTab(tabId);
+            
+            // Store the active tab in localStorage for persistence
+            try {
+              localStorage.setItem('seleniumLabActiveTab', tabId);
+            } catch (e) {
+              console.error("Failed to save tab state to localStorage", e);
+            }
+          }
+        });
+      });
+    };
+    
+    // Run with a small timeout to ensure DOM is ready
+    const timerId = setTimeout(() => {
+      attachTabClickListeners();
+    }, 100);
+    
+    return () => clearTimeout(timerId);
+  }, [onTabChange, currentTabs]); // Re-attach listeners when tabs change
 
   return (
-    <div className={cn(
-      "p-6 rounded-lg",
-      theme === "dark" ? "bg-gray-800" : "bg-white shadow-sm"
-    )}>
+    <div 
+      ref={containerRef}
+      className={cn(
+        "p-6 rounded-lg",
+        theme === "dark" ? "bg-gray-800" : "bg-white shadow-sm"
+      )}
+    >
       <div className="border-b pb-4 mb-4">
-        {/* Direct tab implementation without any subcomponents */}
-        <div className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-800 rounded-md p-1">
+        {/* Direct HTML Tabs */}
+        <div className="mb-2 px-1 text-center">
+          <h4 className="text-sm font-medium text-gray-500">Click tabs to navigate (Fixed tabs)</h4>
+        </div>
+        <div className="flex justify-around mb-6 bg-gray-100 dark:bg-gray-800 rounded-md p-1">
           {currentTabs.map((tab) => {
-            const isActive = activeTab === tab.id;
+            const isActive = displayedTab === tab.id;
             return (
-              <button
+              <a
                 key={tab.id}
-                type="button"
+                href={`#${tab.id}`}
                 data-tab-id={tab.id}
-                aria-selected={isActive}
-                aria-controls={`tab-panel-${tab.id}`}
-                onClick={() => handleDirectTabClick(tab.id)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  const tabId = tab.id;
+                  console.log(`Direct anchor click: ${tabId}`);
+                  onTabChange(tabId);
+                  setDisplayedTab(tabId);
+                }}
                 className={cn(
-                  "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                  "block py-2 px-4 rounded-md transition-all text-center",
                   isActive
                     ? theme === 'dark'
                       ? 'bg-gray-900 text-[#40E0D0] shadow-sm'
@@ -72,9 +119,11 @@ export default function LabContentTabs({
                       : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
                 )}
               >
-                {tab.icon && <span className="icon-container">{tab.icon}</span>}
-                <span>{tab.label}</span>
-              </button>
+                <div className="flex items-center justify-center gap-2">
+                  {tab.icon && <span className="icon-container">{tab.icon}</span>}
+                  <span>{tab.label}</span>
+                </div>
+              </a>
             );
           })}
         </div>
@@ -83,11 +132,11 @@ export default function LabContentTabs({
       {/* Tab Content */}
       <div 
         className="tab-content mt-6" 
-        id={`tab-panel-${activeTab}`}
+        id={`tab-panel-${displayedTab}`}
         role="tabpanel" 
-        aria-labelledby={`tab-${activeTab}`}
+        aria-labelledby={`tab-${displayedTab}`}
       >
-        {renderTabContent(activeTab)}
+        {renderTabContent(displayedTab)}
       </div>
     </div>
   );
