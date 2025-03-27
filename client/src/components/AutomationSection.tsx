@@ -1,0 +1,137 @@
+import { motion } from 'framer-motion';
+import { useState } from 'react';
+import {
+  SiSelenium,
+  SiCypress,
+  SiApachejmeter,
+  SiPostman,
+  SiK6,
+  SiTestcafe,
+  SiAppium,
+  SiPuppeteer,
+  SiGatling,
+  SiJest,
+  SiMocha,
+  SiChai,
+  SiJasmine,
+  SiTestinglibrary,
+  SiDocker,
+  SiKubernetes,
+  SiGraphql,
+  SiWebdriverio,
+  SiProtractor,
+  SiSaucelabs,
+  SiCodecov,
+  SiCodeclimate,
+  SiJenkins,
+  SiTravisci,
+  SiCircleci,
+  SiEslint,
+  SiSonarqube,
+  SiCucumber,
+} from 'react-icons/si';
+
+const marqueeTools = [
+  { name: 'Selenium', icon: SiSelenium },
+  { name: 'Cypress', icon: SiCypress },
+  { name: 'TestCafe', icon: SiTestcafe },
+  { name: 'Puppeteer', icon: SiPuppeteer },
+  { name: 'JMeter', icon: SiApachejmeter },
+  { name: 'K6', icon: SiK6 },
+  { name: 'Gatling', icon: SiGatling },
+  { name: 'Postman', icon: SiPostman },
+  { name: 'Appium', icon: SiAppium },
+  { name: 'Jest', icon: SiJest },
+  { name: 'Mocha', icon: SiMocha },
+  { name: 'Chai', icon: SiChai },
+  { name: 'Jasmine', icon: SiJasmine },
+  { name: 'Testing Library', icon: SiTestinglibrary },
+  { name: 'WebdriverIO', icon: SiWebdriverio },
+  { name: 'Protractor', icon: SiProtractor },
+  { name: 'SauceLabs', icon: SiSaucelabs },
+  { name: 'Codecov', icon: SiCodecov },
+  { name: 'Code Climate', icon: SiCodeclimate },
+  { name: 'Jenkins', icon: SiJenkins },
+  { name: 'Travis CI', icon: SiTravisci },
+  { name: 'CircleCI', icon: SiCircleci },
+  { name: 'ESLint', icon: SiEslint },
+  { name: 'SonarQube', icon: SiSonarqube },
+  { name: 'Cucumber', icon: SiCucumber },
+  { name: 'Docker', icon: SiDocker },
+  { name: 'Kubernetes', icon: SiKubernetes },
+  { name: 'GraphQL', icon: SiGraphql },
+];
+
+const AutomationSection = () => {
+  const [isHovered, setIsHovered] = useState(false);
+  const duplicatedTools = [...marqueeTools, ...marqueeTools];
+
+  return (
+      <section id="tools" className="py-20 relative overflow-hidden bg-[#0F172A]">
+        <div className="absolute inset-0 opacity-30 -z-10 bg-gradient-to-b from-[#0F172A] to-[#1E293B]" />
+
+        <div className="container mx-auto px-4">
+          {/* Header */}
+          <motion.div
+              className="text-center mb-16"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.6 }}
+          >
+          <span className="text-[#22D3EE] uppercase tracking-wider font-medium relative inline-block">
+            Technology Stack
+            <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-[#22D3EE]/0 via-[#22D3EE] to-[#22D3EE]/0"></span>
+          </span>
+            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-white neon-text">
+              Automation Tools
+            </h2>
+            <p className="text-[#94A3B8] mt-4 max-w-2xl mx-auto">
+              Glide through the industry's leading automation tools in motion.
+            </p>
+          </motion.div>
+
+          {/* Marquee */}
+          <div
+              className="overflow-hidden relative my-12"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+          >
+            <motion.div
+                className="inline-flex items-center gap-8 md:gap-10"
+                animate={{ x: ['0%', '-50%'] }}
+                transition={{
+                  x: {
+                    repeat: Infinity,
+                    repeatType: 'loop',
+                    duration: 80,
+                    ease: 'linear',
+                  },
+                }}
+                style={{
+                  width: 'max-content',
+                  animationPlayState: isHovered ? 'paused' : 'running',
+                }}
+            >
+              {duplicatedTools.map((tool, index) => {
+                const Icon = tool.icon;
+                return (
+                    <div
+                        key={`${tool.name}-${index}`}
+                        className="w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 flex-shrink-0 bg-[#1E293B] border border-[#334155] rounded-lg flex flex-col items-center justify-center text-center shadow-md hover:shadow-lg transition-all"
+                    >
+                      <Icon className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 text-[#22D3EE]" />
+                      <span className="mt-2 text-xs sm:text-sm font-medium text-gray-300 text-center px-1">
+                    {tool.name}
+                  </span>
+                    </div>
+                );
+              })}
+            </motion.div>
+          </div>
+        </div>
+      </section>
+  );
+};
+
+export default AutomationSection;

@@ -2,6 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Neon text effect for titles */
+.neon-text {
+  text-shadow: 0 0 5px rgba(34, 211, 238, 0.3), 
+               0 0 10px rgba(34, 211, 238, 0.2), 
+               0 0 15px rgba(34, 211, 238, 0.1);
+  animation: neon-pulse 3s ease-in-out infinite alternate;
+}
+
+@keyframes neon-pulse {
+  from {
+    text-shadow: 0 0 5px rgba(34, 211, 238, 0.3), 
+                 0 0 10px rgba(34, 211, 238, 0.2), 
+                 0 0 15px rgba(34, 211, 238, 0.1);
+  }
+  to {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 
+                 0 0 20px rgba(34, 211, 238, 0.3), 
+                 0 0 30px rgba(34, 211, 238, 0.2);
+  }
+}
+
 /* Terminal cursor blinking animation */
 @keyframes blink {
   0%, 100% { opacity: 1; }
