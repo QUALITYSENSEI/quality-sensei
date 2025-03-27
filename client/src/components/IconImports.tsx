@@ -70,6 +70,8 @@ export {
 export const SiJava = FaJava;
 export const SiCsharp = TbBrandCSharp;
 export const SiRuby = DiRuby;
+export const SiJavascript = FaJs;
+export const SiPython = FaPython;
 
 // Custom icon components for missing icons
 export const SiPlaywright = () => (

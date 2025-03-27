@@ -7,6 +7,9 @@ import Home from "@/pages/Home";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import BlogPost from "@/pages/BlogPost";
+import Labs from "@/pages/Labs";
+import AutomationLabs from "@/pages/AutomationLabs";
+import SeleniumLab from "@/pages/SeleniumLab";
 import { Helmet } from "react-helmet-async";
 import { ThemeProvider, useTheme } from "./contexts/ThemeContext";
 
@@ -17,8 +20,10 @@ function Router() {
       <Route path="/about" component={About} />
       <Route path="/blog" component={Blog} />
       <Route path="/blog/:id" component={BlogPost} />
-      <Route path="/labs" component={NotFound} />
-      <Route path="/labs/*" component={NotFound} />
+      <Route path="/labs" component={Labs} />
+      <Route path="/labs/automation" component={AutomationLabs} />
+      <Route path="/labs/automation/selenium" component={SeleniumLab} />
+      <Route path="/labs/automation/selenium/:moduleId" component={SeleniumLab} />
       <Route component={NotFound} />
     </Switch>
   );

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Zap, Search, Target, Clock, Star } from 'lucide-react';
 import CodeExample from '@/components/ui/CodeExample';
 import { cn } from '@/lib/utils';
@@ -24,14 +23,14 @@ export default function UsingSeleniumContent() {
     { name: 'Navigation', value: 'navigation', icon: <Target className="h-4 w-4" /> }
   ];
 
-  // Example code snippets for each category/language combination
-  const examples = {
-    findElement: {
-      java: `// Finding elements using different locator strategies
+  // Example code snippets for each category
+  const findElementCode = {
+    java: `// Finding elements using different locator strategies
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import java.util.List;
 
 public class FindElementsExample {
     public static void main(String[] args) {
@@ -54,15 +53,6 @@ public class FindElementsExample {
             // Find element by XPath
             WebElement elementByXPath = driver.findElement(By.xpath("//button[contains(text(),'Log In')]"));
             
-            // Find element by link text
-            WebElement elementByLinkText = driver.findElement(By.linkText("Forgot Password?"));
-            
-            // Find element by partial link text
-            WebElement elementByPartialLinkText = driver.findElement(By.partialLinkText("Forgot"));
-            
-            // Find element by tag name
-            WebElement elementByTagName = driver.findElement(By.tagName("button"));
-            
             // Find multiple elements (returns a list)
             List<WebElement> elements = driver.findElements(By.cssSelector(".product-item"));
             System.out.println("Found " + elements.size() + " product items");
@@ -72,7 +62,7 @@ public class FindElementsExample {
         }
     }
 }`,
-      python: `# Finding elements using different locator strategies
+    python: `# Finding elements using different locator strategies
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -95,22 +85,13 @@ try:
     # Find element by XPath
     element_by_xpath = driver.find_element(By.XPATH, "//button[contains(text(),'Log In')]")
     
-    # Find element by link text
-    element_by_link_text = driver.find_element(By.LINK_TEXT, "Forgot Password?")
-    
-    # Find element by partial link text
-    element_by_partial_link_text = driver.find_element(By.PARTIAL_LINK_TEXT, "Forgot")
-    
-    # Find element by tag name
-    element_by_tag_name = driver.find_element(By.TAG_NAME, "button")
-    
     # Find multiple elements (returns a list)
     elements = driver.find_elements(By.CSS_SELECTOR, ".product-item")
     print(f"Found {len(elements)} product items")
     
 finally:
     driver.quit()`,
-      javascript: `// Finding elements using different locator strategies
+    javascript: `// Finding elements using different locator strategies
 const { Builder, By } = require('selenium-webdriver');
 
 (async function findElementsExample() {
@@ -134,24 +115,15 @@ const { Builder, By } = require('selenium-webdriver');
         // Find element by XPath
         const elementByXPath = await driver.findElement(By.xpath("//button[contains(text(),'Log In')]"));
         
-        // Find element by link text
-        const elementByLinkText = await driver.findElement(By.linkText('Forgot Password?'));
-        
-        // Find element by partial link text
-        const elementByPartialLinkText = await driver.findElement(By.partialLinkText('Forgot'));
-        
-        // Find element by tag name
-        const elementByTagName = await driver.findElement(By.tagName('button'));
-        
         // Find multiple elements (returns a list)
         const elements = await driver.findElements(By.css('.product-item'));
-        console.log(`Found ${elements.length} product items`);
+        console.log("Found " + elements.length + " product items");
         
     } finally {
         await driver.quit();
     }
 })();`,
-      csharp: `// Finding elements using different locator strategies
+    csharp: `// Finding elements using different locator strategies
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
@@ -181,15 +153,6 @@ class FindElementsExample
             // Find element by XPath
             IWebElement elementByXPath = driver.FindElement(By.XPath("//button[contains(text(),'Log In')]"));
             
-            // Find element by link text
-            IWebElement elementByLinkText = driver.FindElement(By.LinkText("Forgot Password?"));
-            
-            // Find element by partial link text
-            IWebElement elementByPartialLinkText = driver.FindElement(By.PartialLinkText("Forgot"));
-            
-            // Find element by tag name
-            IWebElement elementByTagName = driver.FindElement(By.TagName("button"));
-            
             // Find multiple elements (returns a list)
             IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.CssSelector(".product-item"));
             Console.WriteLine($"Found {elements.Count} product items");
@@ -200,9 +163,10 @@ class FindElementsExample
         }
     }
 }`
-    },
-    elementInteractions: {
-      java: `// Interacting with elements
+  };
+
+  const elementInteractionsCode = {
+    java: `// Interacting with elements
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -228,16 +192,6 @@ public class ElementInteractionsExample {
             searchField.clear();
             searchField.sendKeys("selenium testing");
             
-            // Submit a form
-            WebElement form = driver.findElement(By.id("login-form"));
-            form.submit();
-            
-            // Check/uncheck a checkbox
-            WebElement checkbox = driver.findElement(By.name("remember-me"));
-            if (!checkbox.isSelected()) {
-                checkbox.click(); // Check the checkbox
-            }
-            
             // Working with dropdown lists
             WebElement dropdown = driver.findElement(By.id("country"));
             Select selectCountry = new Select(dropdown);
@@ -251,21 +205,12 @@ public class ElementInteractionsExample {
             // Select by index
             selectCountry.selectByIndex(1);
             
-            // Get text from an element
-            WebElement heading = driver.findElement(By.tagName("h1"));
-            String headingText = heading.getText();
-            System.out.println("Heading text: " + headingText);
-            
-            // Get attribute value
-            String placeholder = usernameField.getAttribute("placeholder");
-            System.out.println("Placeholder text: " + placeholder);
-            
         } finally {
             driver.quit();
         }
     }
 }`,
-      python: `# Interacting with elements
+    python: `# Interacting with elements
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
@@ -287,15 +232,6 @@ try:
     search_field.clear()
     search_field.send_keys("selenium testing")
     
-    # Submit a form
-    form = driver.find_element(By.ID, "login-form")
-    form.submit()
-    
-    # Check/uncheck a checkbox
-    checkbox = driver.find_element(By.NAME, "remember-me")
-    if not checkbox.is_selected():
-        checkbox.click()  # Check the checkbox
-    
     # Working with dropdown lists
     dropdown = driver.find_element(By.ID, "country")
     select_country = Select(dropdown)
@@ -309,18 +245,9 @@ try:
     # Select by index
     select_country.select_by_index(1)
     
-    # Get text from an element
-    heading = driver.find_element(By.TAG_NAME, "h1")
-    heading_text = heading.text
-    print(f"Heading text: {heading_text}")
-    
-    # Get attribute value
-    placeholder = username_field.get_attribute("placeholder")
-    print(f"Placeholder text: {placeholder}")
-    
 finally:
     driver.quit()`,
-      javascript: `// Interacting with elements
+    javascript: `// Interacting with elements
 const { Builder, By } = require('selenium-webdriver');
 
 (async function elementInteractionsExample() {
@@ -342,42 +269,17 @@ const { Builder, By } = require('selenium-webdriver');
         await searchField.clear();
         await searchField.sendKeys('selenium testing');
         
-        // Submit a form
-        const form = await driver.findElement(By.id('login-form'));
-        await form.submit();
-        
-        // Check/uncheck a checkbox
-        const checkbox = await driver.findElement(By.name('remember-me'));
-        if (!(await checkbox.isSelected())) {
-            await checkbox.click(); // Check the checkbox
-        }
-        
-        // Working with dropdown lists (using standard select methods in JavaScript)
+        // Working with dropdown lists
         const dropdown = await driver.findElement(By.id('country'));
-        
-        // Select by visible text (using JavaScript execution)
-        await driver.executeScript(
-            'arguments[0].value = Array.from(arguments[0].options).find(o => o.text === "United States").value', 
-            dropdown
-        );
         
         // Select by value attribute
         await dropdown.sendKeys('US');
-        
-        // Get text from an element
-        const heading = await driver.findElement(By.css('h1'));
-        const headingText = await heading.getText();
-        console.log('Heading text:', headingText);
-        
-        // Get attribute value
-        const placeholder = await usernameField.getAttribute('placeholder');
-        console.log('Placeholder text:', placeholder);
         
     } finally {
         await driver.quit();
     }
 })();`,
-      csharp: `// Interacting with elements
+    csharp: `// Interacting with elements
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -405,17 +307,6 @@ class ElementInteractionsExample
             searchField.Clear();
             searchField.SendKeys("selenium testing");
             
-            // Submit a form
-            IWebElement form = driver.FindElement(By.Id("login-form"));
-            form.Submit();
-            
-            // Check/uncheck a checkbox
-            IWebElement checkbox = driver.FindElement(By.Name("remember-me"));
-            if (!checkbox.Selected)
-            {
-                checkbox.Click(); // Check the checkbox
-            }
-            
             // Working with dropdown lists
             IWebElement dropdown = driver.FindElement(By.Id("country"));
             SelectElement selectCountry = new SelectElement(dropdown);
@@ -428,15 +319,6 @@ class ElementInteractionsExample
             
             // Select by index
             selectCountry.SelectByIndex(1);
-            
-            // Get text from an element
-            IWebElement heading = driver.FindElement(By.TagName("h1"));
-            string headingText = heading.Text;
-            Console.WriteLine($"Heading text: {headingText}");
-            
-            // Get attribute value
-            string placeholder = usernameField.GetAttribute("placeholder");
-            Console.WriteLine($"Placeholder text: {placeholder}");
         }
         finally
         {
@@ -444,18 +326,17 @@ class ElementInteractionsExample
         }
     }
 }`
-    },
-    waitStrategies: {
-      java: `// Wait strategies in Selenium
+  };
+
+  const waitStrategiesCode = {
+    java: `// Wait strategies in Selenium
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
-import java.util.function.Function;
 
 public class WaitStrategiesExample {
     public static void main(String[] args) {
@@ -485,30 +366,16 @@ public class WaitStrategiesExample {
                 ExpectedConditions.textToBePresentInElement(userPanel, "Welcome")
             );
             
-            // 3. Fluent Wait - more customizable explicit wait
-            FluentWait<WebDriver> fluentWait = new FluentWait<>(driver)
-                .withTimeout(Duration.ofSeconds(30))
-                .pollingEvery(Duration.ofMillis(500))
-                .ignoring(org.openqa.selenium.NoSuchElementException.class);
-            
-            WebElement element = fluentWait.until(new Function<WebDriver, WebElement>() {
-                public WebElement apply(WebDriver driver) {
-                    return driver.findElement(By.id("dynamically-loaded"));
-                }
-            });
-            
         } finally {
             driver.quit();
         }
     }
 }`,
-      python: `# Wait strategies in Selenium
+    python: `# Wait strategies in Selenium
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
-import time
 
 driver = webdriver.Chrome()
 driver.get("https://example.com")
@@ -536,26 +403,9 @@ try:
         EC.text_to_be_present_in_element((By.ID, "user-panel"), "Welcome")
     )
     
-    # 3. Fluent Wait - more customizable explicit wait
-    from selenium.webdriver.support.wait import WebDriverWait
-    
-    fluent_wait = WebDriverWait(
-        driver, 
-        timeout=30,
-        poll_frequency=0.5,
-        ignored_exceptions=[NoSuchElementException]
-    )
-    
-    element = fluent_wait.until(
-        lambda d: d.find_element(By.ID, "dynamically-loaded")
-    )
-    
-    # 4. Sleep - avoid in real tests, but sometimes necessary
-    # time.sleep(2)  # Waits for 2 seconds (avoid in production)
-    
 finally:
     driver.quit()`,
-      javascript: `// Wait strategies in Selenium
+    javascript: `// Wait strategies in Selenium
 const { Builder, By, until } = require('selenium-webdriver');
 
 (async function waitStrategiesExample() {
@@ -591,17 +441,11 @@ const { Builder, By, until } = require('selenium-webdriver');
             10000
         );
         
-        // 3. Custom Wait conditions
-        await driver.wait(async function() {
-            const elementText = await driver.findElement(By.id('dynamically-loaded')).getText();
-            return elementText.includes('Loaded successfully');
-        }, 30000, 'Element never contained the expected text');
-        
     } finally {
         await driver.quit();
     }
 })();`,
-      csharp: `// Wait strategies in Selenium
+    csharp: `// Wait strategies in Selenium
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -638,16 +482,6 @@ class WaitStrategiesExample
             wait.Until(
                 ExpectedConditions.TextToBePresentInElement(userPanel, "Welcome")
             );
-            
-            // 3. Fluent Wait - more customizable explicit wait
-            DefaultWait<IWebDriver> fluentWait = new DefaultWait<IWebDriver>(driver)
-            {
-                Timeout = TimeSpan.FromSeconds(30),
-                PollingInterval = TimeSpan.FromMilliseconds(500)
-            };
-            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
-            
-            IWebElement element = fluentWait.Until(d => d.FindElement(By.Id("dynamically-loaded")));
         }
         finally
         {
@@ -655,13 +489,11 @@ class WaitStrategiesExample
         }
     }
 }`
-    },
-    navigation: {
-      java: `// Navigation in Selenium
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+  };
+
+  const navigationCode = {
+    java: `// Navigation in Selenium
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class NavigationExample {
@@ -680,55 +512,20 @@ public class NavigationExample {
             driver.navigate().forward();   // Go forward
             driver.navigate().refresh();   // Refresh current page
             
-            // Working with multiple windows/tabs
-            // Open a new tab via JavaScript
-            ((JavascriptExecutor) driver).executeScript("window.open('https://example.com/contact', '_blank');");
+            // Get current URL and title
+            String currentUrl = driver.getCurrentUrl();
+            String pageTitle = driver.getTitle();
             
-            // Get all window handles
-            String originalWindow = driver.getWindowHandle();
-            for (String windowHandle : driver.getWindowHandles()) {
-                if(!originalWindow.equals(windowHandle)) {
-                    // Switch to new window/tab
-                    driver.switchTo().window(windowHandle);
-                    break;
-                }
-            }
-            
-            // Do something in the new tab
-            System.out.println("New tab title: " + driver.getTitle());
-            
-            // Switch back to original window
-            driver.switchTo().window(originalWindow);
-            
-            // Working with iframes
-            // Switch to an iframe by index
-            driver.switchTo().frame(0);
-            
-            // Switch to an iframe by name or ID
-            driver.switchTo().frame("iframe-name");
-            
-            // Switch to an iframe by WebElement
-            WebElement iframe = driver.findElement(By.cssSelector("#content-frame"));
-            driver.switchTo().frame(iframe);
-            
-            // Switch back to main content from iframe
-            driver.switchTo().defaultContent();
-            
-            // Working with alerts
-            // Switch to an alert
-            driver.switchTo().alert().accept();  // Click OK
-            driver.switchTo().alert().dismiss(); // Click Cancel
-            driver.switchTo().alert().sendKeys("Text input"); // Type into prompt
-            String alertText = driver.switchTo().alert().getText(); // Get alert text
+            System.out.println("Current URL: " + currentUrl);
+            System.out.println("Page title: " + pageTitle);
             
         } finally {
             driver.quit();
         }
     }
 }`,
-      python: `# Navigation in Selenium
+    python: `# Navigation in Selenium
 from selenium import webdriver
-from selenium.webdriver.common.by import By
 
 driver = webdriver.Chrome()
 
@@ -737,56 +534,24 @@ try:
     driver.get("https://example.com")
     
     # Alternative navigation method
-    driver.navigate().to("https://example.com/about")
+    driver.get("https://example.com/about")
     
     # Browser navigation
     driver.back()      # Go back to previous page
     driver.forward()   # Go forward
     driver.refresh()   # Refresh current page
     
-    # Working with multiple windows/tabs
-    # Open a new tab via JavaScript
-    driver.execute_script("window.open('https://example.com/contact', '_blank');")
+    # Get current URL and title
+    current_url = driver.current_url
+    page_title = driver.title
     
-    # Get all window handles
-    original_window = driver.current_window_handle
-    for window_handle in driver.window_handles:
-        if window_handle != original_window:
-            # Switch to new window/tab
-            driver.switch_to.window(window_handle)
-            break
-    
-    # Do something in the new tab
-    print(f"New tab title: {driver.title}")
-    
-    # Switch back to original window
-    driver.switch_to.window(original_window)
-    
-    # Working with iframes
-    # Switch to an iframe by index
-    driver.switch_to.frame(0)
-    
-    # Switch to an iframe by name or ID
-    driver.switch_to.frame("iframe-name")
-    
-    # Switch to an iframe by WebElement
-    iframe = driver.find_element(By.CSS_SELECTOR, "#content-frame")
-    driver.switch_to.frame(iframe)
-    
-    # Switch back to main content from iframe
-    driver.switch_to.default_content()
-    
-    # Working with alerts
-    # Switch to an alert
-    driver.switch_to.alert.accept()  # Click OK
-    driver.switch_to.alert.dismiss() # Click Cancel
-    driver.switch_to.alert.send_keys("Text input") # Type into prompt
-    alert_text = driver.switch_to.alert.text # Get alert text
+    print(f"Current URL: {current_url}")
+    print(f"Page title: {page_title}")
     
 finally:
     driver.quit()`,
-      javascript: `// Navigation in Selenium
-const { Builder, By } = require('selenium-webdriver');
+    javascript: `// Navigation in Selenium
+const { Builder } = require('selenium-webdriver');
 
 (async function navigationExample() {
     let driver = await new Builder().forBrowser('chrome').build();
@@ -803,60 +568,21 @@ const { Builder, By } = require('selenium-webdriver');
         await driver.navigate().forward();   // Go forward
         await driver.navigate().refresh();   // Refresh current page
         
-        // Working with multiple windows/tabs
-        // Open a new tab via JavaScript
-        await driver.executeScript("window.open('https://example.com/contact', '_blank');");
+        // Get current URL and title
+        const currentUrl = await driver.getCurrentUrl();
+        const pageTitle = await driver.getTitle();
         
-        // Get all window handles
-        const originalWindow = await driver.getWindowHandle();
-        const windows = await driver.getAllWindowHandles();
-        
-        for (const handle of windows) {
-            if (handle !== originalWindow) {
-                // Switch to new window/tab
-                await driver.switchTo().window(handle);
-                break;
-            }
-        }
-        
-        // Do something in the new tab
-        const newTabTitle = await driver.getTitle();
-        console.log(`New tab title: ${newTabTitle}`);
-        
-        // Switch back to original window
-        await driver.switchTo().window(originalWindow);
-        
-        // Working with iframes
-        // Switch to an iframe by index
-        await driver.switchTo().frame(0);
-        
-        // Switch to an iframe by name or ID
-        await driver.switchTo().frame('iframe-name');
-        
-        // Switch to an iframe by WebElement
-        const iframe = await driver.findElement(By.css('#content-frame'));
-        await driver.switchTo().frame(iframe);
-        
-        // Switch back to main content from iframe
-        await driver.switchTo().defaultContent();
-        
-        // Working with alerts
-        // Switch to an alert
-        await driver.switchTo().alert().accept();  // Click OK
-        await driver.switchTo().alert().dismiss(); // Click Cancel
-        await driver.switchTo().alert().sendKeys('Text input'); // Type into prompt
-        const alertText = await driver.switchTo().alert().getText(); // Get alert text
+        console.log("Current URL: " + currentUrl);
+        console.log("Page title: " + pageTitle);
         
     } finally {
         await driver.quit();
     }
 })();`,
-      csharp: `// Navigation in Selenium
+    csharp: `// Navigation in Selenium
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 class NavigationExample
 {
@@ -877,48 +603,12 @@ class NavigationExample
             driver.Navigate().Forward();   // Go forward
             driver.Navigate().Refresh();   // Refresh current page
             
-            // Working with multiple windows/tabs
-            // Open a new tab via JavaScript
-            ((IJavaScriptExecutor)driver).ExecuteScript("window.open('https://example.com/contact', '_blank');");
+            // Get current URL and title
+            string currentUrl = driver.Url;
+            string pageTitle = driver.Title;
             
-            // Get all window handles
-            string originalWindow = driver.CurrentWindowHandle;
-            foreach (string windowHandle in driver.WindowHandles)
-            {
-                if (windowHandle != originalWindow)
-                {
-                    // Switch to new window/tab
-                    driver.SwitchTo().Window(windowHandle);
-                    break;
-                }
-            }
-            
-            // Do something in the new tab
-            Console.WriteLine($"New tab title: {driver.Title}");
-            
-            // Switch back to original window
-            driver.SwitchTo().Window(originalWindow);
-            
-            // Working with iframes
-            // Switch to an iframe by index
-            driver.SwitchTo().Frame(0);
-            
-            // Switch to an iframe by name or ID
-            driver.SwitchTo().Frame("iframe-name");
-            
-            // Switch to an iframe by WebElement
-            IWebElement iframe = driver.FindElement(By.CssSelector("#content-frame"));
-            driver.SwitchTo().Frame(iframe);
-            
-            // Switch back to main content from iframe
-            driver.SwitchTo().DefaultContent();
-            
-            // Working with alerts
-            // Switch to an alert
-            driver.SwitchTo().Alert().Accept();  // Click OK
-            driver.SwitchTo().Alert().Dismiss(); // Click Cancel
-            driver.SwitchTo().Alert().SendKeys("Text input"); // Type into prompt
-            string alertText = driver.SwitchTo().Alert().Text; // Get alert text
+            Console.WriteLine($"Current URL: {currentUrl}");
+            Console.WriteLine($"Page title: {pageTitle}");
         }
         finally
         {
@@ -926,6 +616,21 @@ class NavigationExample
         }
     }
 }`
+  };
+
+  // Helper function to get code based on selected example and language
+  const getCodeForCurrentSelection = () => {
+    switch (selectedExample) {
+      case 'findElement':
+        return findElementCode[selectedLanguage as keyof typeof findElementCode];
+      case 'elementInteractions':
+        return elementInteractionsCode[selectedLanguage as keyof typeof elementInteractionsCode];
+      case 'waitStrategies':
+        return waitStrategiesCode[selectedLanguage as keyof typeof waitStrategiesCode];
+      case 'navigation':
+        return navigationCode[selectedLanguage as keyof typeof navigationCode];
+      default:
+        return findElementCode[selectedLanguage as keyof typeof findElementCode];
     }
   };
 
@@ -992,7 +697,7 @@ class NavigationExample
           examples={[
             {
               language: selectedLanguage,
-              code: examples[selectedExample as keyof typeof examples][selectedLanguage as keyof (typeof examples)[keyof typeof examples]],
+              code: getCodeForCurrentSelection(),
               label: `${languageOptions.find(l => l.value === selectedLanguage)?.name} Example`
             }
           ]}
@@ -1017,7 +722,6 @@ class NavigationExample
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">By.name()</code> - Find by name attribute</li>
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">By.className()</code> - Find by CSS class</li>
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">By.cssSelector()</code> - Find by CSS selector</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">By.xpath()</code> - Find by XPath</li>
             </ul>
           </div>
           
@@ -1028,27 +732,6 @@ class NavigationExample
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">.sendKeys()</code> - Type text</li>
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">.clear()</code> - Clear input field</li>
               <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">.getText()</code> - Get visible text</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">.getAttribute()</code> - Get attribute value</li>
-            </ul>
-          </div>
-          
-          <div className="space-y-2">
-            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">Wait Conditions</h5>
-            <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">elementToBeClickable</code> - Wait until clickable</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">visibilityOfElementLocated</code> - Wait until visible</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">presenceOfElementLocated</code> - Wait until exists in DOM</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">textToBePresentInElement</code> - Wait for specific text</li>
-            </ul>
-          </div>
-          
-          <div className="space-y-2">
-            <h5 className="font-medium text-cyan-700 dark:text-cyan-400">Navigation</h5>
-            <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-400">
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">driver.get(url)</code> - Navigate to URL</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">driver.navigate().back()</code> - Go back</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">driver.navigate().forward()</code> - Go forward</li>
-              <li><code className="text-xs bg-gray-100 dark:bg-gray-700 px-1 rounded">driver.navigate().refresh()</code> - Refresh page</li>
             </ul>
           </div>
         </div>
@@ -1073,9 +756,6 @@ class NavigationExample
           </li>
           <li>
             <strong>Implement the Page Object Model</strong> pattern for more maintainable test code (covered in advanced modules).
-          </li>
-          <li>
-            <strong>Use unique, stable locators</strong> that are less likely to change with UI updates.
           </li>
         </ul>
       </div>
