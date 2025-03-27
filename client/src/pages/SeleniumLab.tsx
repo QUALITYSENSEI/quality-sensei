@@ -28,7 +28,7 @@ import { SiSelenium, SiJava, SiJavascript, SiPython, SiCsharp } from "@/componen
 // Components
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ParticleBackground from "@/components/ui/ParticleBackground";
+
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from "@/hooks/use-toast";
@@ -391,8 +391,7 @@ const SeleniumLab = () => {
 
       <Header />
 
-      <main className="min-h-screen pt-16 pb-20">
-        <ParticleBackground className="fixed inset-0 opacity-20 -z-10" />
+      <main className="min-h-screen pt-16 pb-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
 
         {/* Mobile Navigation Toggle */}
         <div className="fixed bottom-4 right-4 md:hidden z-50">
@@ -479,17 +478,26 @@ const SeleniumLab = () => {
         <div className="container mx-auto px-4 py-8">
           {/* Breadcrumb Navigation */}
           <nav className="mb-6 flex items-center text-sm text-gray-500 dark:text-gray-400">
-            <Link href="/labs">
-              <a className="hover:text-gray-900 dark:hover:text-gray-100">Labs</a>
-            </Link>
+            <span 
+              className="hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer"
+              onClick={() => window.location.href = '/labs'}
+            >
+              Labs
+            </span>
             <ChevronRight className="h-4 w-4 mx-2" />
-            <Link href="/labs/automation">
-              <a className="hover:text-gray-900 dark:hover:text-gray-100">Automation</a>
-            </Link>
+            <span 
+              className="hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer" 
+              onClick={() => window.location.href = '/labs/automation'}
+            >
+              Automation
+            </span>
             <ChevronRight className="h-4 w-4 mx-2" />
-            <Link href="/labs/automation/selenium">
-              <a className="hover:text-gray-900 dark:hover:text-gray-100">Selenium</a>
-            </Link>
+            <span 
+              className="hover:text-gray-900 dark:hover:text-gray-100 cursor-pointer"
+              onClick={() => window.location.href = '/labs/automation/selenium'}
+            >
+              Selenium
+            </span>
             <ChevronRight className="h-4 w-4 mx-2" />
             <span className="text-gray-900 dark:text-gray-100 font-medium">{currentModule.shortTitle || currentModule.title}</span>
           </nav>

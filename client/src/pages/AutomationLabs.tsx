@@ -18,7 +18,7 @@ import { SiSelenium, SiPlaywright, SiCypress, SiAppium } from "@/components/Icon
 // Components
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ParticleBackground from "@/components/ui/ParticleBackground";
+
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -203,8 +203,7 @@ const AutomationLabs = () => {
 
       <Header />
 
-      <main className="min-h-screen relative">
-        <ParticleBackground className="absolute inset-0 opacity-30" />
+      <main className="min-h-screen relative bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
 
         {/* Hero Section */}
         <section className="relative py-20 px-4 sm:px-6 lg:px-8">
@@ -227,12 +226,13 @@ const AutomationLabs = () => {
                     Master test automation with hands-on interactive labs. Build real automation frameworks, solve challenges, and gain practical skills that employers demand.
                   </p>
                   <div className="flex flex-wrap gap-4">
-                    <Link href="/labs/automation/selenium">
-                      <a className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                        <PlayCircle className="h-5 w-5 mr-2" />
-                        Start Learning
-                      </a>
-                    </Link>
+                    <div 
+                      className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                      onClick={() => window.location.href = '/labs/automation/selenium'}
+                    >
+                      <PlayCircle className="h-5 w-5 mr-2" />
+                      Start Learning
+                    </div>
                     <a 
                       href="#pathways" 
                       className="inline-flex items-center px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300"
@@ -346,57 +346,62 @@ runTest();`}</pre>
                     </div>
                   )}
                 
-                  <Link href={lab.comingSoon ? "#" : lab.route}>
-                    <a className="block relative">
-                      {/* Header with icon */}
-                      <div className={cn(
-                        "h-24 flex items-center justify-center bg-gradient-to-r",
-                        lab.color
-                      )}>
-                        <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
-                          {lab.icon}
+                  <div 
+                    className="block relative cursor-pointer" 
+                    onClick={() => {
+                      if (!lab.comingSoon) {
+                        window.location.href = lab.route;
+                      }
+                    }}
+                  >
+                    {/* Header with icon */}
+                    <div className={cn(
+                      "h-24 flex items-center justify-center bg-gradient-to-r",
+                      lab.color
+                    )}>
+                      <div className="p-2 bg-white dark:bg-gray-800 rounded-lg">
+                        {lab.icon}
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="p-5">
+                      <h3 className="font-bold text-lg mb-2">{lab.title}</h3>
+                      <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{lab.description}</p>
+                      
+                      {/* Stats */}
+                      <div className="grid grid-cols-2 gap-4 text-sm mb-4">
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400">Modules</p>
+                          <p className="font-bold">{lab.modules}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400">Students</p>
+                          <p className="font-bold">{lab.students.toLocaleString()}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400">Languages</p>
+                          <p className="font-bold">{lab.languages.length}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500 dark:text-gray-400">Level</p>
+                          <p className="font-bold">{lab.level}</p>
                         </div>
                       </div>
                       
-                      {/* Content */}
-                      <div className="p-5">
-                        <h3 className="font-bold text-lg mb-2">{lab.title}</h3>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{lab.description}</p>
-                        
-                        {/* Stats */}
-                        <div className="grid grid-cols-2 gap-4 text-sm mb-4">
-                          <div>
-                            <p className="text-gray-500 dark:text-gray-400">Modules</p>
-                            <p className="font-bold">{lab.modules}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500 dark:text-gray-400">Students</p>
-                            <p className="font-bold">{lab.students.toLocaleString()}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500 dark:text-gray-400">Languages</p>
-                            <p className="font-bold">{lab.languages.length}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-500 dark:text-gray-400">Level</p>
-                            <p className="font-bold">{lab.level}</p>
-                          </div>
-                        </div>
-                        
-                        {/* Languages */}
-                        <div className="flex flex-wrap gap-2">
-                          {lab.languages.map((lang, i) => (
-                            <span 
-                              key={i}
-                              className="inline-block px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded-full"
-                            >
-                              {lang}
-                            </span>
-                          ))}
-                        </div>
+                      {/* Languages */}
+                      <div className="flex flex-wrap gap-2">
+                        {lab.languages.map((lang, i) => (
+                          <span 
+                            key={i}
+                            className="inline-block px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 rounded-full"
+                          >
+                            {lang}
+                          </span>
+                        ))}
                       </div>
-                    </a>
-                  </Link>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </div>
@@ -563,15 +568,16 @@ runTest();`}</pre>
                     </div>
                     
                     <div className="mt-auto">
-                      <Link href={`/labs/automation/${pathway.id}`}>
-                        <a className={cn(
-                          "inline-block w-full text-center py-2 rounded-lg font-medium transition-all",
+                      <div
+                        className={cn(
+                          "inline-block w-full text-center py-2 rounded-lg font-medium transition-all cursor-pointer",
                           "bg-gradient-to-r from-gray-800 to-gray-700 text-white hover:shadow-md",
                           "dark:from-gray-700 dark:to-gray-600"
-                        )}>
-                          Explore Pathway
-                        </a>
-                      </Link>
+                        )}
+                        onClick={() => window.location.href = `/labs/automation/${pathway.id}`}
+                      >
+                        Explore Pathway
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -599,16 +605,18 @@ runTest();`}</pre>
                     </p>
                     
                     <div className="flex flex-wrap gap-4">
-                      <Link href="/labs/automation/selenium">
-                        <a className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                          Start Selenium Lab
-                        </a>
-                      </Link>
-                      <Link href="#">
-                        <a className="px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300">
-                          View Prerequisites
-                        </a>
-                      </Link>
+                      <div 
+                        className="px-6 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                        onClick={() => window.location.href = '/labs/automation/selenium'}
+                      >
+                        Start Selenium Lab
+                      </div>
+                      <div 
+                        className="px-6 py-3 border border-gray-300 dark:border-gray-700 rounded-lg font-medium hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-300 cursor-pointer"
+                        onClick={() => {}}
+                      >
+                        View Prerequisites
+                      </div>
                     </div>
                   </div>
                 </div>

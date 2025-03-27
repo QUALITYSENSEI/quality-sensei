@@ -210,21 +210,20 @@ const LabsPage = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Link href="/labs/automation">
-                    <a className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-[#40E0D0] text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300">
-                      Explore Labs
-                    </a>
-                  </Link>
+                  <div className="px-8 py-3 bg-gradient-to-r from-cyan-500 to-[#40E0D0] text-white rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer" onClick={() => window.location.href = '/labs/automation'}>
+                    Explore Labs
+                  </div>
                 </motion.div>
                 <motion.div
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Link href="#categories">
-                    <a className="px-8 py-3 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 rounded-lg font-medium shadow hover:shadow-md transition-all duration-300">
-                      View Categories
-                    </a>
-                  </Link>
+                  <div className="px-8 py-3 bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200 border border-gray-300 dark:border-gray-700 rounded-lg font-medium shadow hover:shadow-md transition-all duration-300 cursor-pointer" onClick={() => {
+                    const categoriesSection = document.getElementById('categories');
+                    if (categoriesSection) categoriesSection.scrollIntoView({ behavior: 'smooth' });
+                  }}>
+                    View Categories
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
@@ -310,41 +309,46 @@ const LabsPage = () => {
                     </div>
                   )}
                   
-                  <Link href={category.comingSoon ? "#" : `/labs/${category.id}`}>
-                    <a className="block p-6 h-full relative z-0">
-                      <div className="flex items-start">
-                        <div className={cn(
-                          "p-3 rounded-lg bg-gradient-to-br",
-                          category.color
-                        )}>
-                          {category.icon}
+                  <div 
+                    className="block p-6 h-full relative z-0 cursor-pointer"
+                    onClick={() => {
+                      if (!category.comingSoon) {
+                        window.location.href = `/labs/${category.id}`;
+                      }
+                    }}
+                  >
+                    <div className="flex items-start">
+                      <div className={cn(
+                        "p-3 rounded-lg bg-gradient-to-br",
+                        category.color
+                      )}>
+                        {category.icon}
+                      </div>
+                      <div className="ml-5">
+                        <h3 className="text-xl font-bold mb-2">{category.title}</h3>
+                        <p className="text-gray-600 dark:text-gray-400 mb-4">{category.description}</p>
+                        
+                        {/* Tags */}
+                        <div className="flex flex-wrap gap-2 mb-4">
+                          {category.tags.map((tag, i) => (
+                            <span 
+                              key={i}
+                              className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
+                            >
+                              {tag}
+                            </span>
+                          ))}
                         </div>
-                        <div className="ml-5">
-                          <h3 className="text-xl font-bold mb-2">{category.title}</h3>
-                          <p className="text-gray-600 dark:text-gray-400 mb-4">{category.description}</p>
-                          
-                          {/* Tags */}
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {category.tags.map((tag, i) => (
-                              <span 
-                                key={i}
-                                className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                          
-                          {/* Difficulty levels */}
-                          <div className="flex justify-between items-center">
-                            <LevelIndicator level="beginner" count={category.levels.beginner} />
-                            <LevelIndicator level="intermediate" count={category.levels.intermediate} />
-                            <LevelIndicator level="advanced" count={category.levels.advanced} />
-                          </div>
+                        
+                        {/* Difficulty levels */}
+                        <div className="flex justify-between items-center">
+                          <LevelIndicator level="beginner" count={category.levels.beginner} />
+                          <LevelIndicator level="intermediate" count={category.levels.intermediate} />
+                          <LevelIndicator level="advanced" count={category.levels.advanced} />
                         </div>
                       </div>
-                    </a>
-                  </Link>
+                    </div>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
@@ -453,11 +457,12 @@ const LabsPage = () => {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.97 }}
                 >
-                  <Link href="/labs/automation">
-                    <a className="inline-block px-8 py-4 bg-white text-cyan-600 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300">
-                      Start Learning Now
-                    </a>
-                  </Link>
+                  <div
+                    className="inline-block px-8 py-4 bg-white text-cyan-600 rounded-lg font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer"
+                    onClick={() => window.location.href = '/labs/automation'}
+                  >
+                    Start Learning Now
+                  </div>
                 </motion.div>
               </div>
             </motion.div>
