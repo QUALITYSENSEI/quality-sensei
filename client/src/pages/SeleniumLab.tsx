@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useLocation, useRoute } from 'wouter';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { ChevronLeft, BookOpen, Code, PlayCircle, CheckCircle, Info, Award, ArrowRight, Zap, Brain, Clock, FileBadge, User, Check, Search } from 'lucide-react';
+import { ChevronLeft, BookOpen, Code, PlayCircle, CheckCircle, Info, Award, ArrowRight, Zap, Brain, Clock, FileBadge, User, Check, Search, FileTerminal, Terminal as TerminalIcon } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Helmet } from 'react-helmet-async';
@@ -17,6 +17,9 @@ import { useTheme } from "@/contexts/ThemeContext";
 import { useToast } from "@/hooks/use-toast";
 import FloatingCard from "@/components/ui/FloatingCard";
 import ParticleBackground from "@/components/ui/ParticleBackground";
+import Terminal from "@/components/ui/Terminal";
+import CodeExample from "@/components/ui/CodeExample";
+import { TerminalLine } from "@/lib/types";
 
 // Module interface
 interface Module {
@@ -596,15 +599,120 @@ export default function SeleniumLab() {
                         <p>
                           Selenium WebDriver is an open-source automation framework that allows you to control web browsers programmatically. It provides a consistent API that works across different browsers and platforms.
                         </p>
+                        
                         <h3>Key Features</h3>
                         <ul>
                           <li>Support for multiple programming languages (Java, Python, C#, etc.)</li>
                           <li>Native browser support without external dependencies</li>
                           <li>Rich set of selectors to locate elements</li>
-                          <li>Advanced browser interactions and javascript execution</li>
+                          <li>Advanced browser interactions and JavaScript execution</li>
                         </ul>
+
+                        <h3>Installing Selenium Libraries</h3>
+                        <p>
+                          Setting up the Selenium library for your favorite programming language is the first step.
+                          The installation process depends on the language you choose to use. Make sure to check the
+                          <a href="https://www.selenium.dev/downloads/" target="_blank" rel="noopener noreferrer"> Selenium downloads page </a>
+                          to ensure you're using the latest version.
+                        </p>
+
+                        <div className="my-8">
+                          <h4>Installation by Language</h4>
+                          
+                          <div className="flex flex-wrap gap-3 mb-4">
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <FileTerminal className="text-orange-500 h-4 w-4" /> <span>Java</span>
+                            </div>
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <SiPython className="text-blue-500" /> <span>Python</span>
+                            </div>
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <Code className="text-purple-500 h-4 w-4" /> <span>C#</span>
+                            </div>
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <FileTerminal className="text-red-500 h-4 w-4" /> <span>Ruby</span>
+                            </div>
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <SiJavascript className="text-yellow-500" /> <span>JavaScript</span>
+                            </div>
+                            <div className={cn(
+                              "flex items-center gap-2 px-3 py-2 rounded-md",
+                              theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                            )}>
+                              <Code className="text-blue-400 h-4 w-4" /> <span>Kotlin</span>
+                            </div>
+                          </div>
+                          
+                          <p>Java requires at least Java 8 for Selenium WebDriver (view the <a href="https://www.selenium.dev/documentation/webdriver/getting_started/install_library/" target="_blank" rel="noopener noreferrer">minimum supported Java version here</a>).</p>
+                          <p>Installation of Selenium libraries for Java is accomplished using a build tool.</p>
+                          
+                          <CodeExample 
+                            title="Maven Installation" 
+                            description="Specify the dependencies in the project's pom.xml file:"
+                            examples={[
+                              {
+                                language: "xml",
+                                code: `<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>\${selenium.version}</version>
+</dependency>`,
+                                label: "Maven"
+                              }
+                            ]}
+                            className="my-6"
+                          />
+                          
+                          <CodeExample 
+                            title="Gradle Installation" 
+                            description="Specify the dependency in the project build.gradle file as testImplementation:"
+                            examples={[
+                              {
+                                language: "gradle",
+                                code: `testImplementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
+testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`,
+                                label: "Gradle"
+                              }
+                            ]}
+                            className="my-6"
+                          />
+                        </div>
+
+                        <div className="mt-8">
+                          <h3>Terminal Commands</h3>
+                          <p>Here's how you can install Selenium using package managers in different languages:</p>
+                          
+                          <Terminal 
+                            lines={[
+                              { type: 'command', content: 'pip install selenium', delay: 500 },
+                              { type: 'output', content: 'Collecting selenium', delay: 1000 },
+                              { type: 'output', content: '  Downloading selenium-4.29.0.tar.gz (8.9 MB)', delay: 1500 },
+                              { type: 'output', content: 'Installing collected packages: selenium', delay: 2000 },
+                              { type: 'success', content: 'Successfully installed selenium-4.29.0', delay: 2500 },
+                              { type: 'cursor', content: '', delay: 3000 }
+                            ]}
+                            language="Python"
+                            className="mb-4"
+                          />
+                        </div>
+                        
                         <div className={cn(
-                          "p-4 rounded-lg",
+                          "p-4 rounded-lg mt-6",
                           theme === "dark" ? "bg-gray-700" : "bg-gray-100"
                         )}>
                           <h4 className="flex items-center mt-0">
