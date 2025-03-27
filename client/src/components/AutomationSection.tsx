@@ -83,7 +83,7 @@ const AutomationSection = () => {
             Technology Stack
             <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gradient-to-r from-transparent via-[#00BCD4] dark:via-[#40E0D0] to-transparent"></span>
           </span>
-            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-800 dark:text-white neon-text">
+            <h2 className="text-3xl md:text-4xl font-bold mt-2 text-gray-800 dark:text-white">
               Automation Tools
             </h2>
             <p className="text-gray-600 dark:text-gray-300 mt-4 max-w-2xl mx-auto">
