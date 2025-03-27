@@ -1,0 +1,606 @@
+{
+  "title": "Selenium Grid Lab",
+  "description": "Learn to set up and use Selenium Grid for distributed testing across browsers, operating systems, and devices.",
+  "tags": [
+    {"text": "Browser Automation", "color": "green"},
+    {"text": "Distributed Testing", "color": "purple"},
+    {"text": "Parallel Execution", "color": "blue"},
+    {"text": "Cross Browser Testing", "color": "amber"}
+  ],
+  "icon": "SiSelenium",
+  "modules": [
+    {
+      "id": "overview",
+      "label": "Overview",
+      "icon": "BsBriefcase",
+      "content": {
+        "title": "Selenium Grid Overview",
+        "description": "Selenium Grid allows you to run your tests on multiple browsers, operating systems, and machines in parallel, significantly reducing the time required to execute your test suite.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "What is Selenium Grid?"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid is a smart proxy server that makes it easy to run tests in parallel on multiple machines. It allows for running tests on different browsers, browser versions, and operating systems, which is essential for comprehensive cross-browser testing."
+          },
+          {
+            "type": "grid",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Cross-Browser Testing",
+                "content": "Test your application across Chrome, Firefox, Safari, Edge, and more to ensure consistent behavior."
+              },
+              {
+                "title": "Parallel Execution",
+                "content": "Run multiple tests simultaneously, cutting down your test execution time dramatically."
+              },
+              {
+                "title": "Distributed Testing",
+                "content": "Distribute test load across multiple machines to scale your test infrastructure."
+              },
+              {
+                "title": "Central Management",
+                "content": "Manage your test execution from a single point with the Grid's hub-and-node architecture."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Grid 4 Architecture"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid 4 introduces a modernized architecture with new components and capabilities:"
+          },
+          {
+            "type": "list",
+            "style": "bullet",
+            "items": [
+              "<strong>Router</strong> - The entry point of the Grid that routes requests to the correct component",
+              "<strong>Distributor</strong> - Manages the distribution of test sessions to nodes",
+              "<strong>Session Map</strong> - Keeps track of which session is running on which node",
+              "<strong>Node</strong> - Where browsers are actually running tests",
+              "<strong>Event Bus</strong> - Facilitates communication between Grid components"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Key Benefits of Selenium Grid"
+          },
+          {
+            "type": "cards",
+            "columns": 3,
+            "items": [
+              {
+                "title": "Improved Test Coverage",
+                "description": "Test across multiple browser and OS combinations to ensure compatibility with all your target platforms."
+              },
+              {
+                "title": "Reduced Execution Time",
+                "description": "Running tests in parallel speeds up your test suite execution by orders of magnitude."
+              },
+              {
+                "title": "Cost Efficiency",
+                "description": "Reuse existing hardware by setting up nodes on different machines in your network."
+              },
+              {
+                "title": "Scalable Testing",
+                "description": "Add more nodes to your Grid as testing needs grow without changing your test code."
+              },
+              {
+                "title": "Centralized Control",
+                "description": "Manage your entire test infrastructure from a single control point."
+              },
+              {
+                "title": "DevOps Integration",
+                "description": "Easily integrate with CI/CD pipelines for automated testing as part of your delivery process."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "setup",
+      "label": "Grid Setup",
+      "icon": "BsGear",
+      "content": {
+        "title": "Setting Up Selenium Grid",
+        "description": "Learn how to set up and configure Selenium Grid for your testing environment, from a simple standalone setup to a full distributed grid.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Prerequisites"
+          },
+          {
+            "type": "list",
+            "style": "bullet",
+            "items": [
+              "Java Development Kit (JDK) 11 or newer installed",
+              "Download the latest Selenium Server JAR file from the <a href='https://www.selenium.dev/downloads/' target='_blank' class='text-blue-500 hover:underline'>official Selenium website</a>",
+              "Required browser drivers (ChromeDriver, GeckoDriver, etc.) for the browsers you want to use",
+              "Basic command-line familiarity"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Standalone Mode"
+          },
+          {
+            "type": "text",
+            "content": "The simplest way to use Selenium Grid is in standalone mode, which sets up both Hub and Node functionality in a single process:"
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Start Grid in standalone mode\njava -jar selenium-server-4.x.x.jar standalone"
+          },
+          {
+            "type": "text",
+            "content": "Once started, you can access the Grid console at http://localhost:4444 to see the registered nodes and available browser capabilities."
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Hub and Node Setup"
+          },
+          {
+            "type": "text",
+            "content": "For a more distributed setup, you can start the Hub and Nodes separately:"
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Start the Hub\njava -jar selenium-server-4.x.x.jar hub\n\n# Start a Node (on the same or different machine)\njava -jar selenium-server-4.x.x.jar node --detect-drivers true"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Using Docker"
+          },
+          {
+            "type": "text",
+            "content": "Docker provides an easy way to set up and manage Selenium Grid. Here's a sample docker-compose.yml file:"
+          },
+          {
+            "type": "code",
+            "language": "yaml",
+            "content": "version: '3'\nservices:\n  chrome:\n    image: selenium/node-chrome:4.0.0\n    volumes:\n      - /dev/shm:/dev/shm\n    depends_on:\n      - selenium-hub\n    environment:\n      - SE_EVENT_BUS_HOST=selenium-hub\n      - SE_EVENT_BUS_PUBLISH_PORT=4442\n      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443\n\n  firefox:\n    image: selenium/node-firefox:4.0.0\n    volumes:\n      - /dev/shm:/dev/shm\n    depends_on:\n      - selenium-hub\n    environment:\n      - SE_EVENT_BUS_HOST=selenium-hub\n      - SE_EVENT_BUS_PUBLISH_PORT=4442\n      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443\n\n  selenium-hub:\n    image: selenium/hub:4.0.0\n    ports:\n      - \"4442:4442\"\n      - \"4443:4443\"\n      - \"4444:4444\""
+          },
+          {
+            "type": "text",
+            "content": "Start the containers with the following command:"
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "docker-compose up -d"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Grid Configuration"
+          },
+          {
+            "type": "text",
+            "content": "You can configure the Grid with various options, such as timeout values, max sessions, browser capabilities, etc. Either through command-line arguments or a configuration file."
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Example with additional options\njava -jar selenium-server-4.x.x.jar node \\\n  --max-sessions 5 \\\n  --session-timeout 300 \\\n  --detect-drivers true \\\n  --publish-events tcp://localhost:4442 \\\n  --subscribe-events tcp://localhost:4443"
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Set up a basic Selenium Grid and verify that it's working:",
+            "steps": [
+              "Download the Selenium Server JAR file",
+              "Start the Grid in standalone mode",
+              "Open the Grid console at http://localhost:4444",
+              "Check that browsers are properly detected",
+              "Write a simple test that connects to your Grid"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "usage",
+      "label": "Using the Grid",
+      "icon": "BsCursor",
+      "content": {
+        "title": "Using Selenium Grid in Your Tests",
+        "description": "Once your Grid is set up, learn how to connect to it from your tests and make the most of its capabilities.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Connecting to Grid"
+          },
+          {
+            "type": "text",
+            "content": "To use Selenium Grid, you need to modify your WebDriver initialization to connect to the Grid instead of directly launching a browser. Here's how to do it in different languages:"
+          },
+          {
+            "type": "cards",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Java",
+                "code": "// Setup DesiredCapabilities\nDesiredCapabilities capabilities = new DesiredCapabilities();\ncapabilities.setBrowserName(\"chrome\");\ncapabilities.setPlatform(Platform.WINDOWS);\n\n// Connect to the Grid\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    capabilities\n);"
+              },
+              {
+                "title": "Python",
+                "code": "from selenium import webdriver\nfrom selenium.webdriver.common.desired_capabilities import DesiredCapabilities\n\n# Setup capabilities\ncapabilities = DesiredCapabilities.CHROME.copy()\n\n# Connect to the Grid\ndriver = webdriver.Remote(\n    command_executor='http://localhost:4444/wd/hub',\n    desired_capabilities=capabilities\n)"
+              },
+              {
+                "title": "JavaScript",
+                "code": "const { Builder } = require('selenium-webdriver');\nconst chrome = require('selenium-webdriver/chrome');\n\n// Connect to the Grid\nconst driver = new Builder()\n    .usingServer('http://localhost:4444/wd/hub')\n    .forBrowser('chrome')\n    .build();"
+              },
+              {
+                "title": "C#",
+                "code": "using OpenQA.Selenium;\nusing OpenQA.Selenium.Remote;\n\n// Setup capabilities\nvar capabilities = new DesiredCapabilities();\ncapabilities.SetCapability(CapabilityType.BrowserName, \"chrome\");\n\n// Connect to the Grid\nIWebDriver driver = new RemoteWebDriver(\n    new Uri(\"http://localhost:4444/wd/hub\"),\n    capabilities\n);"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Specifying Browser Options"
+          },
+          {
+            "type": "text",
+            "content": "You can specify detailed browser options when connecting to the Grid:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Java example with Chrome options\nChromeOptions options = new ChromOptions();\noptions.addArguments(\"--headless\");\noptions.addArguments(\"--disable-gpu\");\noptions.addArguments(\"--window-size=1920,1080\");\n\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    options\n);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Running Tests in Parallel"
+          },
+          {
+            "type": "text",
+            "content": "The main advantage of Selenium Grid is running tests in parallel. Here's a simple example using TestNG in Java:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "import org.testng.annotations.Test;\n\npublic class ParallelTests {\n    \n    @Test(threadPoolSize = 3, invocationCount = 3, timeOut = 10000)\n    public void test1() {\n        WebDriver driver = getDriverForGrid(\"chrome\");\n        try {\n            driver.get(\"https://www.example.com\");\n            // Test operations...\n        } finally {\n            driver.quit();\n        }\n    }\n    \n    @Test(threadPoolSize = 3, invocationCount = 3, timeOut = 10000)\n    public void test2() {\n        WebDriver driver = getDriverForGrid(\"firefox\");\n        try {\n            driver.get(\"https://www.example.com\");\n            // Test operations...\n        } finally {\n            driver.quit();\n        }\n    }\n    \n    private WebDriver getDriverForGrid(String browser) {\n        // Method to create a driver that connects to Grid\n        // ...\n    }\n}"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Handling Test Artifacts"
+          },
+          {
+            "type": "text",
+            "content": "When tests run on remote nodes, you need special handling for screenshots and other artifacts:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Taking screenshots with RemoteWebDriver\nTakesScreenshot ts = (TakesScreenshot) driver;\nFile screenshot = ts.getScreenshotAs(OutputType.FILE);\nFiles.copy(screenshot.toPath(), new File(\"screenshot.png\").toPath(), StandardCopyOption.REPLACE_EXISTING);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Best Practices"
+          },
+          {
+            "type": "list",
+            "style": "ordered",
+            "items": [
+              "<strong>Clean up resources</strong> - Always call driver.quit() to release browser instances back to the Grid",
+              "<strong>Use implicit or explicit waits</strong> - Grid operations may have network latency, so proper waiting is essential",
+              "<strong>Monitor Grid health</strong> - Set up monitoring to ensure your Grid remains healthy",
+              "<strong>Balance node capacity</strong> - Don't overwhelm nodes with too many concurrent sessions",
+              "<strong>Implement retry logic</strong> - Add retry mechanisms for tests that may fail due to Grid-related issues"
+            ]
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Write a simple test suite that connects to your Grid:",
+            "steps": [
+              "Create a test class with at least two test methods",
+              "Configure your test runner to execute tests in parallel",
+              "Connect the tests to your Selenium Grid",
+              "Run the tests and verify they execute in parallel",
+              "Check the Grid console to see the active sessions"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "advanced",
+      "label": "Advanced Features",
+      "icon": "BsCodeSlash",
+      "content": {
+        "title": "Advanced Selenium Grid Features",
+        "description": "Explore advanced Grid features and configurations to maximize your test infrastructure's capabilities.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Dynamic Grid"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid 4 includes dynamic grid capabilities, allowing nodes to join and leave the grid without restarting the hub. This is particularly useful in cloud or containerized environments."
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Start a node with custom registration cycle\njava -jar selenium-server-4.x.x.jar node \\\n  --detect-drivers true \\\n  --registration-cycle 5 \\\n  --session-timeout 60"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Grid Observability"
+          },
+          {
+            "type": "text",
+            "content": "Grid 4 provides better observability through its UI and API endpoints. You can monitor the health and status of your nodes and see detailed session information."
+          },
+          {
+            "type": "list",
+            "style": "bullet",
+            "items": [
+              "<strong>Status API</strong>: GET /status provides information about Grid health",
+              "<strong>Sessions API</strong>: GET /sessions shows all active sessions",
+              "<strong>Node API</strong>: GET /grid/node provides node-specific information",
+              "<strong>Graphical UI</strong>: The Grid console offers visual monitoring of your Grid"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Custom Capabilities"
+          },
+          {
+            "type": "text",
+            "content": "You can define custom capabilities for nodes and request them in your tests, allowing for specialized test environments:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Node configuration with custom capabilities\njava -jar selenium-server-4.x.x.jar node \\\n  --detect-drivers true \\\n  --custom-capabilities '{\"selenium:customCapability\": \"value\"}'\n\n// Using custom capabilities in tests\nDesiredCapabilities capabilities = new DesiredCapabilities();\ncapabilities.setBrowserName(\"chrome\");\ncapabilities.setCapability(\"selenium:customCapability\", \"value\");\n\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    capabilities\n);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Proxy Configuration"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid can be configured to work with various proxy types to handle different network configurations:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Example: Setting up a proxy in your test\nDesiredCapabilities capabilities = new DesiredCapabilities();\ncapabilities.setBrowserName(\"chrome\");\n\nProxyConfiguration proxy = new ProxyConfiguration();\nproxy.setHttpProxy(\"myproxy.example.com:8080\");\ncapabilities.setCapability(CapabilityType.PROXY, proxy);\n\nWebDriver driver = new RemoteWebDriver(\n    new URL(\"http://localhost:4444/wd/hub\"),\n    capabilities\n);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Video Recording"
+          },
+          {
+            "type": "text",
+            "content": "When using Docker containers, you can enable video recording of test sessions for debugging and documentation purposes:"
+          },
+          {
+            "type": "code",
+            "language": "yaml",
+            "content": "version: '3'\nservices:\n  chrome:\n    image: selenium/node-chrome:4.0.0-20211213\n    volumes:\n      - /dev/shm:/dev/shm\n    depends_on:\n      - selenium-hub\n    environment:\n      - SE_EVENT_BUS_HOST=selenium-hub\n      - SE_EVENT_BUS_PUBLISH_PORT=4442\n      - SE_EVENT_BUS_SUBSCRIBE_PORT=4443\n      - SE_VNC_NO_PASSWORD=1\n      - START_RECORDING=true\n\n  chrome_video:\n    image: selenium/video:ffmpeg-4.3.1-20211213\n    volumes:\n      - ./videos:/videos\n    depends_on:\n      - chrome\n    environment:\n      - DISPLAY_CONTAINER_NAME=chrome\n      - FILE_NAME=chrome_video.mp4"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Cloud Grid Integration"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid can be deployed on cloud platforms for scalable testing infrastructure. Major cloud providers offer specialized services:"
+          },
+          {
+            "type": "grid",
+            "columns": 3,
+            "items": [
+              {
+                "title": "AWS",
+                "content": "Deploy Grid on EC2 instances or using container services like ECS/EKS for auto-scaling capabilities."
+              },
+              {
+                "title": "Azure",
+                "content": "Use Azure Container Instances or Kubernetes Service for flexible, scalable Grid deployments."
+              },
+              {
+                "title": "GCP",
+                "content": "Deploy on Google Compute Engine or GKE for managed container orchestration."
+              }
+            ]
+          },
+          {
+            "type": "alert",
+            "color": "blue",
+            "title": "Production Grid Considerations",
+            "content": "<ul class=\"list-disc pl-6 space-y-1\"><li>Implement proper security measures (authentication, network isolation)</li><li>Set up monitoring and alerting for Grid health</li><li>Configure auto-scaling to handle varying load</li><li>Implement retry mechanisms for transient failures</li><li>Use dedicated storage for logs and artifacts</li></ul>"
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Advanced Practice Exercise",
+            "content": "Configure and test an advanced Grid setup:",
+            "steps": [
+              "Set up a Grid with custom capabilities for different testing environments",
+              "Implement a Docker Compose setup with video recording",
+              "Create test classes that target specific Grid capabilities",
+              "Set up basic monitoring for your Grid",
+              "Implement parallel test execution with different browsers and capabilities"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "troubleshooting",
+      "label": "Troubleshooting",
+      "icon": "BsCheck2",
+      "content": {
+        "title": "Troubleshooting Selenium Grid",
+        "description": "Learn how to identify and resolve common issues that occur when working with Selenium Grid.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Common Grid Issues"
+          },
+          {
+            "type": "cards",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Connection Refused",
+                "description": "Tests fail with connection refused errors when trying to reach the Grid.",
+                "code": "Error: Could not start a new session. Error connecting to http://localhost:4444/wd/hub"
+              },
+              {
+                "title": "Session Not Created",
+                "description": "Hub cannot find a suitable node with requested capabilities.",
+                "code": "Error: Session not created. No node supports the required capabilities."
+              },
+              {
+                "title": "Browser Crashes",
+                "description": "Browser unexpectedly terminates during test execution.",
+                "code": "Error: Session terminated due to BROWSER_TIMEOUT"
+              },
+              {
+                "title": "Unresponsive Node",
+                "description": "Node stops responding to Hub requests.",
+                "code": "Error: Node is not responding. Node status is DOWN."
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Diagnostic Steps"
+          },
+          {
+            "type": "list",
+            "style": "ordered",
+            "items": [
+              "<strong>Check Grid status</strong> - Verify the Hub and Nodes are running by accessing the Grid console",
+              "<strong>Examine logs</strong> - Check the Hub and Node logs for error messages",
+              "<strong>Verify connectivity</strong> - Ensure network connectivity between your test machine, Hub, and Nodes",
+              "<strong>Check capabilities</strong> - Confirm the capabilities requested in your test match what's available in the Grid",
+              "<strong>Review resource usage</strong> - Check for memory or CPU constraints on nodes",
+              "<strong>Verify browser drivers</strong> - Ensure browser driver versions are compatible with the installed browsers"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Diagnosing With Grid API"
+          },
+          {
+            "type": "text",
+            "content": "Selenium Grid 4 provides API endpoints to diagnose issues:"
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Check Grid status\ncurl http://localhost:4444/status\n\n# Get active sessions\ncurl http://localhost:4444/sessions\n\n# Get node information\ncurl http://localhost:4444/grid/node"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Common Solutions"
+          },
+          {
+            "type": "grid",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Connection Issues",
+                "content": "<ul class=\"list-disc pl-4\"><li>Verify Hub URL in test code</li><li>Check firewall settings</li><li>Ensure ports are correctly configured</li><li>Verify network connectivity between components</li></ul>"
+              },
+              {
+                "title": "Capability Mismatches",
+                "content": "<ul class=\"list-disc pl-4\"><li>Update capabilities to match available browsers</li><li>Check browser driver versions</li><li>Verify browser installation on nodes</li><li>Explicitly specify platform if needed</li></ul>"
+              },
+              {
+                "title": "Resource Problems",
+                "content": "<ul class=\"list-disc pl-4\"><li>Limit concurrent sessions per node</li><li>Increase memory allocation for nodes</li><li>Restart nodes periodically</li><li>Add more nodes to distribute load</li></ul>"
+              },
+              {
+                "title": "Timeout Issues",
+                "content": "<ul class=\"list-disc pl-4\"><li>Increase timeout settings</li><li>Implement proper waits in tests</li><li>Reduce test complexity</li><li>Check network latency between components</li></ul>"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Advanced Debugging"
+          },
+          {
+            "type": "text",
+            "content": "For persistent issues, enable verbose logging to get more detailed information:"
+          },
+          {
+            "type": "code",
+            "language": "bash",
+            "content": "# Start Hub with verbose logging\njava -Dwebdriver.chrome.verboseLogging=true -jar selenium-server-4.x.x.jar hub\n\n# Start Node with verbose logging\njava -Dwebdriver.chrome.verboseLogging=true -jar selenium-server-4.x.x.jar node"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Health Checks"
+          },
+          {
+            "type": "text",
+            "content": "Implement regular health checks to proactively identify issues:"
+          },
+          {
+            "type": "code",
+            "language": "python",
+            "content": "# Python script for Grid health check\nimport requests\nimport json\n\ndef check_grid_health():\n    response = requests.get('http://localhost:4444/status')\n    data = response.json()\n    \n    if data['value']['ready']:\n        print('Grid is ready')\n        print(f'Nodes available: {len(data[\"value\"][\"nodes\"])}')\n        for node in data['value']['nodes']:\n            print(f'Node {node[\"id\"]}: {node[\"status\"]}')\n    else:\n        print('Grid is not ready!')\n\nif __name__ == '__main__':\n    check_grid_health()"
+          },
+          {
+            "type": "alert",
+            "color": "amber",
+            "title": "Best Practices for Stable Grid",
+            "content": "<ul class=\"list-disc pl-6 space-y-1\"><li>Implement circuit breakers to prevent cascading failures</li><li>Set appropriate timeouts for test operations</li><li>Restart nodes periodically to prevent resource leaks</li><li>Use containers for isolation and clean state</li><li>Implement automatic recovery for failed nodes</li></ul>"
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Troubleshooting Exercise",
+            "content": "Practice diagnosing and fixing common Grid issues:",
+            "steps": [
+              "Intentionally misconfigure a capability and observe the error",
+              "Use Grid API endpoints to diagnose the issue",
+              "Implement a simple health check script for your Grid",
+              "Simulate a node failure and observe how the Grid handles it",
+              "Fix the issues and verify tests run correctly"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
