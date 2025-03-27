@@ -1,18 +1,24 @@
-import { useEffect, useState, useRef } from 'react';
-import { Link } from 'wouter';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
-import { ChevronLeft, BookOpen, Code, PlayCircle, CheckCircle, Info, Award, ArrowRight, Zap, Brain, Clock, FileBadge, User, Check, Search, FileTerminal, Terminal as TerminalIcon } from 'lucide-react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { Helmet } from 'react-helmet-async';
-import { SiSelenium, SiJavascript, SiPython } from 'react-icons/si';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { cn } from '@/lib/utils';
+import { cn } from "@/lib/utils";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  BookOpen,
+  Code,
+  Search,
+  Zap,
+  Award,
+  User,
+  Info,
+  FileTerminal,
+  PlayCircle
+} from "lucide-react";
+import { SiSelenium, SiPython, SiJavascript } from "@/components/IconImports";
+import { Helmet } from "react-helmet-async";
+import { useRef, useState, useEffect } from 'react';
+import { useInView } from '@/hooks/useIntersectionObserver';
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Breadcrumbs from "@/components/ui/Breadcrumbs";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useToast } from "@/hooks/use-toast";
 import FloatingCard from "@/components/ui/FloatingCard";
@@ -87,7 +93,7 @@ export default function SeleniumLab() {
   const [saveScrollPosition, setSaveScrollPosition] = useState(false);
   const [scrollPosition, setScrollPosition] = useState<number | null>(null);
   
-  // Reset tab when module changes and set the value in the Tabs component
+  // Reset tab when module changes
   useEffect(() => {
     // Set default tab based on module
     if (activeModule === 'intro') {
@@ -102,7 +108,7 @@ export default function SeleniumLab() {
     console.log(`Tab changed to: ${activeTab}`);
   }, [activeTab]);
   
-  // Tab change handler to debug tab clicks
+  // Tab change handler 
   const handleTabChange = (value: string) => {
     console.log(`Tab clicked: ${value}`);
     setActiveTab(value);
@@ -121,6 +127,338 @@ export default function SeleniumLab() {
     setScrollPosition(window.scrollY);
     setActiveModule(moduleId);
     setSaveScrollPosition(true);
+  };
+
+  // Render different content based on the active tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'install':
+        return (
+          <div className={cn(
+            "prose prose-lg max-w-none",
+            theme === "dark" 
+              ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
+              : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
+          )}>
+            <h3>Install a Selenium Library</h3>
+            <p>
+              Setting up the Selenium library for your favorite programming language is the first step.
+              The installation process depends on the language you choose to use. Make sure to check the
+              <a href="https://www.selenium.dev/downloads/" target="_blank" rel="noopener noreferrer"> Selenium downloads page </a>
+              to ensure you're using the latest version.
+            </p>
+
+            <div className="my-8">
+              <h4>Requirements by Language</h4>
+              
+              <div className="flex flex-wrap gap-3 mb-4">
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <FileTerminal className="text-orange-500 h-4 w-4" /> <span>Java</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <SiPython className="text-blue-500" /> <span>Python</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <Code className="text-purple-500 h-4 w-4" /> <span>C#</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <FileTerminal className="text-red-500 h-4 w-4" /> <span>Ruby</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <SiJavascript className="text-yellow-500" /> <span>JavaScript</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-md",
+                  theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
+                )}>
+                  <Code className="text-blue-400 h-4 w-4" /> <span>Kotlin</span>
+                </div>
+              </div>
+              
+              <p>Java requires at least Java 8 for Selenium WebDriver (view the <a href="https://www.selenium.dev/documentation/webdriver/getting_started/install_library/" target="_blank" rel="noopener noreferrer">minimum supported Java version here</a>).</p>
+              <p>Installation of Selenium libraries for Java is accomplished using a build tool.</p>
+              
+              <TerminalCodeTabs 
+                title="Java Dependency Configuration" 
+                description="Choose your preferred build tool:"
+                tabs={[
+                  {
+                    id: "maven",
+                    label: "Maven",
+                    code: `<dependency>
+    <groupId>org.seleniumhq.selenium</groupId>
+    <artifactId>selenium-java</artifactId>
+    <version>\${selenium.version}</version>
+</dependency>`
+                  },
+                  {
+                    id: "gradle",
+                    label: "Gradle",
+                    code: `testImplementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
+testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
+                  }
+                ]}
+                className="my-6"
+              />
+            </div>
+
+            <div className="mt-8">
+              <h3>Terminal Commands</h3>
+              <p>Here's how you can install Selenium using package managers in different languages:</p>
+              
+              <Terminal 
+                lines={[
+                  { type: 'command', content: 'pip install selenium', delay: 500 },
+                  { type: 'output', content: 'Collecting selenium', delay: 1000 },
+                  { type: 'output', content: '  Downloading selenium-4.29.0.tar.gz (8.9 MB)', delay: 1500 },
+                  { type: 'output', content: 'Installing collected packages: selenium', delay: 2000 },
+                  { type: 'success', content: 'Successfully installed selenium-4.29.0', delay: 2500 },
+                  { type: 'cursor', content: '', delay: 3000 }
+                ]}
+                language="Python"
+                className="mb-4"
+              />
+            </div>
+            
+            <div className={cn(
+              "p-4 rounded-lg mt-6",
+              theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+            )}>
+              <h4 className="flex items-center mt-0">
+                <Info className="w-5 h-5 mr-2" />
+                Pro Tip
+              </h4>
+              <p className="text-sm mb-0">
+                Always check the compatibility between your browser version and the WebDriver version you're using.
+              </p>
+            </div>
+          </div>
+        );
+      
+      case 'first-script':
+        return (
+          <div className={cn(
+            "prose prose-lg max-w-none",
+            theme === "dark" 
+              ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
+              : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
+          )}>
+            <h3>Write your first Selenium script</h3>
+            <p>
+              Once you have Selenium installed, you're ready to write Selenium code. Everything Selenium does is 
+              send browser commands or request information. The following components make up the foundation of 
+              most Selenium scripts.
+            </p>
+
+            <h4 className="mt-6">Eight Basic Components</h4>
+            <p>
+              Most of what you'll do with Selenium is a combination of these basic commands:
+            </p>
+
+            <div className="space-y-8 mt-6">
+              <div>
+                <h5 className="flex items-center">
+                  <span className="flex items-center justify-center bg-cyan-600 text-white rounded-full w-6 h-6 mr-2 text-sm">1</span>
+                  Start the session
+                </h5>
+                <p className="text-sm ml-8">For more details on starting a session read our documentation on driver sessions</p>
+                <TerminalCodeTabs 
+                  tabs={[
+                    {
+                      id: "java-driver",
+                      label: "Java",
+                      code: `WebDriver driver = new ChromeDriver();`
+                    },
+                    {
+                      id: "python-driver",
+                      label: "Python",
+                      code: `driver = webdriver.Chrome()`
+                    },
+                    {
+                      id: "javascript-driver",
+                      label: "JavaScript",
+                      code: `const driver = await new Builder().forBrowser('chrome').build();`
+                    }
+                  ]}
+                  className="ml-8"
+                />
+              </div>
+
+              <div>
+                <h5 className="flex items-center">
+                  <span className="flex items-center justify-center bg-cyan-600 text-white rounded-full w-6 h-6 mr-2 text-sm">2</span>
+                  Take action on browser
+                </h5>
+                <p className="text-sm ml-8">In this example we are navigating to a web page.</p>
+                <TerminalCodeTabs 
+                  tabs={[
+                    {
+                      id: "java-action",
+                      label: "Java",
+                      code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
+                    },
+                    {
+                      id: "python-action",
+                      label: "Python",
+                      code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html")`
+                    },
+                    {
+                      id: "javascript-action",
+                      label: "JavaScript",
+                      code: `await driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
+                    }
+                  ]}
+                  className="ml-8"
+                />
+              </div>
+            </div>
+          </div>
+        );
+        
+      case 'using-selenium':
+        return (
+          <div className={cn(
+            "prose prose-lg max-w-none",
+            theme === "dark" 
+              ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
+              : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
+          )}>
+            <h3>Organizing and Executing Selenium Code</h3>
+            <p>
+              If you want to run more than a handful of one-off scripts, you need to be able to organize and work 
+              with your code effectively.
+            </p>
+
+            <div className="my-6">
+              <h4>Common Uses of Selenium</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                <div className={cn(
+                  "p-4 rounded-lg",
+                  theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                )}>
+                  <h5 className="text-lg font-semibold mb-2">Testing</h5>
+                  <p className="text-sm">
+                    Running Selenium for testing requires making assertions. A good assertion library and test runner are essential.
+                  </p>
+                </div>
+                <div className={cn(
+                  "p-4 rounded-lg",
+                  theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                )}>
+                  <h5 className="text-lg font-semibold mb-2">Repetitive Tasks</h5>
+                  <p className="text-sm">
+                    Automate workflows like logging into websites, submitting forms, or downloading content on a schedule.
+                  </p>
+                </div>
+                <div className={cn(
+                  "p-4 rounded-lg",
+                  theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                )}>
+                  <h5 className="text-lg font-semibold mb-2">Web Scraping</h5>
+                  <p className="text-sm">
+                    Collect data from sites that don't have an API. Be sure to respect website terms of service.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+        
+      case 'learn':
+        return (
+          <div className={cn(
+            "prose prose-lg max-w-none",
+            theme === "dark" 
+              ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
+              : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
+          )}>
+            <h3>What is Selenium WebDriver?</h3>
+            <p>
+              Selenium WebDriver is an open-source automation framework that allows you to control web browsers programmatically. It provides a consistent API that works across different browsers and platforms.
+            </p>
+            
+            <h3>Key Features</h3>
+            <ul>
+              <li>Support for multiple programming languages (Java, Python, C#, etc.)</li>
+              <li>Native browser support without external dependencies</li>
+              <li>Rich set of selectors to locate elements</li>
+              <li>Advanced browser interactions and JavaScript execution</li>
+            </ul>
+          </div>
+        );
+        
+      case 'practice':
+        return (
+          <div className="space-y-6">
+            <div className={cn(
+              "p-4 rounded-lg",
+              theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+            )}>
+              <h3 className={cn(
+                "text-lg font-medium mb-2",
+                theme === "dark" ? "text-white" : "text-gray-900"
+              )}>
+                Practice Exercise
+              </h3>
+              <p className={cn(
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              )}>
+                Create a Selenium script that navigates to a website, finds an element, and interacts with it.
+              </p>
+            </div>
+          </div>
+        );
+        
+      case 'challenge':
+        return (
+          <div className="space-y-6">
+            <div className={cn(
+              "p-4 rounded-lg",
+              theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+            )}>
+              <h3 className={cn(
+                "text-lg font-medium mb-2",
+                theme === "dark" ? "text-white" : "text-gray-900"
+              )}>
+                Challenge: Automate a Login Form
+              </h3>
+              <p className={cn(
+                "mb-4",
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              )}>
+                Create a Selenium script that:
+              </p>
+              <ol className={cn(
+                "list-decimal pl-5 space-y-2",
+                theme === "dark" ? "text-gray-300" : "text-gray-700"
+              )}>
+                <li>Navigates to a login page</li>
+                <li>Fills in username and password fields</li>
+                <li>Clicks the login button</li>
+                <li>Verifies successful login by checking for an element on the dashboard</li>
+              </ol>
+            </div>
+          </div>
+        );
+    
+      default:
+        return <div>Select a tab to view content</div>;
+    }
   };
 
   return (
@@ -259,358 +597,119 @@ export default function SeleniumLab() {
                 </p>
               </div>
             
-              {/* Content Tabs */}
-              <Tabs value={activeTab} className="w-full" onValueChange={handleTabChange}>
-                {activeModule === 'intro' ? (
-                  <TabsList className="grid grid-cols-3 mb-6">
-                    <TabsTrigger value="install" className="flex items-center gap-2">
-                      <FileTerminal className="w-4 h-4" />
-                      <span>Install Library</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="first-script" className="flex items-center gap-2">
-                      <Code className="w-4 h-4" />
-                      <span>First Script</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="using-selenium" className="flex items-center gap-2">
-                      <PlayCircle className="w-4 h-4" />
-                      <span>Using Selenium</span>
-                    </TabsTrigger>
-                  </TabsList>
-                ) : (
-                  <TabsList className="grid grid-cols-3 mb-6">
-                    <TabsTrigger value="learn" className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4" />
-                      <span>Learn</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="practice" className="flex items-center gap-2">
-                      <Code className="w-4 h-4" />
-                      <span>Practice</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="challenge" className="flex items-center gap-2">
-                      <PlayCircle className="w-4 h-4" />
-                      <span>Challenge</span>
-                    </TabsTrigger>
-                  </TabsList>
-                )}
+              {/* Content Tabs - Simple Tab Implementation */}
+              <div className="w-full">
+                <div className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-800 rounded-md p-1">
+                  {activeModule === 'intro' ? (
+                    <>
+                      <button 
+                        onClick={() => handleTabChange('install')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'install' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <FileTerminal className="w-4 h-4" />
+                        <span>Install Library</span>
+                      </button>
+                      <button 
+                        onClick={() => handleTabChange('first-script')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'first-script' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <Code className="w-4 h-4" />
+                        <span>First Script</span>
+                      </button>
+                      <button 
+                        onClick={() => handleTabChange('using-selenium')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'using-selenium' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <PlayCircle className="w-4 h-4" />
+                        <span>Using Selenium</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button 
+                        onClick={() => handleTabChange('learn')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'learn' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <BookOpen className="w-4 h-4" />
+                        <span>Learn</span>
+                      </button>
+                      <button 
+                        onClick={() => handleTabChange('practice')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'practice' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <Code className="w-4 h-4" />
+                        <span>Practice</span>
+                      </button>
+                      <button 
+                        onClick={() => handleTabChange('challenge')}
+                        className={cn(
+                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
+                          activeTab === 'challenge' 
+                            ? theme === 'dark'
+                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
+                              : 'bg-white text-[#00BCD4] shadow-sm'
+                            : theme === 'dark'
+                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
+                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
+                        )}
+                      >
+                        <PlayCircle className="w-4 h-4" />
+                        <span>Challenge</span>
+                      </button>
+                    </>
+                  )}
+                </div>
                 
-                <TabsContent value="install" className="mt-0">
-                  <div className={cn(
-                    "prose prose-lg max-w-none",
-                    theme === "dark" 
-                      ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-                      : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-                  )}>
-                    <h3>Install a Selenium Library</h3>
-                    <p>
-                      Setting up the Selenium library for your favorite programming language is the first step.
-                      The installation process depends on the language you choose to use. Make sure to check the
-                      <a href="https://www.selenium.dev/downloads/" target="_blank" rel="noopener noreferrer"> Selenium downloads page </a>
-                      to ensure you're using the latest version.
-                    </p>
-
-                    <div className="my-8">
-                      <h4>Requirements by Language</h4>
-                      
-                      <div className="flex flex-wrap gap-3 mb-4">
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <FileTerminal className="text-orange-500 h-4 w-4" /> <span>Java</span>
-                        </div>
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <SiPython className="text-blue-500" /> <span>Python</span>
-                        </div>
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <Code className="text-purple-500 h-4 w-4" /> <span>C#</span>
-                        </div>
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <FileTerminal className="text-red-500 h-4 w-4" /> <span>Ruby</span>
-                        </div>
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <SiJavascript className="text-yellow-500" /> <span>JavaScript</span>
-                        </div>
-                        <div className={cn(
-                          "flex items-center gap-2 px-3 py-2 rounded-md",
-                          theme === "dark" ? "bg-gray-700 text-white" : "bg-gray-100 text-gray-900"
-                        )}>
-                          <Code className="text-blue-400 h-4 w-4" /> <span>Kotlin</span>
-                        </div>
-                      </div>
-                      
-                      <p>Java requires at least Java 8 for Selenium WebDriver (view the <a href="https://www.selenium.dev/documentation/webdriver/getting_started/install_library/" target="_blank" rel="noopener noreferrer">minimum supported Java version here</a>).</p>
-                      <p>Installation of Selenium libraries for Java is accomplished using a build tool.</p>
-                      
-                      <TerminalCodeTabs 
-                        title="Java Dependency Configuration" 
-                        description="Choose your preferred build tool:"
-                        tabs={[
-                          {
-                            id: "maven",
-                            label: "Maven",
-                            code: `<dependency>
-    <groupId>org.seleniumhq.selenium</groupId>
-    <artifactId>selenium-java</artifactId>
-    <version>\${selenium.version}</version>
-</dependency>`
-                          },
-                          {
-                            id: "gradle",
-                            label: "Gradle",
-                            code: `testImplementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
-testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
-                          }
-                        ]}
-                        className="my-6"
-                      />
-                    </div>
-
-                    <div className="mt-8">
-                      <h3>Terminal Commands</h3>
-                      <p>Here's how you can install Selenium using package managers in different languages:</p>
-                      
-                      <Terminal 
-                        lines={[
-                          { type: 'command', content: 'pip install selenium', delay: 500 },
-                          { type: 'output', content: 'Collecting selenium', delay: 1000 },
-                          { type: 'output', content: '  Downloading selenium-4.29.0.tar.gz (8.9 MB)', delay: 1500 },
-                          { type: 'output', content: 'Installing collected packages: selenium', delay: 2000 },
-                          { type: 'success', content: 'Successfully installed selenium-4.29.0', delay: 2500 },
-                          { type: 'cursor', content: '', delay: 3000 }
-                        ]}
-                        language="Python"
-                        className="mb-4"
-                      />
-                    </div>
-                    
-                    <div className={cn(
-                      "p-4 rounded-lg mt-6",
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    )}>
-                      <h4 className="flex items-center mt-0">
-                        <Info className="w-5 h-5 mr-2" />
-                        Pro Tip
-                      </h4>
-                      <p className="text-sm mb-0">
-                        Always check the compatibility between your browser version and the WebDriver version you're using.
-                      </p>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="first-script" className="mt-0">
-                  <div className={cn(
-                    "prose prose-lg max-w-none",
-                    theme === "dark" 
-                      ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-                      : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-                  )}>
-                    <h3>Write your first Selenium script</h3>
-                    <p>
-                      Once you have Selenium installed, you're ready to write Selenium code. Everything Selenium does is 
-                      send browser commands or request information. The following components make up the foundation of 
-                      most Selenium scripts.
-                    </p>
-
-                    <h4 className="mt-6">Eight Basic Components</h4>
-                    <p>
-                      Most of what you'll do with Selenium is a combination of these basic commands:
-                    </p>
-
-                    <div className="space-y-8 mt-6">
-                      <div>
-                        <h5 className="flex items-center">
-                          <span className="flex items-center justify-center bg-cyan-600 text-white rounded-full w-6 h-6 mr-2 text-sm">1</span>
-                          Start the session
-                        </h5>
-                        <p className="text-sm ml-8">For more details on starting a session read our documentation on driver sessions</p>
-                        <TerminalCodeTabs 
-                          tabs={[
-                            {
-                              id: "java-driver",
-                              label: "Java",
-                              code: `WebDriver driver = new ChromeDriver();`
-                            },
-                            {
-                              id: "python-driver",
-                              label: "Python",
-                              code: `driver = webdriver.Chrome()`
-                            },
-                            {
-                              id: "javascript-driver",
-                              label: "JavaScript",
-                              code: `const driver = await new Builder().forBrowser('chrome').build();`
-                            }
-                          ]}
-                          className="ml-8"
-                        />
-                      </div>
-
-                      <div>
-                        <h5 className="flex items-center">
-                          <span className="flex items-center justify-center bg-cyan-600 text-white rounded-full w-6 h-6 mr-2 text-sm">2</span>
-                          Take action on browser
-                        </h5>
-                        <p className="text-sm ml-8">In this example we are navigating to a web page.</p>
-                        <TerminalCodeTabs 
-                          tabs={[
-                            {
-                              id: "java-action",
-                              label: "Java",
-                              code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
-                            },
-                            {
-                              id: "python-action",
-                              label: "Python",
-                              code: `driver.get("https://www.selenium.dev/selenium/web/web-form.html")`
-                            },
-                            {
-                              id: "javascript-action",
-                              label: "JavaScript",
-                              code: `await driver.get("https://www.selenium.dev/selenium/web/web-form.html");`
-                            }
-                          ]}
-                          className="ml-8"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="using-selenium" className="mt-0">
-                  <div className={cn(
-                    "prose prose-lg max-w-none",
-                    theme === "dark" 
-                      ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-                      : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-                  )}>
-                    <h3>Organizing and Executing Selenium Code</h3>
-                    <p>
-                      If you want to run more than a handful of one-off scripts, you need to be able to organize and work 
-                      with your code effectively.
-                    </p>
-
-                    <div className="my-6">
-                      <h4>Common Uses of Selenium</h4>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div className={cn(
-                          "p-4 rounded-lg",
-                          theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                        )}>
-                          <h5 className="text-lg font-semibold mb-2">Testing</h5>
-                          <p className="text-sm">
-                            Running Selenium for testing requires making assertions. A good assertion library and test runner are essential.
-                          </p>
-                        </div>
-                        <div className={cn(
-                          "p-4 rounded-lg",
-                          theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                        )}>
-                          <h5 className="text-lg font-semibold mb-2">Repetitive Tasks</h5>
-                          <p className="text-sm">
-                            Automate workflows like logging into websites, submitting forms, or downloading content on a schedule.
-                          </p>
-                        </div>
-                        <div className={cn(
-                          "p-4 rounded-lg",
-                          theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                        )}>
-                          <h5 className="text-lg font-semibold mb-2">Web Scraping</h5>
-                          <p className="text-sm">
-                            Collect data from sites that don't have an API. Be sure to respect website terms of service.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="learn" className="mt-0">
-                  <div className={cn(
-                    "prose prose-lg max-w-none",
-                    theme === "dark" 
-                      ? "prose-invert prose-headings:text-white prose-a:text-[#40E0D0]" 
-                      : "prose-headings:text-gray-900 prose-a:text-[#00BCD4]"
-                  )}>
-                    <h3>What is Selenium WebDriver?</h3>
-                    <p>
-                      Selenium WebDriver is an open-source automation framework that allows you to control web browsers programmatically. It provides a consistent API that works across different browsers and platforms.
-                    </p>
-                    
-                    <h3>Key Features</h3>
-                    <ul>
-                      <li>Support for multiple programming languages (Java, Python, C#, etc.)</li>
-                      <li>Native browser support without external dependencies</li>
-                      <li>Rich set of selectors to locate elements</li>
-                      <li>Advanced browser interactions and JavaScript execution</li>
-                    </ul>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="practice" className="mt-0">
-                  <div className="space-y-6">
-                    <div className={cn(
-                      "p-4 rounded-lg",
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    )}>
-                      <h3 className={cn(
-                        "text-lg font-medium mb-2",
-                        theme === "dark" ? "text-white" : "text-gray-900"
-                      )}>
-                        Practice Exercise
-                      </h3>
-                      <p className={cn(
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      )}>
-                        Create a Selenium script that navigates to a website, finds an element, and interacts with it.
-                      </p>
-                    </div>
-                  </div>
-                </TabsContent>
-                
-                <TabsContent value="challenge" className="mt-0">
-                  <div className="space-y-6">
-                    <div className={cn(
-                      "p-4 rounded-lg",
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    )}>
-                      <h3 className={cn(
-                        "text-lg font-medium mb-2",
-                        theme === "dark" ? "text-white" : "text-gray-900"
-                      )}>
-                        Challenge: Automate a Login Form
-                      </h3>
-                      <p className={cn(
-                        "mb-4",
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      )}>
-                        Create a Selenium script that:
-                      </p>
-                      <ol className={cn(
-                        "list-decimal pl-5 space-y-2",
-                        theme === "dark" ? "text-gray-300" : "text-gray-700"
-                      )}>
-                        <li>Navigates to a login page</li>
-                        <li>Fills in username and password fields</li>
-                        <li>Clicks the login button</li>
-                        <li>Verifies successful login by checking for an element on the dashboard</li>
-                      </ol>
-                    </div>
-                  </div>
-                </TabsContent>
-              </Tabs>
+                {/* Tab Content */}
+                <div className="tab-content mt-6">
+                  {renderTabContent()}
+                </div>
+              </div>
             </div>
           </div>
         </div>
