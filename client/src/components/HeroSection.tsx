@@ -245,14 +245,10 @@ export default function HeroSection() {
                   animate="animate"
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=70&w=600&h=450&fm=webp" 
+                    src="https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?auto=format&fit=crop&q=80&w=800&h=600" 
                     alt="Software testing professional analyzing test results" 
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    width={600}
-                    height={450}
-                    decoding="async"
-                    sizes="(max-width: 768px) 100vw, 600px"
                   />
                 </motion.div>
                 
