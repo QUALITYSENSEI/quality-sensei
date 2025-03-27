@@ -1,0 +1,443 @@
+{
+  "title": "Selenium WebDriver Lab",
+  "description": "Master browser automation with Selenium WebDriver through practical, hands-on exercises.",
+  "tags": [
+    {"text": "Browser Automation", "color": "green"},
+    {"text": "Java", "color": "red"},
+    {"text": "Python", "color": "blue"},
+    {"text": "JavaScript", "color": "yellow"}
+  ],
+  "icon": "SiSelenium",
+  "modules": [
+    {
+      "id": "overview",
+      "label": "Overview",
+      "icon": "BsBriefcase",
+      "content": {
+        "title": "Selenium WebDriver Lab",
+        "description": "Welcome to the Selenium WebDriver Lab! This interactive tutorial will guide you through using Selenium WebDriver, the industry standard for browser-based test automation. You'll learn how to set up Selenium WebDriver, write tests in various languages, and implement advanced patterns for maintainable test automation.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "What You'll Learn"
+          },
+          {
+            "type": "list",
+            "style": "bullet",
+            "items": [
+              "Setting up Selenium WebDriver in your preferred programming language",
+              "Locating elements using various selector strategies",
+              "Writing robust tests that handle synchronization issues",
+              "Implementing the Page Object Model pattern",
+              "Working with complex elements like dropdowns, alerts, and frames",
+              "Managing test data and capturing screenshots"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Why Selenium WebDriver?"
+          },
+          {
+            "type": "text",
+            "content": "Selenium WebDriver is the most widely-used open source solution for browser automation. It provides a programming interface to create robust, browser-based regression automation and scales better than any other tool in the market."
+          },
+          {
+            "type": "grid",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Cross-Browser Testing",
+                "content": "Run tests across Chrome, Firefox, Safari, Edge, and others."
+              },
+              {
+                "title": "Language Support",
+                "content": "Write tests in Java, Python, JavaScript, C#, Ruby, and more."
+              },
+              {
+                "title": "Community Support",
+                "content": "Vast community resources, documentation, and plugins."
+              },
+              {
+                "title": "Integration",
+                "content": "Integrates with CI/CD systems, test frameworks, and reporting tools."
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "locators",
+      "label": "Element Locators",
+      "icon": "BsSearch",
+      "content": {
+        "title": "Finding Elements on the Page",
+        "description": "One of the most important aspects of Selenium WebDriver is locating elements on a web page. Selenium provides multiple strategies for element location, each with its own advantages and use cases.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Common Locator Strategies"
+          },
+          {
+            "type": "cards",
+            "columns": 2,
+            "items": [
+              {
+                "title": "ID",
+                "description": "Locates elements by their ID attribute. This is the most reliable and efficient locator if IDs are available.",
+                "code": "// Java\ndriver.findElement(By.id(\"username\"));\n\n# Python\ndriver.find_element(By.ID, \"username\")\n\n// JavaScript\ndriver.findElement(By.id(\"username\"));\n\n// C#\ndriver.FindElement(By.Id(\"username\"));"
+              },
+              {
+                "title": "Name",
+                "description": "Locates elements by their name attribute. Commonly used for form fields.",
+                "code": "// Java\ndriver.findElement(By.name(\"email\"));\n\n# Python\ndriver.find_element(By.NAME, \"email\")\n\n// JavaScript\ndriver.findElement(By.name(\"email\"));\n\n// C#\ndriver.FindElement(By.Name(\"email\"));"
+              },
+              {
+                "title": "CSS Selector",
+                "description": "Powerful and versatile. Preferred over XPath for its better performance and readability.",
+                "code": "// Java\ndriver.findElement(By.cssSelector(\".login-form input[type='submit']\"));\n\n# Python\ndriver.find_element(By.CSS_SELECTOR, \".login-form input[type='submit']\")\n\n// JavaScript\ndriver.findElement(By.css(\".login-form input[type='submit']\"));\n\n// C#\ndriver.FindElement(By.CssSelector(\".login-form input[type='submit']\"));"
+              },
+              {
+                "title": "XPath",
+                "description": "Versatile but sometimes complex. Can traverse up and down the DOM tree.",
+                "code": "// Java\ndriver.findElement(By.xpath(\"//button[contains(text(), 'Submit')]\"));\n\n# Python\ndriver.find_element(By.XPATH, \"//button[contains(text(), 'Submit')]\")\n\n// JavaScript\ndriver.findElement(By.xpath(\"//button[contains(text(), 'Submit')]\"));\n\n// C#\ndriver.FindElement(By.XPath(\"//button[contains(text(), 'Submit')]\"));"
+              },
+              {
+                "title": "Link Text",
+                "description": "Locates links by their exact text content.",
+                "code": "// Java\ndriver.findElement(By.linkText(\"Sign Up\"));\n\n# Python\ndriver.find_element(By.LINK_TEXT, \"Sign Up\")\n\n// JavaScript\ndriver.findElement(By.linkText(\"Sign Up\"));\n\n// C#\ndriver.FindElement(By.LinkText(\"Sign Up\"));"
+              },
+              {
+                "title": "Partial Link Text",
+                "description": "Locates links that contain the specified text.",
+                "code": "// Java\ndriver.findElement(By.partialLinkText(\"Sign\"));\n\n# Python\ndriver.find_element(By.PARTIAL_LINK_TEXT, \"Sign\")\n\n// JavaScript\ndriver.findElement(By.partialLinkText(\"Sign\"));\n\n// C#\ndriver.FindElement(By.PartialLinkText(\"Sign\"));"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Finding Multiple Elements"
+          },
+          {
+            "type": "text",
+            "content": "Sometimes you need to find multiple elements that match a certain criteria:"
+          },
+          {
+            "type": "code",
+            "language": "multi",
+            "content": "// Java\nList<WebElement> links = driver.findElements(By.tagName(\"a\"));\n\n# Python\nlinks = driver.find_elements(By.TAG_NAME, \"a\")\n\n// JavaScript\nconst links = await driver.findElements(By.css(\"a\"));\n\n// C#\nvar links = driver.FindElements(By.TagName(\"a\"));"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Tips for Robust Locators"
+          },
+          {
+            "type": "list",
+            "style": "ordered",
+            "items": [
+              "<strong>Prefer IDs and names when available</strong> - They're faster and more stable than other locators.",
+              "<strong>Use CSS selectors over XPath</strong> - They're generally faster and easier to read.",
+              "<strong>Avoid brittle locators</strong> - Don't rely on position-based selectors like <code>nth-child</code> if possible.",
+              "<strong>Build resilient selectors</strong> - Use multiple attributes to create robust selectors (e.g., <code>input[type='submit'][value='Login']</code>).",
+              "<strong>Test your locators</strong> - Use browser developer tools to verify your selectors before using them in code."
+            ]
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Open a website of your choice and practice finding elements using different locator strategies:",
+            "steps": [
+              "Find a form field by ID",
+              "Find a button using a CSS selector",
+              "Find all links on the page",
+              "Find an element using XPath based on its text content",
+              "Create a locator that uses multiple attributes for better reliability"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "actions",
+      "label": "Browser Actions",
+      "icon": "BsCursor",
+      "content": {
+        "title": "Interacting with Elements",
+        "description": "Once you've located elements on a page, you'll need to interact with them. Selenium WebDriver provides various methods for simulating user interactions.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Basic Actions"
+          },
+          {
+            "type": "grid",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Clicking Elements",
+                "code": "// Java\ndriver.findElement(By.id(\"submitButton\")).click();\n\n# Python\ndriver.find_element(By.ID, \"submitButton\").click()\n\n// JavaScript\nawait driver.findElement(By.id(\"submitButton\")).click();\n\n// C#\ndriver.FindElement(By.Id(\"submitButton\")).Click();"
+              },
+              {
+                "title": "Entering Text",
+                "code": "// Java\ndriver.findElement(By.name(\"username\")).sendKeys(\"testuser\");\n\n# Python\ndriver.find_element(By.NAME, \"username\").send_keys(\"testuser\")\n\n// JavaScript\nawait driver.findElement(By.name(\"username\")).sendKeys(\"testuser\");\n\n// C#\ndriver.FindElement(By.Name(\"username\")).SendKeys(\"testuser\");"
+              },
+              {
+                "title": "Clearing Input Fields",
+                "code": "// Java\ndriver.findElement(By.id(\"search\")).clear();\n\n# Python\ndriver.find_element(By.ID, \"search\").clear()\n\n// JavaScript\nawait driver.findElement(By.id(\"search\")).clear();\n\n// C#\ndriver.FindElement(By.Id(\"search\")).Clear();"
+              },
+              {
+                "title": "Submitting Forms",
+                "code": "// Java\ndriver.findElement(By.id(\"loginForm\")).submit();\n\n# Python\ndriver.find_element(By.ID, \"loginForm\").submit()\n\n// JavaScript\nawait driver.findElement(By.id(\"loginForm\")).submit();\n\n// C#\ndriver.FindElement(By.Id(\"loginForm\")).Submit();"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Advanced Interactions"
+          },
+          {
+            "type": "text",
+            "content": "For more complex actions like hover, drag-and-drop, or key combinations, Selenium provides the Actions class:"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Java example of using Actions class\nActions actions = new Actions(driver);\n\n// Hover over an element\nWebElement menuItem = driver.findElement(By.cssSelector(\".dropdown-trigger\"));\nactions.moveToElement(menuItem).perform();\n\n// Drag and drop\nWebElement source = driver.findElement(By.id(\"draggable\"));\nWebElement target = driver.findElement(By.id(\"droppable\"));\nactions.dragAndDrop(source, target).perform();\n\n// Right-click (context click)\nWebElement element = driver.findElement(By.id(\"context-menu-trigger\"));\nactions.contextClick(element).perform();\n\n// Key combinations (e.g., Ctrl+A to select all)\nWebElement textbox = driver.findElement(By.id(\"content\"));\nactions.click(textbox)\n       .keyDown(Keys.CONTROL)\n       .sendKeys(\"a\")\n       .keyUp(Keys.CONTROL)\n       .perform();"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Working with Dropdown Menus"
+          },
+          {
+            "type": "code",
+            "language": "multi",
+            "content": "// Java\nSelect dropdown = new Select(driver.findElement(By.id(\"country\")));\ndropdown.selectByVisibleText(\"United States\");\n// Or\ndropdown.selectByValue(\"US\");\n// Or\ndropdown.selectByIndex(1);\n\n# Python\nfrom selenium.webdriver.support.select import Select\ndropdown = Select(driver.find_element(By.ID, \"country\"))\ndropdown.select_by_visible_text(\"United States\")\n# Or\ndropdown.select_by_value(\"US\")\n# Or\ndropdown.select_by_index(1)"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Working with Alerts"
+          },
+          {
+            "type": "code",
+            "language": "multi",
+            "content": "// Java\n// Accept alert\ndriver.switchTo().alert().accept();\n\n// Dismiss alert\ndriver.switchTo().alert().dismiss();\n\n// Get text from alert\nString alertText = driver.switchTo().alert().getText();\n\n// Enter text in prompt\ndriver.switchTo().alert().sendKeys(\"My input\");\n\n# Python\n# Accept alert\ndriver.switch_to.alert.accept()\n\n# Dismiss alert\ndriver.switch_to.alert.dismiss()\n\n# Get text from alert\nalert_text = driver.switch_to.alert.text\n\n# Enter text in prompt\ndriver.switch_to.alert.send_keys(\"My input\")"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Browser Navigation"
+          },
+          {
+            "type": "cards",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Navigate to URL",
+                "code": "// Java\ndriver.get(\"https://www.example.com\");\n\n# Python\ndriver.get(\"https://www.example.com\")\n\n// JavaScript\nawait driver.get(\"https://www.example.com\");\n\n// C#\ndriver.Navigate().GoToUrl(\"https://www.example.com\");"
+              },
+              {
+                "title": "Refresh Page",
+                "code": "// Java\ndriver.navigate().refresh();\n\n# Python\ndriver.refresh()\n\n// JavaScript\nawait driver.navigate().refresh();\n\n// C#\ndriver.Navigate().Refresh();"
+              },
+              {
+                "title": "Navigate Back",
+                "code": "// Java\ndriver.navigate().back();\n\n# Python\ndriver.back()\n\n// JavaScript\nawait driver.navigate().back();\n\n// C#\ndriver.Navigate().Back();"
+              },
+              {
+                "title": "Navigate Forward",
+                "code": "// Java\ndriver.navigate().forward();\n\n# Python\ndriver.forward()\n\n// JavaScript\nawait driver.navigate().forward();\n\n// C#\ndriver.Navigate().Forward();"
+              }
+            ]
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Create a script that performs the following actions on a website of your choice:",
+            "steps": [
+              "Navigate to the website",
+              "Fill out a form with at least three fields",
+              "Select an option from a dropdown menu",
+              "Click a button to submit the form",
+              "Verify that the page has changed after submission"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "waits",
+      "label": "Synchronization",
+      "icon": "BsClock",
+      "content": {
+        "title": "Wait Strategies in Selenium",
+        "description": "Web applications use AJAX and JavaScript to load content dynamically. Selenium WebDriver needs synchronization mechanisms to handle timing issues between browser actions.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Types of Waits"
+          },
+          {
+            "type": "cards",
+            "columns": 3,
+            "items": [
+              {
+                "title": "Implicit Waits",
+                "description": "Sets a default wait time for the entire WebDriver instance. The driver will wait for elements for the specified duration before throwing a NoSuchElementException.",
+                "note": "Best for simple scripts, but can lead to unnecessary waiting.",
+                "color": "amber"
+              },
+              {
+                "title": "Explicit Waits",
+                "description": "Waits for a specific condition to be true before proceeding. More flexible and efficient than implicit waits.",
+                "note": "Recommended for most scenarios.",
+                "color": "green"
+              },
+              {
+                "title": "Fluent Waits",
+                "description": "A more configurable version of explicit waits. Allows setting polling interval, timeout, and exceptions to ignore.",
+                "note": "Best for complex waiting scenarios.",
+                "color": "blue"
+              }
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Implicit Wait Examples"
+          },
+          {
+            "type": "code",
+            "language": "multi",
+            "content": "// Java\ndriver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));\n\n# Python\ndriver.implicitly_wait(10)  # seconds\n\n// JavaScript\nawait driver.manage().setTimeouts({implicit: 10000});\n\n// C#\ndriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Explicit Wait Examples"
+          },
+          {
+            "type": "code",
+            "language": "multi",
+            "content": "// Java\nWebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));\nWebElement element = wait.until(\n    ExpectedConditions.visibilityOfElementLocated(By.id(\"myElementId\"))\n);\n\n# Python\nfrom selenium.webdriver.support.ui import WebDriverWait\nfrom selenium.webdriver.support import expected_conditions as EC\n\nwait = WebDriverWait(driver, 10)\nelement = wait.until(\n    EC.visibility_of_element_located((By.ID, \"myElementId\"))\n)\n\n// JavaScript\nconst {until} = require('selenium-webdriver');\n\nlet element = await driver.wait(\n    until.elementLocated(By.id('myElementId')),\n    10000\n);\nawait driver.wait(until.elementIsVisible(element), 10000);\n\n// C#\nWebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));\nIWebElement element = wait.Until(\n    SeleniumExtras.WaitHelpers.ExpectedConditions.ElementIsVisible(By.Id(\"myElementId\"))\n);"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Common Expected Conditions"
+          },
+          {
+            "type": "list",
+            "style": "bullet",
+            "items": [
+              "<code>elementToBeClickable</code> - Element is visible and enabled",
+              "<code>visibilityOfElementLocated</code> - Element is present and visible",
+              "<code>presenceOfElementLocated</code> - Element exists in DOM",
+              "<code>titleContains</code> - Page title contains specific text",
+              "<code>textToBePresentInElement</code> - Element contains specific text",
+              "<code>invisibilityOfElementLocated</code> - Element is not visible",
+              "<code>attributeContains</code> - Element attribute contains specific value",
+              "<code>alertIsPresent</code> - Alert dialog is present"
+            ]
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Fluent Wait Example"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "content": "// Java\nWait<WebDriver> wait = new FluentWait<WebDriver>(driver)\n    .withTimeout(Duration.ofSeconds(30))\n    .pollingEvery(Duration.ofMillis(500))\n    .ignoring(NoSuchElementException.class)\n    .ignoring(StaleElementReferenceException.class);\n\nWebElement element = wait.until(new Function<WebDriver, WebElement>() {\n    public WebElement apply(WebDriver driver) {\n        return driver.findElement(By.id(\"dynamicElement\"));\n    }\n});"
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Create a script that demonstrates waiting for dynamic content:",
+            "steps": [
+              "Navigate to a website that loads content dynamically",
+              "Implement an explicit wait to wait for an element to appear",
+              "Interact with the element once it's available",
+              "Try using different expected conditions for different scenarios",
+              "Compare the behavior of implicit vs. explicit waits"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "patterns",
+      "label": "Design Patterns",
+      "icon": "BsGear",
+      "content": {
+        "title": "Test Automation Design Patterns",
+        "description": "As your automation suite grows, it's important to organize your code following best practices and established design patterns. This makes your tests more maintainable, readable, and robust.",
+        "sections": [
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Page Object Model (POM)"
+          },
+          {
+            "type": "text",
+            "content": "The Page Object Model is a design pattern that creates an object repository for storing all web elements. It helps reduce code duplication and improves test maintenance."
+          },
+          {
+            "type": "grid",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Key Principles of POM:",
+                "content": "<ul class=\"list-disc pl-6 space-y-2\"><li>Represent each page as a class</li><li>Encapsulate page elements as private fields</li><li>Expose methods that perform actions on the page</li><li>Return the next page object when navigating</li><li>Keep assertions in test classes, not page objects</li></ul>",
+                "className": "h-full"
+              },
+              {
+                "title": "Page Object Model Structure:",
+                "content": "<pre class=\"text-xs overflow-x-auto bg-gray-100 dark:bg-gray-800 rounded-lg p-4\">Project\n├── src/main/java\n│   └── pages\n│       ├── BasePage.java       # Common functionality\n│       ├── LoginPage.java      # Login page elements & methods\n│       ├── DashboardPage.java  # Dashboard page elements & methods\n│       └── ...\n└── src/test/java\n    └── tests\n        ├── BaseTest.java       # Setup/teardown\n        ├── LoginTest.java      # Login test cases \n        └── ...</pre>",
+                "className": "h-full"
+              }
+            ]
+          },
+          {
+            "type": "alert",
+            "color": "blue",
+            "title": "Benefits of POM",
+            "content": "<ul class=\"list-disc pl-6 space-y-1\"><li>Reduces impact of UI changes</li><li>Improves code reusability</li><li>Makes tests more readable</li><li>Separates test logic from page interactions</li><li>Simplifies maintenance</li></ul>"
+          },
+          {
+            "type": "heading",
+            "level": 3,
+            "text": "Page Object Model Example"
+          },
+          {
+            "type": "code",
+            "language": "java",
+            "title": "Page Object Model Implementation",
+            "description": "Example of a login flow using the Page Object Model pattern",
+            "content": "// BasePage.java\npublic class BasePage {\n    protected WebDriver driver;\n    protected WebDriverWait wait;\n    \n    public BasePage(WebDriver driver) {\n        this.driver = driver;\n        this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));\n    }\n    \n    protected WebElement waitForElement(By locator) {\n        return wait.until(ExpectedConditions.visibilityOfElementLocated(locator));\n    }\n    \n    protected void click(By locator) {\n        waitForElement(locator).click();\n    }\n    \n    protected void type(By locator, String text) {\n        WebElement element = waitForElement(locator);\n        element.clear();\n        element.sendKeys(text);\n    }\n}\n\n// LoginPage.java\npublic class LoginPage extends BasePage {\n    private By usernameField = By.id(\"username\");\n    private By passwordField = By.id(\"password\");\n    private By loginButton = By.id(\"login-button\");\n    private By errorMessage = By.className(\"error-message\");\n    \n    public LoginPage(WebDriver driver) {\n        super(driver);\n    }\n    \n    public void enterUsername(String username) {\n        type(usernameField, username);\n    }\n    \n    public void enterPassword(String password) {\n        type(passwordField, password);\n    }\n    \n    public DashboardPage clickLoginButton() {\n        click(loginButton);\n        return new DashboardPage(driver);\n    }\n    \n    public DashboardPage login(String username, String password) {\n        enterUsername(username);\n        enterPassword(password);\n        return clickLoginButton();\n    }\n    \n    public String getErrorMessage() {\n        return waitForElement(errorMessage).getText();\n    }\n}\n\n// LoginTest.java\npublic class LoginTest extends BaseTest {\n    private LoginPage loginPage;\n    \n    @BeforeMethod\n    public void setupTest() {\n        driver.get(\"https://example.com/login\");\n        loginPage = new LoginPage(driver);\n    }\n    \n    @Test\n    public void testSuccessfulLogin() {\n        DashboardPage dashboardPage = loginPage.login(\"validuser\", \"validpass\");\n        Assert.assertTrue(dashboardPage.isDashboardDisplayed());\n    }\n    \n    @Test\n    public void testFailedLogin() {\n        loginPage.enterUsername(\"invaliduser\");\n        loginPage.enterPassword(\"invalidpass\");\n        loginPage.clickLoginButton();\n        Assert.assertEquals(loginPage.getErrorMessage(), \"Invalid credentials\");\n    }\n}"
+          },
+          {
+            "type": "exerciseBox",
+            "title": "Practice Exercise",
+            "content": "Try implementing the Page Object Model for a simple workflow:",
+            "steps": [
+              "Create page objects for at least two pages (e.g., Home and Login)",
+              "Implement methods for common actions on each page",
+              "Write a test that uses these page objects to complete a workflow",
+              "Use explicit waits for proper synchronization"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
