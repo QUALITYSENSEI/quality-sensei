@@ -9,101 +9,21 @@ import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { useTheme } from "@/contexts/ThemeContext";
+import { labCategories } from '@/modules/labs';
+import { createBreadcrumb } from '@/factories/breadcrumbFactory';
+import { createAnimation } from '@/factories/animationFactory';
 
-// Lab category type
-interface LabCategory {
-  id: string;
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-  route: string;
-  count: number;
-  comingSoon?: boolean;
-}
+// Animation variants using our animation factory
+const containerAnimation = createAnimation({
+  type: 'fade',
+  staggerChildren: 0.1
+});
 
-// All lab categories
-const labCategories: LabCategory[] = [
-  {
-    id: 'manual',
-    title: 'Manual Testing',
-    description: 'Learn the fundamentals of manual testing with interactive exercises on test cases, bug reports, and more.',
-    icon: <Beaker className="h-8 w-8" />,
-    color: 'from-cyan-500 to-blue-500',
-    route: '/labs/manual',
-    count: 5,
-    comingSoon: true
-  },
-  {
-    id: 'automation',
-    title: 'Automation Testing',
-    description: 'Hands-on automation labs covering Selenium, TestNG, and other popular frameworks with real-world examples.',
-    icon: <Code className="h-8 w-8" />,
-    color: 'from-purple-500 to-pink-500',
-    route: '/labs/automation',
-    count: 6
-  },
-  {
-    id: 'api',
-    title: 'API Testing',
-    description: 'Practice API testing techniques using Postman, REST Assured, and other tools with guided exercises.',
-    icon: <FileJson className="h-8 w-8" />,
-    color: 'from-amber-500 to-orange-500',
-    route: '/labs/api',
-    count: 4,
-    comingSoon: true
-  },
-  {
-    id: 'performance',
-    title: 'Performance Testing',
-    description: 'Learn to measure application performance using JMeter, Gatling, and k6 with practical examples.',
-    icon: <Play className="h-8 w-8" />,
-    color: 'from-red-500 to-rose-500',
-    route: '/labs/performance',
-    count: 3,
-    comingSoon: true
-  },
-  {
-    id: 'agile',
-    title: 'Agile & DevOps',
-    description: 'Explore the quality assurance role in Agile teams and DevOps environments with practical exercises.',
-    icon: <Users className="h-8 w-8" />,
-    color: 'from-green-500 to-emerald-500',
-    route: '/labs/agile',
-    count: 2,
-    comingSoon: true
-  },
-  {
-    id: 'security',
-    title: 'Security Testing',
-    description: 'Master the theoretical foundations of security testing with interactive quizzes and scenarios.',
-    icon: <BookOpen className="h-8 w-8" />,
-    color: 'from-blue-500 to-indigo-500',
-    route: '/labs/security',
-    count: 5,
-    comingSoon: true
-  }
-];
-
-// Animation variants
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1
-    }
-  }
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5 }
-  }
-};
+const itemAnimation = createAnimation({
+  type: 'slide',
+  direction: 'up',
+  duration: 'normal'
+});
 
 export default function Labs() {
   const { theme } = useTheme();
@@ -166,15 +86,15 @@ export default function Labs() {
           {/* Lab Categories Grid */}
           <motion.div
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            variants={containerAnimation}
+            initial="initial"
+            animate="animate"
           >
             {labCategories.map((category) => (
               <motion.div
                 key={category.id}
                 className="rounded-xl overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-2 relative"
-                variants={itemVariants}
+                variants={itemAnimation}
               >
                 {category.comingSoon ? (
                   <div className="cursor-not-allowed h-full">
