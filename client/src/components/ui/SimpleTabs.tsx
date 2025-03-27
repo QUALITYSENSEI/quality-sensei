@@ -24,7 +24,9 @@ export const SimpleTabs: React.FC<SimpleTabsProps> = ({
   const { theme } = useTheme();
   
   const handleClick = (tabId: string) => {
-    console.log(`Clicked tab: ${tabId}`);
+    console.log(`SimpleTabs - Clicked tab: ${tabId}`);
+    // Add direct console log for debugging
+    console.log('Current props:', { tabs, activeTab, className });
     onChange(tabId);
   };
   

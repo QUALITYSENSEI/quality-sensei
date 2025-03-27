@@ -84,6 +84,9 @@ const modules: Module[] = [
   }
 ];
 
+// Expose this function to the window object for testing in console
+let setActiveTabForTesting: (tab: string) => void;
+
 export default function SeleniumLab() {
   const { theme } = useTheme();
   const { toast } = useToast();
@@ -107,11 +110,21 @@ export default function SeleniumLab() {
   // Debug tab changes
   useEffect(() => {
     console.log(`Tab changed to: ${activeTab}`);
+    
+    // Expose the setter to window for testing
+    setActiveTabForTesting = (tab: string) => {
+      console.log(`Setting tab via global function to: ${tab}`);
+      setActiveTab(tab);
+    };
+    
+    // @ts-ignore - for testing purposes
+    window.setTab = setActiveTabForTesting;
   }, [activeTab]);
   
   // Tab change handler 
   const handleTabChange = (value: string) => {
-    console.log(`Tab clicked: ${value}`);
+    console.log(`SeleniumLab - Tab clicked: ${value}`);
+    console.log('Current state:', { activeModule, activeTab, saveScrollPosition, scrollPosition });
     setActiveTab(value);
   };
   
