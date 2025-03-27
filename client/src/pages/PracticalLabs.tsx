@@ -63,15 +63,33 @@ export default function PracticalLabs() {
   const { theme } = useTheme();
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
-  // Lab data
-  const labs = [
+  // Selenium Labs data
+  const seleniumLabs = [
     {
-      title: "Automation Testing",
-      description: "Master test automation using Selenium, Playwright and other popular frameworks through hands-on exercises.",
+      title: "Selenium WebDriver",
+      description: "Master Selenium WebDriver for browser automation with hands-on exercises in Java, Python, and JavaScript.",
       icon: <SiSelenium className="w-8 h-8" />,
       color: "#43B02A", // Selenium green
       status: "Available" as const
     },
+    {
+      title: "Selenium Grid",
+      description: "Learn to set up and use Selenium Grid for distributed testing across multiple browsers and operating systems.",
+      icon: <SiSelenium className="w-8 h-8" />,
+      color: "#43B02A", // Selenium green
+      status: "Available" as const
+    },
+    {
+      title: "Selenium IDE",
+      description: "Quick introduction to browser test automation using the Selenium IDE browser extension for record and playback testing.",
+      icon: <SiSelenium className="w-8 h-8" />,
+      color: "#43B02A", // Selenium green
+      status: "Available" as const
+    }
+  ];
+
+  // Other Labs data
+  const otherLabs = [
     {
       title: "Manual Testing",
       description: "Learn systematic test case design, exploratory testing, and defect reporting with real-world examples.",
@@ -118,7 +136,7 @@ export default function PracticalLabs() {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
             transition={{ duration: 0.5 }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
             <h1 className={`text-4xl md:text-5xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
               Practical Labs
@@ -129,18 +147,44 @@ export default function PracticalLabs() {
             </p>
           </motion.div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {labs.map((lab, index) => (
-              <LabCard
-                key={lab.title}
-                title={lab.title}
-                description={lab.description}
-                icon={lab.icon}
-                delay={index + 1}
-                color={lab.color}
-                status={lab.status}
-              />
-            ))}
+          {/* Selenium Labs Section */}
+          <div className="mb-16">
+            <h2 className={`text-3xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              Selenium Labs
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+              {seleniumLabs.map((lab, index) => (
+                <LabCard
+                  key={lab.title}
+                  title={lab.title}
+                  description={lab.description}
+                  icon={lab.icon}
+                  delay={index + 1}
+                  color={lab.color}
+                  status={lab.status}
+                />
+              ))}
+            </div>
+          </div>
+          
+          {/* Other Labs Section */}
+          <div>
+            <h2 className={`text-3xl font-bold mb-8 ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+              Other Testing Labs
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {otherLabs.map((lab, index) => (
+                <LabCard
+                  key={lab.title}
+                  title={lab.title}
+                  description={lab.description}
+                  icon={lab.icon}
+                  delay={index + 1}
+                  color={lab.color}
+                  status={lab.status}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>

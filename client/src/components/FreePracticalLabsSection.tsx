@@ -48,14 +48,24 @@ export default function FreePracticalLabsSection() {
   const { theme } = useTheme();
   const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
 
-  // Lab data
-  const labs = [
+  // Selenium Labs data
+  const seleniumLabs = [
     {
-      title: "Automation Testing",
-      description: "Master test automation using Selenium, Playwright and other popular frameworks through hands-on exercises.",
+      title: "Selenium WebDriver",
+      description: "Master Selenium WebDriver for browser automation with hands-on exercises in Java, Python, and JavaScript.",
       icon: <SiSelenium className="w-8 h-8" />,
       color: "#43B02A" // Selenium green
     },
+    {
+      title: "Selenium Grid",
+      description: "Learn to set up and use Selenium Grid for distributed testing across multiple browsers and operating systems.",
+      icon: <SiSelenium className="w-8 h-8" />,
+      color: "#43B02A" // Selenium green
+    }
+  ];
+
+  // Other Labs data
+  const otherLabs = [
     {
       title: "Manual Testing",
       description: "Learn systematic test case design, exploratory testing, and defect reporting with real-world examples.",
@@ -88,17 +98,42 @@ export default function FreePracticalLabsSection() {
           </p>
         </motion.div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          {labs.map((lab, index) => (
-            <LabCard
-              key={lab.title}
-              title={lab.title}
-              description={lab.description}
-              icon={lab.icon}
-              delay={index + 1}
-              color={lab.color}
-            />
-          ))}
+        {/* Selenium Labs Section */}
+        <div className="mb-12">
+          <h3 className={`text-2xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            Selenium Labs
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {seleniumLabs.map((lab, index) => (
+              <LabCard
+                key={lab.title}
+                title={lab.title}
+                description={lab.description}
+                icon={lab.icon}
+                delay={index + 1}
+                color={lab.color}
+              />
+            ))}
+          </div>
+        </div>
+        
+        {/* Other Labs Section */}
+        <div className="mb-12">
+          <h3 className={`text-2xl font-bold mb-6 text-center ${theme === 'dark' ? 'text-white' : 'text-gray-900'}`}>
+            Other Testing Labs
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            {otherLabs.map((lab, index) => (
+              <LabCard
+                key={lab.title}
+                title={lab.title}
+                description={lab.description}
+                icon={lab.icon}
+                delay={index + 3} // Start after selenium labs
+                color={lab.color}
+              />
+            ))}
+          </div>
         </div>
         
         <motion.div
