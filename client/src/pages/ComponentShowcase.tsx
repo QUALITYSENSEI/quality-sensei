@@ -4,7 +4,6 @@ import { TerminalLine } from '@/lib/types';
 import UnifiedTabs from '@/components/ui/UnifiedTabs';
 import Terminal from '@/components/ui/Terminal';
 import CodeExample from '@/components/ui/CodeExample';
-import LiveChat from '@/components/ui/LiveChat';
 import MainLayout from '@/layouts/MainLayout';
 import { Tabs, TabsList, TabsContent, TabsTrigger } from '@/components/ui/tabs';
 
@@ -360,31 +359,25 @@ class SimpleSeleniumTest {
               <div>
                 <h2 className="text-2xl font-semibold mb-4">Live Chat Component</h2>
                 <p className="mb-6">
-                  The LiveChat component provides real-time chat functionality using WebSockets.
-                  It features a floating button that expands into a chat window, animated transitions,
-                  and responsive design.
+                  The Live Chat feature has been removed from this application.
                 </p>
                 
                 <div className="bg-gray-100 dark:bg-gray-800 rounded-lg p-6 mb-6">
-                  <h3 className="text-xl font-medium mb-3">Live Chat Features</h3>
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Real-time messaging using WebSockets</li>
-                    <li>Animated transitions and modern UI</li>
-                    <li>Responsive layout that works on all devices</li>
-                    <li>Dark/light theme support</li>
-                    <li>Automatic reconnection if connection is lost</li>
-                    <li>Customizable welcome messages and position</li>
-                  </ul>
-                  <p className="mt-4">
-                    The LiveChat component is already added to the app layout.
-                    Look for the chat button in the bottom-right corner of the screen.
+                  <h3 className="text-xl font-medium mb-3">Chat Alternatives</h3>
+                  <p>
+                    Instead of a real-time chat, consider the following alternatives for customer support:
                   </p>
+                  <ul className="list-disc pl-6 space-y-2 mt-4">
+                    <li>Email support form in the Contact section</li>
+                    <li>FAQ section with common questions</li>
+                    <li>Help documentation and knowledge base</li>
+                    <li>Phone support during business hours</li>
+                  </ul>
                 </div>
                 
                 <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 text-blue-800 dark:text-blue-200">
                   <p className="text-sm">
-                    Note: The LiveChat component is already visible as a floating button in the corner of the page.
-                    Click it to open the chat window and test the functionality.
+                    Note: For more information about support options, please visit the Contact section of the website.
                   </p>
                 </div>
               </div>
