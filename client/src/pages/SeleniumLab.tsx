@@ -19,6 +19,7 @@ import FloatingCard from "@/components/ui/FloatingCard";
 import ParticleBackground from "@/components/ui/ParticleBackground";
 import Terminal from "@/components/ui/Terminal";
 import CodeExample from "@/components/ui/CodeExample";
+import TerminalCodeTabs from "@/components/ui/TerminalCodeTabs";
 import { TerminalLine } from "@/lib/types";
 
 // Module interface
@@ -94,10 +95,12 @@ export default function SeleniumLab() {
     } else {
       setActiveTab('learn');
     }
-    
-    // Log for debugging
-    console.log(`Module changed to: ${activeModule}, setting tab to: ${activeTab}`);
   }, [activeModule]);
+  
+  // Debug tab changes
+  useEffect(() => {
+    console.log(`Tab changed to: ${activeTab}`);
+  }, [activeTab]);
   
   // Save scroll position when module changes
   useEffect(() => {
@@ -344,32 +347,24 @@ export default function SeleniumLab() {
                       <p>Java requires at least Java 8 for Selenium WebDriver (view the <a href="https://www.selenium.dev/documentation/webdriver/getting_started/install_library/" target="_blank" rel="noopener noreferrer">minimum supported Java version here</a>).</p>
                       <p>Installation of Selenium libraries for Java is accomplished using a build tool.</p>
                       
-                      <CodeExample 
-                        title="Maven Installation" 
-                        description="Specify the dependencies in the project's pom.xml file:"
-                        examples={[
+                      <TerminalCodeTabs 
+                        title="Java Dependency Configuration" 
+                        description="Choose your preferred build tool:"
+                        tabs={[
                           {
-                            language: "xml",
+                            id: "maven",
+                            label: "Maven",
                             code: `<dependency>
     <groupId>org.seleniumhq.selenium</groupId>
     <artifactId>selenium-java</artifactId>
     <version>\${selenium.version}</version>
-</dependency>`,
-                            label: "Maven"
-                          }
-                        ]}
-                        className="my-6"
-                      />
-                      
-                      <CodeExample 
-                        title="Gradle Installation" 
-                        description="Specify the dependency in the project build.gradle file as testImplementation:"
-                        examples={[
+</dependency>`
+                          },
                           {
-                            language: "gradle",
+                            id: "gradle",
+                            label: "Gradle",
                             code: `testImplementation 'org.seleniumhq.selenium:selenium-java:4.29.0'
-testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`,
-                            label: "Gradle"
+testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
                           }
                         ]}
                         className="my-6"
