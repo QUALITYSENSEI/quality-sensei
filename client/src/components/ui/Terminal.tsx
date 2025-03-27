@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { TerminalLine } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/contexts/ThemeContext';
+import { Copy, Check } from 'lucide-react';
 
 interface TerminalProps {
   lines: TerminalLine[];
@@ -14,6 +15,7 @@ const Terminal = ({ lines, language = 'bash', className }: TerminalProps) => {
   const { theme } = useTheme();
   const [visibleLines, setVisibleLines] = useState<TerminalLine[]>([]);
   const [cursorBlinking, setCursorBlinking] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     setVisibleLines([]);
@@ -31,6 +33,17 @@ const Terminal = ({ lines, language = 'bash', className }: TerminalProps) => {
 
     return () => timeouts.forEach(clearTimeout);
   }, [lines]);
+
+  const copyToClipboard = () => {
+    const commandsOnly = lines
+      .filter(line => line.type === 'command')
+      .map(line => line.content)
+      .join('\n');
+    
+    navigator.clipboard.writeText(commandsOnly);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const renderLine = (line: TerminalLine, index: number) => {
     switch (line.type) {
@@ -102,15 +115,33 @@ const Terminal = ({ lines, language = 'bash', className }: TerminalProps) => {
 
   return (
     <div className={cn(
-      "terminal p-5 rounded-lg shadow-lg w-full overflow-x-auto",
+      "terminal p-5 rounded-lg shadow-lg w-full overflow-x-auto relative",
       theme === 'dark' ? "bg-gray-900 text-gray-100" : "bg-gray-800 text-gray-200",
       className
     )}>
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-3 h-3 rounded-full bg-red-500"></div>
-        <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-        <div className="w-3 h-3 rounded-full bg-green-500"></div>
-        <div className="ml-4 text-xs uppercase tracking-wide opacity-70">{language}</div>
+      <div className="flex items-center justify-between gap-2 mb-4">
+        <div className="flex items-center">
+          <div className="w-3 h-3 rounded-full bg-red-500"></div>
+          <div className="w-3 h-3 rounded-full bg-yellow-500 ml-2"></div>
+          <div className="w-3 h-3 rounded-full bg-green-500 ml-2"></div>
+          <div className="ml-4 text-xs uppercase tracking-wide opacity-70">{language}</div>
+        </div>
+        <button
+          onClick={copyToClipboard}
+          className={cn(
+            "p-1.5 rounded-md transition-colors",
+            theme === 'dark' 
+              ? "text-gray-400 hover:text-white hover:bg-gray-700" 
+              : "text-gray-300 hover:text-white hover:bg-gray-700"
+          )}
+          title="Copy to clipboard"
+        >
+          {copied ? (
+            <Check className="h-4 w-4 text-green-500" />
+          ) : (
+            <Copy className="h-4 w-4" />
+          )}
+        </button>
       </div>
       
       <div className="terminal-text space-y-1 font-mono text-sm">

@@ -86,13 +86,17 @@ export default function SeleniumLab() {
   const [saveScrollPosition, setSaveScrollPosition] = useState(false);
   const [scrollPosition, setScrollPosition] = useState<number | null>(null);
   
-  // Reset tab when module changes
+  // Reset tab when module changes and set the value in the Tabs component
   useEffect(() => {
+    // Set default tab based on module
     if (activeModule === 'intro') {
       setActiveTab('install');
     } else {
       setActiveTab('learn');
     }
+    
+    // Log for debugging
+    console.log(`Module changed to: ${activeModule}, setting tab to: ${activeTab}`);
   }, [activeModule]);
   
   // Save scroll position when module changes
@@ -247,7 +251,7 @@ export default function SeleniumLab() {
               </div>
             
               {/* Content Tabs */}
-              <Tabs defaultValue={activeModule === 'intro' ? "install" : "learn"} className="w-full" onValueChange={setActiveTab}>
+              <Tabs value={activeTab} className="w-full" onValueChange={setActiveTab}>
                 {activeModule === 'intro' ? (
                   <TabsList className="grid grid-cols-3 mb-6">
                     <TabsTrigger value="install" className="flex items-center gap-2">
