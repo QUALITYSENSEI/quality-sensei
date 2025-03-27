@@ -27,6 +27,7 @@ import Terminal from "@/components/ui/Terminal";
 import CodeExample from "@/components/ui/CodeExample";
 import TerminalCodeTabs from "@/components/ui/TerminalCodeTabs";
 import { TerminalLine } from "@/lib/types";
+import { SimpleTabs, SimpleTabPanels, SimpleTabPanel, SimpleTab } from "@/components/ui/SimpleTabs";
 
 // Module interface
 interface Module {
@@ -87,7 +88,7 @@ export default function SeleniumLab() {
   const { theme } = useTheme();
   const { toast } = useToast();
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true });
+  const inView = useInView();
   const [activeModule, setActiveModule] = useState('intro');
   const [activeTab, setActiveTab] = useState(activeModule === 'intro' ? 'install' : 'learn');
   const [saveScrollPosition, setSaveScrollPosition] = useState(false);
@@ -475,93 +476,82 @@ testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
         
         <div className="container mx-auto px-4 py-8">
           <div className="mb-8">
-            <Breadcrumbs items={[
-              { label: 'Home', href: '/' },
-              { label: 'Labs', href: '/labs' },
-              { label: 'Automation Labs', href: '/automation-labs' },
-              { label: 'Selenium WebDriver', href: '/selenium-lab', active: true }
-            ]} />
+            <Breadcrumbs 
+              items={[
+                { label: 'Home', href: '/' },
+                { label: 'Labs', href: '/labs' },
+                { label: 'Automation', href: '/labs/automation' },
+                { label: 'Selenium', href: '/labs/automation/selenium', active: true }
+              ]} 
+            />
             
             <div className="flex items-start justify-between flex-wrap gap-4">
               <div>
                 <h1 className={cn(
-                  "text-3xl md:text-4xl font-bold mt-4",
+                  "text-3xl font-bold mt-4 mb-2 flex items-center",
                   theme === "dark" ? "text-white" : "text-gray-900"
                 )}>
+                  <SiSelenium className={cn(
+                    "mr-2",
+                    theme === "dark" ? "text-[#40E0D0]" : "text-[#00BCD4]"
+                  )} />
                   Selenium WebDriver Lab
                 </h1>
-                <p className={cn(
-                  "text-lg mt-2 max-w-2xl",
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
-                )}>
-                  Master Selenium WebDriver through hands-on exercises and step-by-step guidance.
-                </p>
+                <div className="flex items-center gap-2">
+                  <Badge variant="secondary">
+                    <User className="w-3 h-3 mr-1" />
+                    15,432 students
+                  </Badge>
+                  <Badge variant="outline">
+                    <Award className="w-3 h-3 mr-1" />
+                    Certificate Available
+                  </Badge>
+                </div>
               </div>
               
-              <div className="flex items-center gap-2">
-                <Button variant="outline" className="flex items-center gap-2">
-                  <User className="w-4 h-4" />
-                  <span>1,245 enrolled</span>
-                </Button>
-                <Button className="flex items-center gap-2">
-                  <Award className="w-4 h-4" />
-                  <span>Start Lab</span>
-                </Button>
-              </div>
+              <Button>
+                Track Progress
+              </Button>
             </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Module Sidebar */}
+            {/* Sidebar */}
             <div>
               <div className={cn(
-                "p-4 rounded-lg mb-4",
-                theme === "dark" ? "bg-gray-800" : "bg-white border border-gray-200"
+                "p-4 rounded-lg sticky top-20",
+                theme === "dark" ? "bg-gray-800" : "bg-white shadow-sm"
               )}>
                 <h2 className={cn(
-                  "text-xl font-medium mb-4",
+                  "text-lg font-medium mb-4",
                   theme === "dark" ? "text-white" : "text-gray-900"
-                )}>
-                  Lab Modules
-                </h2>
+                )}>Modules</h2>
                 
                 <div className="space-y-3">
                   {modules.map((module) => (
                     <button
                       key={module.id}
-                      className={cn(
-                        "w-full text-left p-3 rounded-lg transition-all flex items-start gap-3",
-                        activeModule === module.id
-                          ? theme === "dark" 
-                              ? "bg-cyan-900/30 text-white border-l-4 border-[#40E0D0]"
-                              : "bg-cyan-50 text-cyan-800 border-l-4 border-[#00BCD4]"
-                          : theme === "dark"
-                              ? "text-gray-300 hover:bg-gray-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                      )}
                       onClick={() => handleModuleClick(module.id)}
+                      className={cn(
+                        "w-full text-left p-3 rounded-lg transition-colors flex items-start space-x-3",
+                        module.id === activeModule
+                          ? theme === "dark" 
+                            ? "bg-gray-700 border-l-2 border-[#40E0D0]" 
+                            : "bg-gray-100 border-l-2 border-[#00BCD4]"
+                          : theme === "dark"
+                            ? "hover:bg-gray-700/70" 
+                            : "hover:bg-gray-100"
+                      )}
                     >
                       <div className={cn(
-                        "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5",
-                        activeModule === module.id
-                          ? theme === "dark" ? "bg-[#40E0D0] text-black" : "bg-[#00BCD4] text-white"
-                          : theme === "dark" ? "bg-gray-700 text-gray-300" : "bg-gray-200 text-gray-600"
+                        "mt-0.5 rounded-md p-1.5 flex-shrink-0",
+                        theme === "dark" ? "bg-gray-600" : "bg-gray-200"
                       )}>
                         {module.icon}
                       </div>
                       <div>
-                        <span className="block font-medium">{module.title}</span>
-                        <span className={cn(
-                          "text-sm block",
-                          theme === "dark" ? "text-gray-400" : "text-gray-500"
-                        )}>
-                          {module.duration}
-                        </span>
-                        {module.badgeText && (
-                          <Badge className="mt-2" variant={module.badgeText === 'Advanced' ? "destructive" : "default"}>
-                            {module.badgeText}
-                          </Badge>
-                        )}
+                        <div className="font-medium">{module.title}</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400 mt-1">{module.duration}</div>
                       </div>
                     </button>
                   ))}
@@ -569,11 +559,11 @@ testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
               </div>
             </div>
             
-            {/* Module Content */}
+            {/* Main Content */}
             <div className="lg:col-span-3">
               <div className={cn(
                 "p-6 rounded-lg mb-6",
-                theme === "dark" ? "bg-gray-800" : "bg-white border border-gray-200"
+                theme === "dark" ? "bg-gray-800" : "bg-white shadow-sm"
               )}>
                 <div className="flex items-center justify-between mb-4">
                   <h2 className={cn(
@@ -582,126 +572,37 @@ testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.12.0'`
                   )}>
                     {modules.find(m => m.id === activeModule)?.title}
                   </h2>
-                  <div>
-                    <Badge variant="outline">
-                      Beginner
-                    </Badge>
-                  </div>
                 </div>
                 
                 <p className={cn(
-                  "text-lg mb-6",
-                  theme === "dark" ? "text-gray-300" : "text-gray-600"
+                  "text-base mb-6",
+                  theme === "dark" ? "text-gray-300" : "text-gray-700"
                 )}>
                   {modules.find(m => m.id === activeModule)?.description}
                 </p>
-              </div>
-            
-              {/* Content Tabs - Simple Tab Implementation */}
-              <div className="w-full">
-                <div className="grid grid-cols-3 mb-6 bg-gray-100 dark:bg-gray-800 rounded-md p-1">
+              
+                {/* Content Tabs - Using SimpleTabs Component */}
+                <div className="w-full">
                   {activeModule === 'intro' ? (
-                    <>
-                      <button 
-                        onClick={() => handleTabChange('install')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'install' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <FileTerminal className="w-4 h-4" />
-                        <span>Install Library</span>
-                      </button>
-                      <button 
-                        onClick={() => handleTabChange('first-script')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'first-script' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <Code className="w-4 h-4" />
-                        <span>First Script</span>
-                      </button>
-                      <button 
-                        onClick={() => handleTabChange('using-selenium')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'using-selenium' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <PlayCircle className="w-4 h-4" />
-                        <span>Using Selenium</span>
-                      </button>
-                    </>
+                    <SimpleTabs
+                      tabs={[
+                        { id: 'install', label: 'Install Library', icon: <FileTerminal className="w-4 h-4" /> },
+                        { id: 'first-script', label: 'First Script', icon: <Code className="w-4 h-4" /> },
+                        { id: 'using-selenium', label: 'Using Selenium', icon: <PlayCircle className="w-4 h-4" /> }
+                      ]}
+                      activeTab={activeTab}
+                      onChange={handleTabChange}
+                    />
                   ) : (
-                    <>
-                      <button 
-                        onClick={() => handleTabChange('learn')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'learn' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <BookOpen className="w-4 h-4" />
-                        <span>Learn</span>
-                      </button>
-                      <button 
-                        onClick={() => handleTabChange('practice')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'practice' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <Code className="w-4 h-4" />
-                        <span>Practice</span>
-                      </button>
-                      <button 
-                        onClick={() => handleTabChange('challenge')}
-                        className={cn(
-                          "flex items-center justify-center gap-2 py-2 px-3 rounded-md transition-all",
-                          activeTab === 'challenge' 
-                            ? theme === 'dark'
-                              ? 'bg-gray-900 text-[#40E0D0] shadow-sm' 
-                              : 'bg-white text-[#00BCD4] shadow-sm'
-                            : theme === 'dark'
-                              ? 'text-gray-400 hover:bg-gray-700/50 hover:text-gray-200'
-                              : 'text-gray-600 hover:bg-gray-200/50 hover:text-gray-900'
-                        )}
-                      >
-                        <PlayCircle className="w-4 h-4" />
-                        <span>Challenge</span>
-                      </button>
-                    </>
+                    <SimpleTabs
+                      tabs={[
+                        { id: 'learn', label: 'Learn', icon: <BookOpen className="w-4 h-4" /> },
+                        { id: 'practice', label: 'Practice', icon: <Code className="w-4 h-4" /> },
+                        { id: 'challenge', label: 'Challenge', icon: <PlayCircle className="w-4 h-4" /> }
+                      ]}
+                      activeTab={activeTab}
+                      onChange={handleTabChange}
+                    />
                   )}
                 </div>
                 
