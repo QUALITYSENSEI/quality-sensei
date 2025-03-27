@@ -8,6 +8,8 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
+import ScrollProgress from "@/components/ui/ScrollProgress";
+import FloatingChatBot from "@/components/ui/FloatingChatBot";
 
 export default function Home() {
   return (
@@ -17,6 +19,7 @@ export default function Home() {
         <meta name="description" content="Master software testing with Quality Sensei's expert-led courses. Learn QA fundamentals, automation, and advanced testing techniques." />
       </Helmet>
       
+      <ScrollProgress />
       <Header />
       
       <main>
@@ -29,6 +32,7 @@ export default function Home() {
         <ContactSection />
       </main>
       
+      <FloatingChatBot />
       <Footer />
     </>
   );
