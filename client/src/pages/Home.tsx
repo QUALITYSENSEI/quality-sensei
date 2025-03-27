@@ -6,6 +6,7 @@ import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
 import AboutSection from "@/components/AboutSection";
 import ContactSection from "@/components/ContactSection";
+import FreePracticalLabsSection from "@/components/FreePracticalLabsSection";
 import ScrollProgress from "@/components/ui/ScrollProgress";
 import FloatingChatBot from "@/components/ui/FloatingChatBot";
 
@@ -21,6 +22,7 @@ export default function Home() {
       <HeroSection />
       <FeatureSection />
       <CoursesSection />
+      <FreePracticalLabsSection />
       <TestimonialsSection />
       <CTASection />
       <AboutSection />
